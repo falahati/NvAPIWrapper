@@ -5,7 +5,7 @@ using NvAPIWrapper.Native.Interfaces;
 namespace NvAPIWrapper.Native.Helpers.Structures
 {
     [StructLayout(LayoutKind.Sequential)]
-    internal struct ValueTypeReference<T> : IDisposable, IHandle where T : struct
+    internal struct ValueTypeReference<T> : IDisposable, IHandle, IEquatable<ValueTypeReference<T>> where T : struct
     {
         private ValueTypeReference underlyingReference;
 
@@ -34,6 +34,33 @@ namespace NvAPIWrapper.Native.Helpers.Structures
             return new ValueTypeReference<T>(ValueTypeReference.FromValueType(valueType, type));
         }
 
+        public bool Equals(ValueTypeReference<T> other)
+        {
+            return underlyingReference.Equals(other.underlyingReference);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            return obj is ValueTypeReference<T> && Equals((ValueTypeReference<T>) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            // ReSharper disable once NonReadonlyMemberInGetHashCode
+            return underlyingReference.GetHashCode();
+        }
+
+        public static bool operator ==(ValueTypeReference<T> left, ValueTypeReference<T> right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(ValueTypeReference<T> left, ValueTypeReference<T> right)
+        {
+            return !left.Equals(right);
+        }
+
         public T ToValueType(Type type)
         {
             return underlyingReference.ToValueType<T>(type);
@@ -47,9 +74,7 @@ namespace NvAPIWrapper.Native.Helpers.Structures
         public void Dispose()
         {
             if (!IsNull)
-            {
                 underlyingReference.Dispose();
-            }
         }
     }
 }

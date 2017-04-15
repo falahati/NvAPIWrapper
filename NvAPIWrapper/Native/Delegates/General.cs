@@ -24,8 +24,12 @@ namespace NvAPIWrapper.Native.Delegates
         public delegate Status NvAPI_SYS_GetChipSetInfo(
             [In] [Accepts(typeof(ChipsetInfoV4), typeof(ChipsetInfoV3), typeof(ChipsetInfoV2), typeof(ChipsetInfoV1))] ValueTypeReference chipsetInfo);
 
+        [FunctionId(FunctionId.NvAPI_SYS_GetDriverAndBranchVersion)]
+        public delegate Status NvAPI_SYS_GetDriverAndBranchVersion(
+            out uint driverVersion, out ShortString buildBranchString);
+
         [FunctionId(FunctionId.NvAPI_SYS_GetLidAndDockInfo)]
-        public delegate Status NvAPI_SYS_GetLidAndDockInfo([In] [Out] ref LIDDockParameters lidAndDock);
+        public delegate Status NvAPI_SYS_GetLidAndDockInfo([In] [Out] ref LidDockParameters lidAndDock);
 
         [FunctionId(FunctionId.NvAPI_Unload)]
         public delegate Status NvAPI_Unload();

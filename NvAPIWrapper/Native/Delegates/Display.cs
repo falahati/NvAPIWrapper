@@ -5,7 +5,6 @@ using NvAPIWrapper.Native.Display.Structures;
 using NvAPIWrapper.Native.General;
 using NvAPIWrapper.Native.General.Structures;
 using NvAPIWrapper.Native.GPU;
-using NvAPIWrapper.Native.GPU.Structures;
 using NvAPIWrapper.Native.Helpers;
 using NvAPIWrapper.Native.Helpers.Structures;
 
@@ -34,7 +33,8 @@ namespace NvAPIWrapper.Native.Delegates
         [FunctionId(FunctionId.NvAPI_DISP_SetDisplayConfig)]
         public delegate Status NvAPI_DISP_SetDisplayConfig(
             [In] uint pathInfoCount,
-            [In] [Accepts(typeof(PathInfoV2), typeof(PathInfoV1))] ValueTypeArray pathInfos, [In] DisplayConfigFlags flags);
+            [In] [Accepts(typeof(PathInfoV2), typeof(PathInfoV1))] ValueTypeArray pathInfos,
+            [In] DisplayConfigFlags flags);
 
         [FunctionId(FunctionId.NvAPI_EnumNvidiaDisplayHandle)]
         public delegate Status NvAPI_EnumNvidiaDisplayHandle(

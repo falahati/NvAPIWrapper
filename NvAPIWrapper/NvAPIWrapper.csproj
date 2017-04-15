@@ -31,6 +31,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\NvAPIWrapper.Net.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>
@@ -48,6 +49,8 @@
     <Compile Include="Display\DisplayDevice.cs" />
     <Compile Include="Display\PathInfo.cs" />
     <Compile Include="GPU\LogicalGPU.cs" />
+    <Compile Include="Mosaic\Overlap.cs" />
+    <Compile Include="Mosaic\OverlapLimit.cs" />
     <Compile Include="Native\Delegates\GPU.cs" />
     <Compile Include="Native\DisplayApi.cs" />
     <Compile Include="Native\Display\Structures\LUID.cs" />
@@ -56,7 +59,7 @@
     <Compile Include="Native\General\Structures\ChipsetInfoV3.cs" />
     <Compile Include="Native\General\Structures\ChipsetInfoV2.cs" />
     <Compile Include="Native\General\Structures\ChipsetInfoV1.cs" />
-    <Compile Include="Native\General\Structures\LIDDockParameters.cs" />
+    <Compile Include="Native\General\Structures\LidDockParameters.cs" />
     <Compile Include="Native\GPUApi.cs" />
     <Compile Include="Native\Display\Structures\UnAttachedDisplayHandle.cs" />
     <Compile Include="Native\Display\DisplayConfigFlags.cs" />
@@ -68,6 +71,9 @@
     <Compile Include="Native\GPU\OutputId.cs" />
     <Compile Include="Native\GPU\OutputType.cs" />
     <Compile Include="Native\GPU\Structures\BoardInfo.cs" />
+    <Compile Include="Native\GPU\Structures\DisplayDriverMemoryInfoV1.cs" />
+    <Compile Include="Native\GPU\Structures\DisplayDriverMemoryInfoV2.cs" />
+    <Compile Include="Native\GPU\Structures\DisplayDriverMemoryInfoV3.cs" />
     <Compile Include="Native\GPU\Structures\DisplayIdsV2.cs" />
     <Compile Include="Native\Attributes\AcceptsAttribute.cs" />
     <Compile Include="Native\Exceptions\NVIDIANotSupportedException.cs" />
@@ -80,20 +86,14 @@
     <Compile Include="Native\Display\Structures\PathInfoV1.cs" />
     <Compile Include="Native\Display\Structures\PathTargetInfoV2.cs" />
     <Compile Include="Native\Display\Structures\PathTargetInfoV1.cs" />
-    <Compile Include="Native\Display\BitsPerColor.cs" />
-    <Compile Include="Native\Display\Format.cs" />
+    <Compile Include="Native\Display\ColorFormat.cs" />
     <Compile Include="Native\Display\Structures\Position.cs" />
     <Compile Include="Native\Display\Structures\Resolution.cs" />
     <Compile Include="Native\Display\Scaling.cs" />
-    <Compile Include="Native\Display\Colorimetry.cs" />
     <Compile Include="Native\Constants\Display.cs" />
-    <Compile Include="Native\Display\ColorFormat.cs" />
     <Compile Include="Native\GPU\Structures\EDIDV3.cs" />
     <Compile Include="Native\GPU\Structures\EDIDV2.cs" />
     <Compile Include="Native\GPU\Structures\EDIDV1.cs" />
-    <Compile Include="Native\Display\LaneCount.cs" />
-    <Compile Include="Native\Display\LinkRate.cs" />
-    <Compile Include="Native\Display\DynamicRange.cs" />
     <Compile Include="Native\Display\Structures\SourceModeInfo.cs" />
     <Compile Include="Native\Display\SpanningOrientation.cs" />
     <Compile Include="Native\Display\TargetViewMode.cs" />
@@ -104,8 +104,6 @@
     <Compile Include="Native\Display\TimingOverride.cs" />
     <Compile Include="Native\Display\TimingHorizontalSyncPolarity.cs" />
     <Compile Include="Native\Display\TVFormat.cs" />
-    <Compile Include="Native\Display\Structures\ViewPortF.cs" />
-    <Compile Include="Native\Display\Structures\ViewTargetInfo.cs" />
     <Compile Include="Native\GPU\ConnectorType.cs" />
     <Compile Include="Native\GPU\Structures\PhysicalGPUHandle.cs" />
     <Compile Include="Native\General\Structures\ShortString.cs" />
@@ -119,6 +117,7 @@
     <Compile Include="Native\General\Structures\StructureVersion.cs" />
     <Compile Include="Native\Attributes\FunctionIdAttribute.cs" />
     <Compile Include="Native\Attributes\StructureVersionAttribute.cs" />
+    <Compile Include="Native\Interfaces\GPU\IDisplayDriverMemoryInfo.cs" />
     <Compile Include="Native\Interfaces\GPU\IEDID.cs" />
     <Compile Include="Native\Interfaces\General\IChipsetInfo.cs" />
     <Compile Include="Native\Interfaces\GPU\IDisplayIds.cs" />
@@ -171,7 +170,7 @@
     <Compile Include="Display\UnAttachedDisplay.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Native\DirectX\" />
+    <Folder Include="Native\Direct3D\" />
     <Folder Include="Native\DRS\" />
     <Folder Include="Native\GSync\" />
     <Folder Include="Native\OLG\" />

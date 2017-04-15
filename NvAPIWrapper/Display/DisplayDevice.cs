@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using NvAPIWrapper.GPU;
 using NvAPIWrapper.Native;
 using NvAPIWrapper.Native.GPU;
@@ -7,8 +8,15 @@ using NvAPIWrapper.Native.Interfaces.GPU;
 
 namespace NvAPIWrapper.Display
 {
-    public class DisplayDevice
+    /// <summary>
+    ///     Represents an NVIDIA display device
+    /// </summary>
+    public class DisplayDevice : IEquatable<DisplayDevice>
     {
+        /// <summary>
+        ///     Creates a new DisplayDevice
+        /// </summary>
+        /// <param name="displayId">Display identification of the device</param>
         public DisplayDevice(uint displayId)
         {
             DisplayId = displayId;
@@ -28,6 +36,10 @@ namespace NvAPIWrapper.Display
             }
         }
 
+        /// <summary>
+        ///     Creates a new DisplayDevice
+        /// </summary>
+        /// <param name="displayIds">Display identification and attributes of the display device</param>
         public DisplayDevice(IDisplayIds displayIds)
         {
             IsAvailable = true;
@@ -43,32 +55,157 @@ namespace NvAPIWrapper.Display
             IsPhysicallyConnected = displayIds.IsPhysicallyConnected;
         }
 
+
+        /// <summary>
+        ///     Creates a new DisplayDevice
+        /// </summary>
+        /// <param name="displayName">Display name of the display device</param>
         public DisplayDevice(string displayName) : this(DisplayApi.GetDisplayIdByDisplayName(displayName))
         {
         }
 
+        /// <summary>
+        ///     Gets the display device connection type
+        /// </summary>
         public MonitorConnectionType ConnectionType { get; }
-        public bool IsDynamic { get; }
-        public bool IsMultiStreamRootNode { get; }
-        public bool IsActive { get; }
-        public bool IsCluster { get; }
-        public bool IsOSVisible { get; }
-        public bool IsWFD { get; }
-        public bool IsConnected { get; }
-        public bool IsPhysicallyConnected { get; }
-        public bool IsAvailable { get; }
 
+        /// <summary>
+        ///     Gets the NVIDIA display identification
+        /// </summary>
         public uint DisplayId { get; }
 
-        public PhysicalGPU PhysicalGPU => new PhysicalGPU(GPUApi.GetPhysicalGpuFromDisplayId(DisplayId));
+        /// <summary>
+        ///     Indicates if the display is being actively driven
+        /// </summary>
+        public bool IsActive { get; }
 
-        public OutputId OutputId
+        /// <summary>
+        ///     Indicates if the display device is currently available
+        /// </summary>
+        public bool IsAvailable { get; }
+
+        /// <summary>
+        ///     Indicates if the display is the representative display
+        /// </summary>
+        public bool IsCluster { get; }
+
+        /// <summary>
+        ///     Indicates if the display is connected
+        /// </summary>
+        public bool IsConnected { get; }
+
+        /// <summary>
+        ///     Indicates if the display is part of MST topology and it's a dynamic
+        /// </summary>
+        public bool IsDynamic { get; }
+
+        /// <summary>
+        ///     Indicates if the display identification belongs to a multi stream enabled connector (root node). Note that when
+        ///     multi stream is enabled and a single multi stream capable monitor is connected to it, the monitor will share the
+        ///     display id with the RootNode.
+        ///     When there is more than one monitor connected in a multi stream topology, then the root node will have a separate
+        ///     displayId.
+        /// </summary>
+        public bool IsMultiStreamRootNode { get; }
+
+        /// <summary>
+        ///     Indicates if the display is reported to the OS
+        /// </summary>
+        public bool IsOSVisible { get; }
+
+        /// <summary>
+        ///     Indicates if the display is a physically connected display; Valid only when IsConnected is true
+        /// </summary>
+        public bool IsPhysicallyConnected { get; }
+
+        /// <summary>
+        ///     Indicates if the display is wireless
+        /// </summary>
+        public bool IsWFD { get; }
+
+        /// <summary>
+        ///     Gets the connected GPU output
+        /// </summary>
+        public GPUOutput Output
         {
             get
             {
                 PhysicalGPUHandle handle;
-                return GPUApi.GetGpuAndOutputIdFromDisplayId(DisplayId, out handle);
+                var outputId = GPUApi.GetGPUAndOutputIdFromDisplayId(DisplayId, out handle);
+                return new GPUOutput(outputId, new PhysicalGPU(handle));
             }
+        }
+
+        /// <summary>
+        ///     Gets the connected physical GPU
+        /// </summary>
+        public PhysicalGPU PhysicalGPU
+        {
+            get
+            {
+                try
+                {
+                    var gpuHandle = GPUApi.GetPhysicalGPUFromDisplayId(DisplayId);
+                    return new PhysicalGPU(gpuHandle);
+                }
+                catch
+                {
+                    // ignored
+                }
+                return Output.PhysicalGPU;
+            }
+        }
+
+        /// <inheritdoc />
+        public bool Equals(DisplayDevice other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return DisplayId == other.DisplayId;
+        }
+
+        /// <summary>
+        ///     Checks for equality between two objects of same type
+        /// </summary>
+        /// <param name="left">The first object</param>
+        /// <param name="right">The second object</param>
+        /// <returns>true, if both objects are equal, otherwise false</returns>
+        public static bool operator ==(DisplayDevice left, DisplayDevice right)
+        {
+            return right?.Equals(left) ?? ReferenceEquals(left, null);
+        }
+
+        /// <summary>
+        ///     Checks for inequality between two objects of same type
+        /// </summary>
+        /// <param name="left">The first object</param>
+        /// <param name="right">The second object</param>
+        /// <returns>true, if both objects are not equal, otherwise false</returns>
+        public static bool operator !=(DisplayDevice left, DisplayDevice right)
+        {
+            return !(right == left);
+        }
+
+        /// <inheritdoc />
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != GetType()) return false;
+            return Equals((DisplayDevice) obj);
+        }
+
+        /// <inheritdoc />
+        public override int GetHashCode()
+        {
+            return (int) DisplayId;
+        }
+
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            return $"Display #{DisplayId}";
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using NvAPIWrapper.Native.Attributes;
+using NvAPIWrapper.Native.Exceptions;
 
 namespace NvAPIWrapper.Native.Helpers
 {
@@ -11,13 +12,34 @@ namespace NvAPIWrapper.Native.Helpers
         private static readonly Dictionary<KeyValuePair<FunctionId, Type>, object> Delegates =
             new Dictionary<KeyValuePair<FunctionId, Type>, object>();
 
-        [DllImport(@"nvapi.dll", EntryPoint = @"nvapi_QueryInterface", CallingConvention = CallingConvention.Cdecl,
-             PreserveSig = true)]
-        private static extern IntPtr NvAPI32_QueryInterface(uint interfaceId);
+        public static T Get<T>() where T : class
+        {
+            if (!typeof(T).IsSubclassOf(typeof(Delegate)))
+                throw new InvalidOperationException($"{typeof(T).Name} is not a delegate type");
 
-        [DllImport(@"nvapi64.dll", EntryPoint = @"nvapi_QueryInterface", CallingConvention = CallingConvention.Cdecl,
-             PreserveSig = true)]
-        private static extern IntPtr NvAPI64_QueryInterface(uint interfaceId);
+            var functionId = typeof(T).GetCustomAttributes(typeof(FunctionIdAttribute), true)
+                .Cast<FunctionIdAttribute>()
+                .FirstOrDefault();
+            if (functionId == null)
+                throw new InvalidOperationException($"{typeof(T).Name}'s address is unknown.");
+
+            var delegateKey = new KeyValuePair<FunctionId, Type>(functionId.FunctionId, typeof(T));
+            lock (Delegates)
+            {
+                if (Delegates.ContainsKey(delegateKey))
+                    return Delegates[delegateKey] as T;
+
+                var ptr = NvAPI_QueryInterface((uint) functionId.FunctionId);
+                if (ptr != IntPtr.Zero)
+                {
+                    var delegateValue = Marshal.GetDelegateForFunctionPointer(ptr, typeof(T)) as T;
+                    Delegates.Add(delegateKey, delegateValue);
+                    return delegateValue;
+                }
+            }
+
+            throw new NVIDIANotSupportedException(@"Function identification number is invalid or not supported.");
+        }
 
         private static IntPtr NvAPI_QueryInterface(uint interfaceId)
         {
@@ -31,39 +53,12 @@ namespace NvAPIWrapper.Native.Helpers
                 : NvAPI32_QueryInterface(interfaceId);
         }
 
-        public static T Get<T>() where T : class
-        {
-            if (!typeof(T).IsSubclassOf(typeof(Delegate)))
-            {
-                throw new InvalidOperationException($"{typeof(T).Name} is not a delegate type");
-            }
+        [DllImport(@"nvapi.dll", EntryPoint = @"nvapi_QueryInterface", CallingConvention = CallingConvention.Cdecl,
+             PreserveSig = true)]
+        private static extern IntPtr NvAPI32_QueryInterface(uint interfaceId);
 
-            var functionId = typeof(T).GetCustomAttributes(typeof(FunctionIdAttribute), true)
-                .Cast<FunctionIdAttribute>()
-                .FirstOrDefault();
-            if (functionId == null)
-            {
-                throw new InvalidOperationException($"{typeof(T).Name}'s address is unknown.");
-            }
-
-            var delegateKey = new KeyValuePair<FunctionId, Type>(functionId.FunctionId, typeof(T));
-            lock (Delegates)
-            {
-                if (Delegates.ContainsKey(delegateKey))
-                {
-                    return Delegates[delegateKey] as T;
-                }
-
-                var ptr = NvAPI_QueryInterface((uint) functionId.FunctionId);
-                if (ptr != IntPtr.Zero)
-                {
-                    var delegateValue = Marshal.GetDelegateForFunctionPointer(ptr, typeof(T)) as T;
-                    Delegates.Add(delegateKey, delegateValue);
-                    return delegateValue;
-                }
-            }
-
-            throw new NotSupportedException(@"Function identification number is invalid or not supported.");
-        }
+        [DllImport(@"nvapi64.dll", EntryPoint = @"nvapi_QueryInterface", CallingConvention = CallingConvention.Cdecl,
+             PreserveSig = true)]
+        private static extern IntPtr NvAPI64_QueryInterface(uint interfaceId);
     }
 }

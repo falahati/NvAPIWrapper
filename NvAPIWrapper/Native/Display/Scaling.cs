@@ -1,37 +1,48 @@
 ﻿namespace NvAPIWrapper.Native.Display
 {
+    /// <summary>
+    ///     Possible scaling modes
+    /// </summary>
     public enum Scaling
     {
-        // No change
+        /// <summary>
+        ///     No change
+        /// </summary>
         Default = 0,
 
-        // New Scaling Declarations
-
-        // Balanced  - Full Screen
+        /// <summary>
+        ///     Balanced  - Full Screen
+        /// </summary>
         ToClosest = 1,
-        // Force GPU - Full Screen
+
+        /// <summary>
+        ///     Force GPU - Full Screen
+        /// </summary>
         ToNative = 2,
-        // Force GPU - Centered\No Scaling 
+
+        /// <summary>
+        ///     Force GPU - Centered\No Scaling
+        /// </summary>
         GPUScanOutToNative = 3,
-        // Force GPU - Aspect Ratio
+
+        /// <summary>
+        ///     Force GPU - Aspect Ratio
+        /// </summary>
         ToAspectScanOutToNative = 5,
-        // Balanced  - Aspect Ratio
+
+        /// <summary>
+        ///     Balanced  - Aspect Ratio
+        /// </summary>
         ToAspectScanOutToClosest = 6,
-        // Balanced  - Centered\No Scaling
+
+        /// <summary>
+        ///     Balanced  - Centered\No Scaling
+        /// </summary>
         GPUScanOutToClosest = 7,
 
-        // \New Scaling Declarations
-
-        // Legacy Declarations
-
-        MonitorScaling = ToClosest,
-        AdapterScaling = ToNative,
-        Centered = GPUScanOutToNative,
-        AspectScaling = ToAspectScanOutToNative,
-
-        // \Legacy Declarations
-
-        // For future use
+        /// <summary>
+        ///     Customized scaling - For future use
+        /// </summary>
         Customized = 255
     }
 }

@@ -7,7 +7,7 @@ using NvAPIWrapper.Native.Interfaces;
 namespace NvAPIWrapper.Native.Helpers.Structures
 {
     [StructLayout(LayoutKind.Sequential)]
-    internal struct ValueTypeArray<T> : IDisposable, IHandle where T : struct
+    internal struct ValueTypeArray<T> : IDisposable, IHandle, IEquatable<ValueTypeArray<T>> where T : struct
     {
         private ValueTypeArray underlyingArray;
 
@@ -34,6 +34,33 @@ namespace NvAPIWrapper.Native.Helpers.Structures
         public static ValueTypeArray<T> FromArray(IEnumerable<T> list, Type type)
         {
             return new ValueTypeArray<T>(ValueTypeArray.FromArray(list.Cast<object>(), type));
+        }
+
+        public bool Equals(ValueTypeArray<T> other)
+        {
+            return underlyingArray.Equals(other.underlyingArray);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            return obj is ValueTypeArray<T> && Equals((ValueTypeArray<T>) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            // ReSharper disable once NonReadonlyMemberInGetHashCode
+            return underlyingArray.GetHashCode();
+        }
+
+        public static bool operator ==(ValueTypeArray<T> left, ValueTypeArray<T> right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(ValueTypeArray<T> left, ValueTypeArray<T> right)
+        {
+            return !left.Equals(right);
         }
 
         public T[] ToArray(int count)
@@ -79,9 +106,7 @@ namespace NvAPIWrapper.Native.Helpers.Structures
         public void Dispose()
         {
             if (!IsNull)
-            {
                 underlyingArray.Dispose();
-            }
         }
     }
 }

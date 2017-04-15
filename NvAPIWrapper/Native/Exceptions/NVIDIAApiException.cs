@@ -3,15 +3,22 @@ using NvAPIWrapper.Native.General;
 
 namespace NvAPIWrapper.Native.Exceptions
 {
-    internal class NVIDIAApiException : Exception
+    /// <summary>
+    ///     Represents errors that raised by NVIDIA Api
+    /// </summary>
+    public class NVIDIAApiException : Exception
     {
-        public NVIDIAApiException(Status status)
+        internal NVIDIAApiException(Status status)
         {
             Status = status;
         }
 
-        public Status Status { get; }
-
+        /// <inheritdoc />
         public override string Message => GeneralApi.GetErrorMessage(Status) ?? Status.ToString();
+
+        /// <summary>
+        ///     Gets NVIDIA Api exception status code
+        /// </summary>
+        public Status Status { get; }
     }
 }

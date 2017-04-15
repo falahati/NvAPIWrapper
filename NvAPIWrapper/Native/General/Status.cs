@@ -1,216 +1,642 @@
 ﻿namespace NvAPIWrapper.Native.General
 {
+    /// <summary>
+    ///     NvAPI status codes
+    /// </summary>
     public enum Status
     {
-        // Success
+        /// <summary>
+        ///     Success. Request is completed.
+        /// </summary>
         Ok = 0,
 
-        // Generic error
+        /// <summary>
+        ///     Generic error
+        /// </summary>
         Error = -1,
 
-        // nvapi.dll can not be loaded
+        /// <summary>
+        ///     NVAPI support library cannot be loaded.
+        /// </summary>
         LibraryNotFound = -2,
 
-        // not implemented in current driver installation
+        /// <summary>
+        ///     Not implemented in current driver installation
+        /// </summary>
         NoImplementation = -3,
 
-        // NvAPI_Initialize has not been called (successfully)
-        ApiNotIntialized = -4,
+        /// <summary>
+        ///     NvAPI_Initialize() has not been called (successfully)
+        /// </summary>
+        ApiNotInitialized = -4,
 
-        // invalid argument
+        /// <summary>
+        ///     Invalid argument
+        /// </summary>
         InvalidArgument = -5,
 
-        // no NVIDIA display driver was found
+        /// <summary>
+        ///     No NVIDIA display driver was found
+        /// </summary>
         NvidiaDeviceNotFound = -6,
 
-        // no more to enumerate
+        /// <summary>
+        ///     No more to enumerate
+        /// </summary>
         EndEnumeration = -7,
 
-        // invalid handle
+        /// <summary>
+        ///     Invalid handle
+        /// </summary>
         InvalidHandle = -8,
 
-        // an argument's structure version is not supported
-        IncompatibleStructVersion = -9,
+        /// <summary>
+        ///     An argument's structure version is not supported
+        /// </summary>
+        IncompatibleStructureVersion = -9,
 
-        // handle is no longer valid (likely due to GPU or display re-configuration)
+        /// <summary>
+        ///     Handle is no longer valid (likely due to GPU or display re-configuration)
+        /// </summary>
         HandleInvalidated = -10,
 
-        // no NVIDIA OpenGL context is current (but needs to be)
-        OpenglContextNotCurrent = -11,
+        /// <summary>
+        ///     No NVIDIA OpenGL context is current (but needs to be)
+        /// </summary>
+        OpenGLContextNotCurrent = -11,
 
-        // An invalid pointer, usually NULL, was passed as a parameter
+        /// <summary>
+        ///     An invalid pointer, usually NULL, was passed as a parameter
+        /// </summary>
         InvalidPointer = -14,
 
-        // OpenGL Expert is not supported by the current drivers
+        /// <summary>
+        ///     OpenGL Expert is not supported by the current drivers
+        /// </summary>
         NoGLExpert = -12,
 
-
-        // OpenGL Expert is supported, but driver instrumentation is currently disabled
+        /// <summary>
+        ///     OpenGL Expert is supported, but driver instrumentation is currently disabled
+        /// </summary>
         InstrumentationDisabled = -13,
 
-        // expected a logical GPU handle for one or more parameters
+        /// <summary>
+        ///     Expected a logical GPU handle for one or more parameters
+        /// </summary>
         ExpectedLogicalGPUHandle = -100,
 
-        // expected a physical GPU handle for one or more parameters
+        /// <summary>
+        ///     Expected a physical GPU handle for one or more parameters
+        /// </summary>
         ExpectedPhysicalGPUHandle = -101,
 
-        // expected an NV display handle for one or more parameters
+        /// <summary>
+        ///     Expected an NV display handle for one or more parameters
+        /// </summary>
         ExpectedDisplayHandle = -102,
 
-        // used in some commands to indicate that the combination of parameters is not valid
+        /// <summary>
+        ///     Used in some commands to indicate that the combination of parameters is not valid
+        /// </summary>
         InvalidCombination = -103,
 
-        // Requested feature not supported in the selected GPU
+        /// <summary>
+        ///     Requested feature not supported in the selected GPU
+        /// </summary>
         NotSupported = -104,
 
-        // NO port ID found for I2C transaction
+        /// <summary>
+        ///     NO port Id found for I2C transaction
+        /// </summary>
         PortIdNotFound = -105,
 
-        // expected an unattached display handle as one of the input param
+        /// <summary>
+        ///     Expected an unattached display handle as one of the input param
+        /// </summary>
         ExpectedUnattachedDisplayHandle = -106,
 
-        // invalid perf level
-        InvalidPerfLevel = -107,
+        /// <summary>
+        ///     Invalid performance level
+        /// </summary>
+        InvalidPerformanceLevel = -107,
 
-        // device is busy, request not fulfilled
+        /// <summary>
+        ///     Device is busy, request not fulfilled
+        /// </summary>
         DeviceBusy = -108,
 
-        // NV persist file is not found
+        /// <summary>
+        ///     NVIDIA persist file is not found
+        /// </summary>
         NvPersistFileNotFound = -109,
 
-        // NV persist data is not found
+        /// <summary>
+        ///     NVIDIA persist data is not found
+        /// </summary>
         PersistDataNotFound = -110,
 
-        // expected TV output display
+        /// <summary>
+        ///     Expected TV output display
+        /// </summary>
         ExpectedTVDisplay = -111,
 
-        // expected TV output on D Connector - HDTV_EIAJ4120.
+        /// <summary>
+        ///     Expected TV output on D Connector - HDTV_EIAJ4120.
+        /// </summary>
         ExpectedTVDisplayOnDConnector = -112,
 
-        // SLI is not active on this device
+        /// <summary>
+        ///     SLI is not active on this device
+        /// </summary>
         NoActiveSLITopology = -113,
 
-        // setup of SLI rendering mode is not possible right now
-        SLIRenderingModeNotallowed = -114,
+        /// <summary>
+        ///     Setup of SLI rendering mode is not possible right now
+        /// </summary>
+        SLIRenderingModeNotAllowed = -114,
 
-        // expected digital flat panel
+        /// <summary>
+        ///     Expected digital flat panel
+        /// </summary>
         ExpectedDigitalFlatPanel = -115,
 
-        // argument exceeds expected size
+        /// <summary>
+        ///     Argument exceeds expected size
+        /// </summary>
         ArgumentExceedMaxSize = -116,
 
-        // inhibit ON due to one of the flags in NV_GPU_DISPLAY_CHANGE_INHIBIT or SLI Active
+        /// <summary>
+        ///     Inhibit ON due to one of the flags in NV_GPU_DISPLAY_CHANGE_INHIBIT or SLI Active
+        /// </summary>
         DeviceSwitchingNotAllowed = -117,
 
-        // testing clocks not supported
+        /// <summary>
+        ///     Testing clocks not supported
+        /// </summary>
         TestingClocksNotSupported = -118,
 
-        // the specified underscan config is from an unknown source (e.g. INF)
-        UnknownUnderscanConfig = -119,
+        /// <summary>
+        ///     The specified underscan config is from an unknown source (e.g. INF)
+        /// </summary>
+        UnknownUnderScanConfig = -119,
 
-        // timeout while reconfiguring GPUs
-        TimeoutReconfiguringGPUTopo = -120,
+        /// <summary>
+        ///     Timeout while reconfiguring GPUs
+        /// </summary>
+        TimeoutReConfiguringGPUTopology = -120,
 
-        // Requested data was not found
+        /// <summary>
+        ///     Requested data was not found
+        /// </summary>
         DataNotFound = -121,
 
-        // expected analog display
+        /// <summary>
+        ///     Expected analog display
+        /// </summary>
         ExpectedAnalogDisplay = -122,
 
-        // No SLI video bridge present
-        NoVidlink = -123,
+        /// <summary>
+        ///     No SLI video bridge present
+        /// </summary>
+        NoVideoLink = -123,
 
-        // NVAPI requires reboot for its settings to take effect
+        /// <summary>
+        ///     NvAPI requires reboot for its settings to take effect
+        /// </summary>
         RequiresReboot = -124,
 
-        // the function is not supported with the current hybrid mode.
+        /// <summary>
+        ///     The function is not supported with the current hybrid mode.
+        /// </summary>
         InvalidHybridMode = -125,
 
-        // The target types are not all the same
+        /// <summary>
+        ///     The target types are not all the same
+        /// </summary>
         MixedTargetTypes = -126,
 
-        // the function is not supported from 32-bit on a 64-bit system
+        /// <summary>
+        ///     The function is not supported from 32-bit on a 64-bit system
+        /// </summary>
         SYSWOW64NotSupported = -127,
 
-        //there is any implicit GPU topology active. Use NVAPI_SetHybridMode to change topology.
+        /// <summary>
+        ///     There is any implicit GPU topology active. Use NVAPI_SetHybridMode to change topology.
+        /// </summary>
         ImplicitSetGPUTopologyChangeNotAllowed = -128,
 
 
-        //Prompt the user to close all non-migratable applications.
+        /// <summary>
+        ///     Prompt the user to close all non-migratable applications.
+        /// </summary>
         RequestUserToCloseNonMigratableApps = -129,
 
-        // Could not allocate sufficient memory to complete the call
+        /// <summary>
+        ///     Could not allocate sufficient memory to complete the call
+        /// </summary>
         OutOfMemory = -130,
 
-        // The previous operation that is transferring information to or from this surface is incomplete
+        /// <summary>
+        ///     The previous operation that is transferring information to or from this surface is incomplete
+        /// </summary>
         WasStillDrawing = -131,
 
-        // The file was not found
+        /// <summary>
+        ///     The file was not found
+        /// </summary>
         FileNotFound = -132,
 
-        // There are too many unique instances of a particular type of state object
+        /// <summary>
+        ///     There are too many unique instances of a particular type of state object
+        /// </summary>
         TooManyUniqueStateObjects = -133,
 
 
-        // The method call is invalid. For example, a method's parameter may not be a valid pointer
+        /// <summary>
+        ///     The method call is invalid. For example, a method's parameter may not be a valid pointer
+        /// </summary>
         InvalidCall = -134,
 
-        // d3d10_1.dll can not be loaded
+        /// <summary>
+        ///     d3d10_1.dll can not be loaded
+        /// </summary>
         D3D101LibraryNotFound = -135,
 
-        // Couldn't find the function in loaded DLL library
+        /// <summary>
+        ///     Couldn't find the function in loaded DLL library
+        /// </summary>
         FunctionNotFound = -136,
 
-        // Current User is not Administrator
+        /// <summary>
+        ///     Current User is not Administrator
+        /// </summary>
         InvalidUserPrivilege = -137,
 
-        // The handle corresponds to GDIPrimary
+        /// <summary>
+        ///     The handle corresponds to GDIPrimary
+        /// </summary>
         ExpectedNonPrimaryDisplayHandle = -138,
 
-        // Setting Physx GPU requires that the GPU is compute capable
+        /// <summary>
+        ///     Setting PhysX GPU requires that the GPU is compute capable
+        /// </summary>
         ExpectedComputeGPUHandle = -139,
 
-        // Stereo part of NVAPI failed to initialize completely. Check if stereo driver is installed.
+        /// <summary>
+        ///     Stereo part of NvAPI failed to initialize completely. Check if stereo driver is installed.
+        /// </summary>
         StereoNotInitialized = -140,
 
-        // Access to stereo related registry keys or values failed.
+        /// <summary>
+        ///     Access to stereo related registry keys or values failed.
+        /// </summary>
         StereoRegistryAccessFailed = -141,
 
-        // Given registry profile type is not supported.
+        /// <summary>
+        ///     Given registry profile type is not supported.
+        /// </summary>
         StereoRegistryProfileTypeNotSupported = -142,
 
-        // Given registry value is not supported.
+        /// <summary>
+        ///     Given registry value is not supported.
+        /// </summary>
         StereoRegistryValueNotSupported = -143,
 
-        // Stereo is not enabled and function needed it to execute completely.
+        /// <summary>
+        ///     Stereo is not enabled and function needed it to execute completely.
+        /// </summary>
         StereoNotEnabled = -144,
 
-        // Stereo is not turned on and function needed it to execute completely.
+        /// <summary>
+        ///     Stereo is not turned on and function needed it to execute completely.
+        /// </summary>
         StereoNotTurnedOn = -145,
 
-        // Invalid device interface.
+        /// <summary>
+        ///     Invalid device interface.
+        /// </summary>
         StereoInvalidDeviceInterface = -146,
 
 
-        // Separation percentage or JPEG image capture quality out of [0-100] range.
+        /// <summary>
+        ///     Separation percentage or JPEG image capture quality out of [0-100] range.
+        /// </summary>
         StereoParameterOutOfRange = -147,
 
-        // Given frustum adjust mode is not supported.
+        /// <summary>
+        ///     Given frustum adjust mode is not supported.
+        /// </summary>
         StereoFrustumAdjustModeNotSupported = -148,
 
-        // The mosaic topology is not possible given the current state of HW
+        /// <summary>
+        ///     The mosaic topology is not possible given the current state of HW
+        /// </summary>
         TopologyNotPossible = -149,
 
-        // An attempt to do a display resolution mode change has failed
+        /// <summary>
+        ///     An attempt to do a display resolution mode change has failed
+        /// </summary>
         ModeChangeFailed = -150,
 
-        // d3d11.dll/d3d11_beta.dll cannot be loaded.
+        /// <summary>
+        ///     d3d11.dll/d3d11_beta.dll cannot be loaded.
+        /// </summary>
         D3D11LibraryNotFound = -151,
 
-        // Address outside of valid range.
+        /// <summary>
+        ///     Address outside of valid range.
+        /// </summary>
         InvalidAddress = -152,
 
-        // The input does not match any of the available devices
-        MatchingDeviceNotFound = -153
+        /// <summary>
+        ///     The pre-allocated string is too small to hold the result.
+        /// </summary>
+        StringTooSmall = -153,
+
+        /// <summary>
+        ///     The input does not match any of the available devices.
+        /// </summary>
+        MatchingDeviceNotFound = -154,
+
+        /// <summary>
+        ///     Driver is running.
+        /// </summary>
+        DriverRunning = -155,
+
+        /// <summary>
+        ///     Driver is not running.
+        /// </summary>
+        DriverNotRunning = -156,
+
+        /// <summary>
+        ///     A driver reload is required to apply these settings.
+        /// </summary>
+        ErrorDriverReloadRequired = -157,
+
+        /// <summary>
+        ///     Intended setting is not allowed.
+        /// </summary>
+        SetNotAllowed = -158,
+
+        /// <summary>
+        ///     Information can't be returned due to "advanced display topology".
+        /// </summary>
+        AdvancedDisplayTopologyRequired = -159,
+
+        /// <summary>
+        ///     Setting is not found.
+        /// </summary>
+        SettingNotFound = -160,
+
+        /// <summary>
+        ///     Setting size is too large.
+        /// </summary>
+        SettingSizeTooLarge = -161,
+
+        /// <summary>
+        ///     There are too many settings for a profile.
+        /// </summary>
+        TooManySettingsInProfile = -162,
+
+        /// <summary>
+        ///     Profile is not found.
+        /// </summary>
+        ProfileNotFound = -163,
+
+        /// <summary>
+        ///     Profile name is duplicated.
+        /// </summary>
+        ProfileNameInUse = -164,
+
+        /// <summary>
+        ///     Profile name is empty.
+        /// </summary>
+        ProfileNameEmpty = -165,
+
+        /// <summary>
+        ///     Application not found in the Profile.
+        /// </summary>
+        ExecutableNotFound = -166,
+
+        /// <summary>
+        ///     Application already exists in the other profile.
+        /// </summary>
+        ExecutableAlreadyInUse = -167,
+
+        /// <summary>
+        ///     Data Type mismatch
+        /// </summary>
+        DataTypeMismatch = -168,
+
+        /// <summary>
+        ///     The profile passed as parameter has been removed and is no longer valid.
+        /// </summary>
+        ProfileRemoved = -169,
+
+        /// <summary>
+        ///     An unregistered resource was passed as a parameter.
+        /// </summary>
+        UnregisteredResource = -170,
+
+        /// <summary>
+        ///     The DisplayId corresponds to a display which is not within the normal outputId range.
+        /// </summary>
+        IdOutOfRange = -171,
+
+        /// <summary>
+        ///     Display topology is not valid so the driver cannot do a mode set on this configuration.
+        /// </summary>
+        DisplayConfigValidationFailed = -172,
+
+        /// <summary>
+        ///     Display Port Multi-Stream topology has been changed.
+        /// </summary>
+        DPMSTChanged = -173,
+
+        /// <summary>
+        ///     Input buffer is insufficient to hold the contents.
+        /// </summary>
+        InsufficientBuffer = -174,
+
+        /// <summary>
+        ///     No access to the caller.
+        /// </summary>
+        AccessDenied = -175,
+
+        /// <summary>
+        ///     The requested action cannot be performed without Mosaic being enabled.
+        /// </summary>
+        MosaicNotActive = -176,
+
+        /// <summary>
+        ///     The surface is relocated away from video memory.
+        /// </summary>
+        ShareResourceRelocated = -177,
+
+        /// <summary>
+        ///     The user should disable DWM before calling NvAPI.
+        /// </summary>
+        RequestUserToDisableDWM = -178,
+
+        /// <summary>
+        ///     D3D device status is D3DERR_DEVICELOST or D3DERR_DEVICENOTRESET - the user has to reset the device.
+        /// </summary>
+        D3DDeviceLost = -179,
+
+        /// <summary>
+        ///     The requested action cannot be performed in the current state.
+        /// </summary>
+        InvalidConfiguration = -180,
+
+        /// <summary>
+        ///     Call failed as stereo handshake not completed.
+        /// </summary>
+        StereoHandshakeNotDone = -181,
+
+        /// <summary>
+        ///     The path provided was too short to determine the correct NVDRS_APPLICATION
+        /// </summary>
+        ExecutablePathIsAmbiguous = -182,
+
+        /// <summary>
+        ///     Default stereo profile is not currently defined
+        /// </summary>
+        DefaultStereoProfileIsNotDefined = -183,
+
+        /// <summary>
+        ///     Default stereo profile does not exist
+        /// </summary>
+        DefaultStereoProfileDoesNotExist = -184,
+
+        /// <summary>
+        ///     A cluster is already defined with the given configuration.
+        /// </summary>
+        ClusterAlreadyExists = -185,
+
+        /// <summary>
+        ///     The input display id is not that of a multi stream enabled connector or a display device in a multi stream topology
+        /// </summary>
+        DPMSTDisplayIdExpected = -186,
+
+        /// <summary>
+        ///     The input display id is not valid or the monitor associated to it does not support the current operation
+        /// </summary>
+        InvalidDisplayId = -187,
+
+        /// <summary>
+        ///     While playing secure audio stream, stream goes out of sync
+        /// </summary>
+        StreamIsOutOfSync = -188,
+
+        /// <summary>
+        ///     Older audio driver version than required
+        /// </summary>
+        IncompatibleAudioDriver = -189,
+
+        /// <summary>
+        ///     Value already set, setting again not allowed.
+        /// </summary>
+        ValueAlreadySet = -190,
+
+        /// <summary>
+        ///     Requested operation timed out
+        /// </summary>
+        Timeout = -191,
+
+        /// <summary>
+        ///     The requested workstation feature set has incomplete driver internal allocation resources
+        /// </summary>
+        GPUWorkstationFeatureIncomplete = -192,
+
+        /// <summary>
+        ///     Call failed because InitActivation was not called.
+        /// </summary>
+        StereoInitActivationNotDone = -193,
+
+        /// <summary>
+        ///     The requested action cannot be performed without Sync being enabled.
+        /// </summary>
+        SyncNotActive = -194,
+
+        /// <summary>
+        ///     The requested action cannot be performed without Sync Master being enabled.
+        /// </summary>
+        SyncMasterNotFound = -195,
+
+        /// <summary>
+        ///     Invalid displays passed in the NV_GSYNC_DISPLAY pointer.
+        /// </summary>
+        InvalidSyncTopology = -196,
+
+        /// <summary>
+        ///     The specified signing algorithm is not supported. Either an incorrect value was entered or the current installed
+        ///     driver/hardware does not support the input value.
+        /// </summary>
+        ECIDSignAlgoUnsupported = -197,
+
+        /// <summary>
+        ///     The encrypted public key verification has failed.
+        /// </summary>
+        ECIDKeyVerificationFailed = -198,
+
+        /// <summary>
+        ///     The device's firmware is out of date.
+        /// </summary>
+        FirmwareOutOfDate = -199,
+
+        /// <summary>
+        ///     The device's firmware is not supported.
+        /// </summary>
+        FirmwareRevisionNotSupported = -200,
+
+        /// <summary>
+        ///     The caller is not authorized to modify the License.
+        /// </summary>
+        LicenseCallerAuthenticationFailed = -201,
+
+        /// <summary>
+        ///     The user tried to use a deferred context without registering the device first
+        /// </summary>
+        D3DDeviceNotRegistered = -202,
+
+        /// <summary>
+        ///     Head or SourceId was not reserved for the VR Display before doing the Modeset.
+        /// </summary>
+        ResourceNotAcquired = -203,
+
+        /// <summary>
+        ///     Provided timing is not supported.
+        /// </summary>
+        TimingNotSupported = -204,
+
+        /// <summary>
+        ///     HDCP Encryption Failed for the device. Would be applicable when the device is HDCP Capable.
+        /// </summary>
+        HDCPEncryptionFailed = -205,
+
+        /// <summary>
+        ///     Provided mode is over sink device pclk limitation.
+        /// </summary>
+        PCLKLimitationFailed = -206,
+
+        /// <summary>
+        ///     No connector on GPU found.
+        /// </summary>
+        NoConnectorFound = -207,
+
+        /// <summary>
+        ///     When a non-HDCP capable HMD is connected, we would inform user by this code.
+        /// </summary>
+        HDCPDisabled = -208,
+
+        /// <summary>
+        ///     Atleast an API is still being called
+        /// </summary>
+        ApiInUse = -209,
+
+        /// <summary>
+        ///     No display found on Nvidia GPU(s).
+        /// </summary>
+        NVIDIADisplayNotFound = -210
     }
 }

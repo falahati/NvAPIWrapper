@@ -5,34 +5,104 @@ using NvAPIWrapper.Native.Helpers.Structures;
 using NvAPIWrapper.Native.Interfaces;
 using NvAPIWrapper.Native.Interfaces.Display;
 
+// ReSharper disable RedundantExtendsListEntry
+
 namespace NvAPIWrapper.Native.Display.Structures
 {
+    /// <summary>
+    ///     Holds information about a path's target
+    /// </summary>
     [StructLayout(LayoutKind.Sequential, Pack = 8)]
-    public struct PathTargetInfoV2 : IPathTargetInfo, IInitializable, IDisposable, IAllocatable
+    public struct PathTargetInfoV2 : IPathTargetInfo, IInitializable, IDisposable, IAllocatable,
+        IEquatable<PathTargetInfoV2>, IEquatable<PathTargetInfoV1>
     {
-        internal uint _DisplayId;
+        internal readonly uint _DisplayId;
         internal ValueTypeReference<PathAdvancedTargetInfo> _Details;
-        internal uint _WindowsCCDTargetId;
+        internal readonly uint _WindowsCCDTargetId;
 
+        /// <inheritdoc />
         public uint DisplayId => _DisplayId;
-        public uint WindowsCCDTargetId => _WindowsCCDTargetId;
-        public PathAdvancedTargetInfo Details => _Details.ToValueType() ?? default(PathAdvancedTargetInfo);
 
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            return $"PathTargetInfoV2: Display #{_DisplayId}";
+        }
+
+        /// <inheritdoc />
+        public PathAdvancedTargetInfo? Details => _Details.ToValueType();
+
+        /// <summary>
+        ///     Windows CCD target ID. Must be present only for non-NVIDIA adapter, for NVIDIA adapter this parameter is ignored.
+        /// </summary>
+        public uint WindowsCCDTargetId => _WindowsCCDTargetId;
+
+        /// <summary>
+        ///     Creates a new PathTargetInfoV1
+        /// </summary>
+        /// <param name="displayId">Display Id</param>
         public PathTargetInfoV2(uint displayId) : this()
         {
             _DisplayId = displayId;
         }
 
+        /// <inheritdoc />
+        public bool Equals(PathTargetInfoV2 other)
+        {
+            return (_DisplayId == other._DisplayId) && _Details.Equals(other._Details);
+        }
+
+        /// <inheritdoc />
+        public bool Equals(PathTargetInfoV1 other)
+        {
+            return (_DisplayId == other._DisplayId) && _Details.Equals(other._Details);
+        }
+
+        /// <inheritdoc />
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            return obj is PathTargetInfoV2 && Equals((PathTargetInfoV2) obj);
+        }
+
+        /// <inheritdoc />
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = (int) _DisplayId;
+                hashCode = (hashCode*397) ^ _Details.GetHashCode();
+                hashCode = (hashCode*397) ^ (int) _WindowsCCDTargetId;
+                return hashCode;
+            }
+        }
+
+        /// <summary>
+        ///     Creates a new PathTargetInfoV1
+        /// </summary>
+        /// <param name="displayId">Display Id</param>
+        /// <param name="windowsCCDTargetId">Windows CCD target Id</param>
         public PathTargetInfoV2(uint displayId, uint windowsCCDTargetId) : this(displayId)
         {
             _WindowsCCDTargetId = windowsCCDTargetId;
         }
 
+        /// <summary>
+        ///     Creates a new PathTargetInfoV1
+        /// </summary>
+        /// <param name="displayId">Display Id</param>
+        /// <param name="details">Extra information</param>
         public PathTargetInfoV2(uint displayId, PathAdvancedTargetInfo details) : this(displayId)
         {
             _Details = ValueTypeReference<PathAdvancedTargetInfo>.FromValueType(details);
         }
 
+        /// <summary>
+        ///     Creates a new PathTargetInfoV1
+        /// </summary>
+        /// <param name="displayId">Display Id</param>
+        /// <param name="windowsCCDTargetId">Windows CCD target Id</param>
+        /// <param name="details">Extra information</param>
         public PathTargetInfoV2(uint displayId, uint windowsCCDTargetId, PathAdvancedTargetInfo details)
             : this(displayId, windowsCCDTargetId)
         {
@@ -40,6 +110,7 @@ namespace NvAPIWrapper.Native.Display.Structures
         }
 
 
+        /// <inheritdoc />
         public void Dispose()
         {
             _Details.Dispose();

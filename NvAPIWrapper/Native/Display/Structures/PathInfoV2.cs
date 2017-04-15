@@ -11,27 +11,75 @@ using NvAPIWrapper.Native.Interfaces.Display;
 
 namespace NvAPIWrapper.Native.Display.Structures
 {
+    /// <summary>
+    ///     Holds information about a path
+    /// </summary>
     [StructLayout(LayoutKind.Sequential, Pack = 8)]
     [StructureVersion(2)]
-    public struct PathInfoV2 : IPathInfo, IInitializable, IAllocatable
+    // ReSharper disable once RedundantExtendsListEntry
+    public struct PathInfoV2 : IPathInfo, IInitializable, IAllocatable, IEquatable<PathInfoV2>
     {
         internal StructureVersion _Version;
-        internal uint _SourceId;
-        internal uint _TargetInfoCount;
+        internal readonly uint _SourceId;
+        internal readonly uint _TargetInfoCount;
         internal ValueTypeArray<PathTargetInfoV2> _TargetsInfo;
         internal ValueTypeReference<SourceModeInfo> _SourceModeInfo;
-        internal uint _RawReserved;
+        internal readonly uint _RawReserved;
         internal ValueTypeReference<LUID> _OSAdapterLUID;
 
+        /// <inheritdoc />
         public uint SourceId => _SourceId;
 
+        /// <inheritdoc />
+        public bool Equals(PathInfoV2 other)
+        {
+            return (_TargetInfoCount == other._TargetInfoCount) && _TargetsInfo.Equals(other._TargetsInfo) &&
+                   _SourceModeInfo.Equals(other._SourceModeInfo) && (_RawReserved == other._RawReserved);
+        }
+
+        /// <inheritdoc />
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            return obj is PathInfoV2 && Equals((PathInfoV2) obj);
+        }
+
+        /// <inheritdoc />
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = (int) _TargetInfoCount;
+                hashCode = (hashCode*397) ^ _TargetsInfo.GetHashCode();
+                hashCode = (hashCode*397) ^ _SourceModeInfo.GetHashCode();
+                hashCode = (hashCode*397) ^ (int) _RawReserved;
+                return hashCode;
+            }
+        }
+
+        /// <inheritdoc />
         public IEnumerable<IPathTargetInfo> TargetsInfo
             => _TargetsInfo.ToArray((int) _TargetInfoCount)?.Cast<IPathTargetInfo>() ?? new IPathTargetInfo[0];
 
+        /// <inheritdoc />
         public SourceModeInfo SourceModeInfo => _SourceModeInfo.ToValueType() ?? default(SourceModeInfo);
+
+        /// <summary>
+        ///     True for non-NVIDIA adapter.
+        /// </summary>
         public bool IsNonNVIDIAAdapter => _RawReserved.GetBit(0);
+
+        /// <summary>
+        ///     Used by Non-NVIDIA adapter for OS Adapter of LUID
+        /// </summary>
         public LUID? OSAdapterLUID => _OSAdapterLUID.ToValueType();
 
+        /// <summary>
+        ///     Creates a new PathInfoV2
+        /// </summary>
+        /// <param name="targetInformations">Information about path targets</param>
+        /// <param name="sourceModeInfo">Source mode information</param>
+        /// <param name="sourceId">Source Id, can be zero</param>
         public PathInfoV2(PathTargetInfoV2[] targetInformations, SourceModeInfo sourceModeInfo, uint sourceId = 0)
         {
             this = typeof(PathInfoV2).Instantiate<PathInfoV2>();
@@ -41,6 +89,11 @@ namespace NvAPIWrapper.Native.Display.Structures
             _SourceId = sourceId;
         }
 
+        /// <summary>
+        ///     Creates a new PathInfoV2
+        /// </summary>
+        /// <param name="targetInformations">Information about path targets</param>
+        /// <param name="sourceId">Source Id, can be zero</param>
         public PathInfoV2(PathTargetInfoV2[] targetInformations, uint sourceId = 0)
         {
             this = typeof(PathInfoV2).Instantiate<PathInfoV2>();
@@ -50,6 +103,11 @@ namespace NvAPIWrapper.Native.Display.Structures
             _SourceId = sourceId;
         }
 
+
+        /// <summary>
+        ///     Creates a new PathInfoV2
+        /// </summary>
+        /// <param name="sourceId">Source Id, can be zero</param>
         public PathInfoV2(uint sourceId)
         {
             this = typeof(PathInfoV2).Instantiate<PathInfoV2>();
@@ -59,6 +117,11 @@ namespace NvAPIWrapper.Native.Display.Structures
             _SourceId = sourceId;
         }
 
+        /// <summary>
+        ///     Creates a new PathInfoV2
+        /// </summary>
+        /// <param name="sourceModeInfo">Source mode information</param>
+        /// <param name="sourceId">Source Id, can be zero</param>
         public PathInfoV2(SourceModeInfo sourceModeInfo, uint sourceId)
         {
             this = typeof(PathInfoV2).Instantiate<PathInfoV2>();
@@ -68,6 +131,7 @@ namespace NvAPIWrapper.Native.Display.Structures
             _SourceId = sourceId;
         }
 
+        /// <inheritdoc />
         public void Dispose()
         {
             TargetsInfo.DisposeAll();

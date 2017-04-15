@@ -2,9 +2,12 @@
 
 namespace NvAPIWrapper.Native.Exceptions
 {
-    internal class NVIDIANotSupportedException : NotSupportedException
+    /// <summary>
+    ///     Represents errors that raised by NvAPIWrapper
+    /// </summary>
+    public class NVIDIANotSupportedException : NotSupportedException
     {
-        public NVIDIANotSupportedException(string message) : base(message)
+        internal NVIDIANotSupportedException(string message) : base(message)
         {
         }
     }

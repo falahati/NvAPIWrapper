@@ -7,19 +7,17 @@ using NvAPIWrapper.Native.Interfaces;
 namespace NvAPIWrapper.Native.Helpers.Structures
 {
     [StructLayout(LayoutKind.Sequential)]
-    internal struct ValueTypeArray : IDisposable, IHandle
+    internal struct ValueTypeArray : IDisposable, IHandle, IEquatable<ValueTypeArray>
     {
-        private readonly IntPtr memoryAddress;
-
         // ReSharper disable once ConvertToAutoProperty
-        public IntPtr MemoryAddress => memoryAddress;
+        public IntPtr MemoryAddress { get; }
 
         public static ValueTypeArray Null => new ValueTypeArray();
         public bool IsNull => MemoryAddress == IntPtr.Zero;
 
         public ValueTypeArray(IntPtr memoryAddress)
         {
-            this.memoryAddress = memoryAddress;
+            MemoryAddress = memoryAddress;
         }
 
         public static ValueTypeArray FromArray(IEnumerable<object> list)
@@ -28,14 +26,10 @@ namespace NvAPIWrapper.Native.Helpers.Structures
             if (array.Length > 0)
             {
                 if ((array[0] == null) || !array[0].GetType().IsValueType)
-                {
                     throw new ArgumentException("Only Value Types are acceptable.", nameof(list));
-                }
                 var type = array[0].GetType();
                 if (array.Any(item => item.GetType() != type))
-                {
                     throw new ArgumentException("Array should not hold objects of multiple types.", nameof(list));
-                }
                 return FromArray(array, type);
             }
             return Null;
@@ -55,35 +49,49 @@ namespace NvAPIWrapper.Native.Helpers.Structures
                     foreach (var item in array)
                     {
                         if ((type == typeof(int)) || (type == typeof(uint)))
-                        {
                             Marshal.WriteInt32(memoryAddress, (int) item);
-                        }
                         else if ((type == typeof(short)) || (type == typeof(ushort)))
-                        {
                             Marshal.WriteInt16(memoryAddress, (short) item);
-                        }
                         else if ((type == typeof(long)) || (type == typeof(ulong)))
-                        {
                             Marshal.WriteInt64(memoryAddress, (long) item);
-                        }
                         else if (type == typeof(byte))
-                        {
                             Marshal.WriteByte(memoryAddress, (byte) item);
-                        }
                         else if (type == typeof(IntPtr))
-                        {
                             Marshal.WriteIntPtr(memoryAddress, (IntPtr) item);
-                        }
                         else
-                        {
                             Marshal.StructureToPtr(item, memoryAddress, false);
-                        }
                         memoryAddress += typeSize;
                     }
                     return result;
                 }
             }
             return Null;
+        }
+
+        public bool Equals(ValueTypeArray other)
+        {
+            return MemoryAddress.Equals(other.MemoryAddress);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            return obj is ValueTypeArray && Equals((ValueTypeArray) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return MemoryAddress.GetHashCode();
+        }
+
+        public static bool operator ==(ValueTypeArray left, ValueTypeArray right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(ValueTypeArray left, ValueTypeArray right)
+        {
+            return !left.Equals(right);
         }
 
         public static ValueTypeArray FromArray<T>(T[] array) where T : struct
@@ -109,9 +117,7 @@ namespace NvAPIWrapper.Native.Helpers.Structures
         public T[] ToArray<T>(int start, int count, Type type)
         {
             if (IsNull)
-            {
                 return null;
-            }
             return AsEnumerable<T>(start, count, type).ToArray();
         }
 
@@ -136,49 +142,29 @@ namespace NvAPIWrapper.Native.Helpers.Structures
             if (!IsNull)
             {
                 if (!type.IsValueType)
-                {
                     throw new ArgumentException("Only Value Types are acceptable.", nameof(type));
-                }
                 var typeSize = Marshal.SizeOf(type);
                 var address = MemoryAddress + start*typeSize;
                 for (var i = 0; i < count; i++)
                 {
                     if (type == typeof(int))
-                    {
                         yield return (T) (object) Marshal.ReadInt32(address);
-                    }
                     else if (type == typeof(uint))
-                    {
                         yield return (T) (object) (uint) Marshal.ReadInt32(address);
-                    }
                     else if (type == typeof(short))
-                    {
                         yield return (T) (object) Marshal.ReadInt16(address);
-                    }
                     else if (type == typeof(ushort))
-                    {
                         yield return (T) (object) (ushort) Marshal.ReadInt16(address);
-                    }
                     else if (type == typeof(long))
-                    {
                         yield return (T) (object) Marshal.ReadInt64(address);
-                    }
                     else if (type == typeof(ulong))
-                    {
                         yield return (T) (object) (ulong) Marshal.ReadInt64(address);
-                    }
                     else if (type == typeof(byte))
-                    {
                         yield return (T) (object) Marshal.ReadByte(address);
-                    }
                     else if (type == typeof(IntPtr))
-                    {
                         yield return (T) (object) Marshal.ReadIntPtr(address);
-                    }
                     else
-                    {
                         yield return (T) Marshal.PtrToStructure(address, type);
-                    }
                     address += typeSize;
                 }
             }
@@ -188,9 +174,7 @@ namespace NvAPIWrapper.Native.Helpers.Structures
         public void Dispose()
         {
             if (!IsNull)
-            {
                 Marshal.FreeHGlobal(MemoryAddress);
-            }
         }
     }
 }

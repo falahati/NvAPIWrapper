@@ -5,7 +5,7 @@ using NvAPIWrapper.Native.Interfaces;
 namespace NvAPIWrapper.Native.Helpers.Structures
 {
     [StructLayout(LayoutKind.Sequential)]
-    internal struct ValueTypeReference : IDisposable, IHandle
+    internal struct ValueTypeReference : IDisposable, IHandle, IEquatable<ValueTypeReference>
     {
         private readonly IntPtr memoryAddress;
 
@@ -28,9 +28,7 @@ namespace NvAPIWrapper.Native.Helpers.Structures
         public static ValueTypeReference FromValueType(object valueType, Type type)
         {
             if (!type.IsValueType)
-            {
                 throw new ArgumentException("Only Value Types are acceptable.", nameof(type));
-            }
             var memoryAddress = Marshal.AllocHGlobal(Marshal.SizeOf(type));
             if (memoryAddress != IntPtr.Zero)
             {
@@ -41,34 +39,52 @@ namespace NvAPIWrapper.Native.Helpers.Structures
             return Null;
         }
 
+        public bool Equals(ValueTypeReference other)
+        {
+            return memoryAddress.Equals(other.memoryAddress);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            return obj is ValueTypeReference && Equals((ValueTypeReference) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return memoryAddress.GetHashCode();
+        }
+
+        public static bool operator ==(ValueTypeReference left, ValueTypeReference right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(ValueTypeReference left, ValueTypeReference right)
+        {
+            return !left.Equals(right);
+        }
+
         public T ToValueType<T>(Type type)
         {
             if (MemoryAddress == IntPtr.Zero)
-            {
                 return default(T);
-            }
             if (!type.IsValueType)
-            {
                 throw new ArgumentException("Only Value Types are acceptable.", nameof(type));
-            }
             return (T) Marshal.PtrToStructure(MemoryAddress, type);
         }
 
         public T? ToValueType<T>() where T : struct
         {
             if (IsNull)
-            {
                 return null;
-            }
             return ToValueType<T>(typeof(T));
         }
 
         public void Dispose()
         {
             if (!IsNull)
-            {
                 Marshal.FreeHGlobal(MemoryAddress);
-            }
         }
     }
 }

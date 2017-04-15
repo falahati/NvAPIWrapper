@@ -120,9 +120,15 @@ namespace NvAPIWrapper.Native.Delegates
         public delegate Status NvAPI_GPU_GetIRQ(
             [In] PhysicalGPUHandle physicalGpu, [Out] out uint gpuIRQ);
 
+        [FunctionId(FunctionId.NvAPI_GPU_GetMemoryInfo)]
+        public delegate Status NvAPI_GPU_GetMemoryInfo(
+            [In] PhysicalGPUHandle physicalGpu,
+            [In] [Accepts(typeof(DisplayDriverMemoryInfoV3), typeof(DisplayDriverMemoryInfoV2),
+                      typeof(DisplayDriverMemoryInfoV1))] ValueTypeReference memoryInfo);
+
         [FunctionId(FunctionId.NvAPI_GPU_GetOutputType)]
         public delegate Status NvAPI_GPU_GetOutputType(
-            [In] PhysicalGPUHandle physicalGpu, [In] OutputId outputId, [Out] out OutputType outputType);
+            [In] PhysicalGPUHandle physicalGpu, [In] uint outputId, [Out] out OutputType outputType);
 
         [FunctionId(FunctionId.NvAPI_GPU_GetPCIIdentifiers)]
         public delegate Status NvAPI_GPU_GetPCIIdentifiers(
@@ -164,7 +170,7 @@ namespace NvAPIWrapper.Native.Delegates
 
         [FunctionId(FunctionId.NvAPI_GPU_SetEDID)]
         public delegate Status NvAPI_GPU_SetEDID(
-            [In] PhysicalGPUHandle physicalGpu, [In] OutputId outputId,
+            [In] PhysicalGPUHandle physicalGpu, [In] uint outputId,
             [Accepts(typeof(EDIDV3), typeof(EDIDV2), typeof(EDIDV1))] [In] ValueTypeReference edid);
 
         [FunctionId(FunctionId.NvAPI_GPU_ValidateOutputCombination)]
