@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 
 [assembly: AssemblyTitle("NvAPIWrapper.Net Library")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("NvAPIWrapper is a .Net wrapper for NVIDIA public API")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("NvAPIWrapper.Net")]
@@ -35,5 +35,5 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 
-[assembly: AssemblyVersion("0.5.0.0")]
+[assembly: AssemblyVersion("0.5.*")]
 [assembly: AssemblyFileVersion("0.5.0.0")]
