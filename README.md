@@ -1,4 +1,4 @@
-## <img src="NvAPIWrapper/Icon.png" width="42" alt="NvAPIWrapper"> NvAPIWrapper (for NVAPI R375)
+## <img src="NvAPIWrapper/Icon.png" width="24" alt="NvAPIWrapper"> NvAPIWrapper (for NVAPI R375)
 NvAPIWrapper is a .Net wrapper for NVIDIA public API, capable of managing all aspects of a display setup using NVIDIA GPUs
 
 ## WHERE TO DOWNLOAD
