@@ -5,19 +5,19 @@ NvAPIWrapper is a .Net wrapper for NVIDIA public API, capable of managing all as
 This library is available for download and use through <a href="https://www.nuget.org/packages/NvAPIWrapper.Net">NuGet Gallery</a>.
 
 ## WHAT PARTS ARE INCLUDED
-NvAPIWrapper is not a compleate wrapper of NVAPI; at least, not yet. Following is the list of NVAPI fetures and their status:
+NvAPIWrapper is not a complete wrapper of NVAPI; at least, not yet. Following is the list of NVAPI features and their status:
 
-* General: <span style="color: green">Full Support</span>
-* Display: <span style="color: green">Full Support</span>
-* Display Control: <span style="color: orange">Partial Support</span> (no color control, HUE control, etc)
-* GPU: <span style="color: orange">Partial Support</span> (no sensor data, etc)
-* D3D: <span style="color: red">No Support</span>
-* DRS: <span style="color: red">No Support</span>
-* GSync: <span style="color: red">No Support</span>
-* Mosaic (Sorround): <span style="color: green">Full Support</span>
-* OpenGL: <span style="color: red">No Support</span>
-* Stereo (3D): <span style="color: red">No Support</span>
-* Vidio: <span style="color: red">No Support</span>
+* General: Full Support
+* Mosaic (Surround): Full Support
+* Display: Full Support
+* Display Control: Partial Support (no color control, HUE control, etc)
+* GPU: Partial Support (no sensor data, etc)
+* D3D: No Support
+* DRS: No Support
+* GSync: No Support
+* OpenGL: No Support
+* Stereo (3D): No Support
+* Vidio: No Support
 
 ## HOW TO USE
 NvAPIWrappr allows you to use the NVAPI functions directly using the `NvAPIWrapper.Native` namespace. However, there is also a .Net friendly implementation of the NVAPI features that can be used to minimize the complexity of the code and make it more compatible with later releases of the library, therefore, we strongly recommend using these .Net friendly classes instead of using the native functions directly.
