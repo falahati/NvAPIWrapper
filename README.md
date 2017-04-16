@@ -2,7 +2,7 @@
 NvAPIWrapper is a .Net wrapper for NVIDIA public API, capable of managing all aspects of a display setup using NVIDIA GPUs
 
 ## WHERE TO DOWNLOAD
-This library is available for download and use through <a href="https://www.nuget.org/packages/NvAPIWrapper">NuGet Gallery</a>.
+This library is available for download and use through <a href="https://www.nuget.org/packages/NvAPIWrapper.Net">NuGet Gallery</a>.
 
 ## WHAT PARTS ARE INCLUDED
 NvAPIWrapper is not a compleate wrapper of NVAPI; at least, not yet. Following is the list of NVAPI fetures and their status:
