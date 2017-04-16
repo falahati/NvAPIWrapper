@@ -179,8 +179,8 @@
     <Folder Include="Native\Vidio\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Icon.png" />
-    <Content Include="readme.txt" />
+    <None Include="Icon.png" />
+    <None Include="readme.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="NvAPIWrapper.nuspec" />

@@ -50,7 +50,8 @@ namespace NvAPISample
                 },
                 {
                     "TCC GPUs", () =>
-                        ConsoleNavigation.PrintObject(PhysicalGPU.GetTCCPhysicalGPUs(), "PhysicalGPU.GetTCCPhysicalGPUs()")
+                        ConsoleNavigation.PrintObject(PhysicalGPU.GetTCCPhysicalGPUs(),
+                            "PhysicalGPU.GetTCCPhysicalGPUs()")
                 },
                 {
                     "Grid Topologies (Mosaic)",

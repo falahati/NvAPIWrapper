@@ -7,6 +7,11 @@ namespace NvAPISample
 {
     internal class ConsoleNavigation
     {
+        public static void PrintNavigation(Dictionary<object, Action> menuItems, string title, string message)
+        {
+            PrintObject(menuItems.Keys.ToArray(), index => { menuItems[index](); }, title, message);
+        }
+
         public static void PrintObject(object obj, string title, string message = null)
         {
             if (!string.IsNullOrWhiteSpace(title))
@@ -48,11 +53,6 @@ namespace NvAPISample
                         WriteException(ex);
                     }
             }
-        }
-
-        public static void PrintNavigation(Dictionary<object, Action> menuItems, string title, string message)
-        {
-            PrintObject(menuItems.Keys.ToArray(), index => { menuItems[index](); }, title, message);
         }
 
         private static void WriteException(Exception ex)

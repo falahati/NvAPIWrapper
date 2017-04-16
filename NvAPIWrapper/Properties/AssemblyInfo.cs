@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("NvAPIWrapper.Net Library")]
 [assembly: AssemblyDescription("NvAPIWrapper is a .Net wrapper for NVIDIA public API")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("https://falahati.net")]
 [assembly: AssemblyProduct("NvAPIWrapper.Net")]
 [assembly: AssemblyCopyright("Copyright © Soroush Falahati 2017")]
 [assembly: AssemblyTrademark("")]
