@@ -88,7 +88,7 @@
     <Compile Include="Native\GPU\Structures\ThermalSettingsV2.cs" />
     <Compile Include="Native\GPU\SystemType.cs" />
     <Compile Include="Native\GPU\ThermalSettingsTargetType.cs" />
-    <Compile Include="Native\GPU\ThermalControllerType.cs" />
+    <Compile Include="Native\GPU\ThermalSettingsControllerType.cs" />
     <Compile Include="Native\Helpers\ExtensionMethods.cs" />
     <Compile Include="Native\Delegates\Display.cs" />
     <Compile Include="Native\Display\Structures\PathAdvancedTargetInfo.cs" />

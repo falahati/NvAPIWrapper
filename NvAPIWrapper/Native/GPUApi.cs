@@ -566,15 +566,13 @@ namespace NvAPIWrapper.Native
 
         /// <summary>
         ///     <para>
-        ///         This function retreives the dynamic pstates information from specific GPU\n
-        ///         DynamicPStates contains GPU utilization information</para>
-        ///     <i>From NVAPI.h:</i> 
-        ///     <para>
-        ///         There are currently 4 domains for which GPU utilization and dynamic P-State thresholds can be retrieved:
-        ///         graphic engine (GPU), frame buffer (FB), video engine (VID), and bus interface (BUS).</para>
+        ///         This function retrieves the thermal information of all thermal sensors or specific thermal sensor associated with the selected GPU.
+        ///         Thermal sensors are indexed 0 to MaxThermalSensorsPerGpu-1.</para>
+        ///     <para>- To retrieve specific thermal sensor info, set the sensorIndex to the required thermal sensor index.</para>
+        ///     <para>- To retrieve info for all sensors, set sensorIndex to ThermalSettingsTargetType.</para>
         /// </summary>
         /// <param name="physicalGPUHandle">Handle of the physical GPU for which the memory information is to be extracted.</param>
-        /// <returns>The device utilizations information array.</returns>
+        /// <returns>The device thermal sensors information array.</returns>
         /// <exception cref="NVIDIANotSupportedException">This operation is not supported.</exception>
         /// <exception cref="NVIDIAApiException">Status.NvidiaDeviceNotFound: No NVIDIA GPU driving a display was found.</exception>
         public static IThermalSettings GetThermalSettings(PhysicalGPUHandle physicalGPUHandle, uint sensorIndex) {

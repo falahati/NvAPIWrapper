@@ -11,13 +11,13 @@ namespace NvAPIWrapper.Native.GPU.Structures
     [StructLayout(LayoutKind.Sequential)]
     public struct ThermalSeonsorInfoV1 : IThermalSeonsorInfo
     {
-        internal readonly ThermalControllerType _Controller;
+        internal readonly ThermalSettingsControllerType _Controller;
         internal readonly uint _DefaultMinTemp;
         internal readonly uint _DefaultMaxTemp;
         internal readonly uint _CurrentTemp;
         internal readonly ThermalSettingsTargetType _Target;
 
-        public ThermalControllerType Controller => _Controller;
+        public ThermalSettingsControllerType Controller => _Controller;
 
         public int DefaultMinTemp => (int)_DefaultMinTemp;
 

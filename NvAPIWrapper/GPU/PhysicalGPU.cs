@@ -132,8 +132,14 @@ namespace NvAPIWrapper.GPU
         /// </summary>
         public IDisplayDriverMemoryInfo MemoryInfo => GPUApi.GetMemoryInfo(Handle);
 
+        /// <summary>
+        ///     Gets GPU dynamic PStates information (utilization)
+        /// </summary>
         public DynamicPStatesInfo DynamicPStatesInfo => GPUApi.GetDynamicPstatesInfoEx(Handle);
 
+        /// <summary>
+        ///     Gets GPU thermal sensors information
+        /// </summary>
         public IThermalSettings ThermalSettings => GPUApi.GetThermalSettings(Handle, (uint)ThermalSettingsTargetType.NVAPI_THERMAL_TARGET_ALL);
 
         /// <summary>

@@ -11,7 +11,7 @@ namespace NvAPIWrapper.Native.GPU
         /// <summary>
         ///     internal, ADM1032, MAX6649...
         /// </summary>
-        ThermalControllerType Controller { get; }
+        ThermalSettingsControllerType Controller { get; }
 
         /// <summary>
         ///     Minimum default temperature value of the thermal sensor in degree Celsius
