@@ -31,6 +31,6 @@ namespace NvAPIWrapper.Native.GPU
         /// <summary>
         ///     Thermal sensor targeted - GPU, memory, chipset, powersupply, Visual Computing Device, etc
         /// </summary>
-        ThermalControllerTargetType Target { get; }
+        ThermalSettingsTargetType Target { get; }
     }
 }

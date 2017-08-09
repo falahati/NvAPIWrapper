@@ -11,7 +11,7 @@ namespace NvAPIWrapper.Native.GPU
     ///     All possible thermal controllers
     /// </summary>
     [SuppressMessage("ReSharper", "InconsistentNaming")]
-    public enum ThermalControllerTargetType
+    public enum ThermalSettingsTargetType
     {
         NVAPI_THERMAL_TARGET_NONE = 0,
 

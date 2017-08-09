@@ -14,6 +14,6 @@ namespace NvAPIWrapper.Native.Interfaces.GPU
         /// </summary>
         uint ThermalSensorsCount { get; }
 
-        IThermalSeonsorInfo Sensor { get; }
+        IThermalSeonsorInfo[] Sensor { get; }
     }
 }

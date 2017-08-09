@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using NvAPIWrapper.Native.Attributes;
+using NvAPIWrapper.Native.Interfaces.GPU;
 
 namespace NvAPIWrapper.Native.GPU.Structures
 {
@@ -15,9 +16,8 @@ namespace NvAPIWrapper.Native.GPU.Structures
         internal readonly int _DefaultMinTemp;
         internal readonly int _DefaultMaxTemp;
         internal readonly int _CurrentTemp;
-        internal readonly ThermalControllerTargetType _Target;
-
-
+        internal readonly ThermalSettingsTargetType _Target;
+        
         public ThermalControllerType Controller => _Controller;
 
         public int DefaultMinTemp => _DefaultMinTemp;
@@ -26,6 +26,6 @@ namespace NvAPIWrapper.Native.GPU.Structures
 
         public int CurrentTemp => _CurrentTemp;
 
-        public ThermalControllerTargetType Target => _Target;
+        public ThermalSettingsTargetType Target => _Target;
     }
 }

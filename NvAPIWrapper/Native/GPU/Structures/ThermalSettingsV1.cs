@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Dynamic;
+using System.Runtime.InteropServices;
 using NvAPIWrapper.Native.Attributes;
 using NvAPIWrapper.Native.General.Structures;
 using NvAPIWrapper.Native.Interfaces;
@@ -7,7 +8,7 @@ using NvAPIWrapper.Native.Interfaces.GPU;
 namespace NvAPIWrapper.Native.GPU.Structures
 {
     /// <summary>
-    ///     Holds information about the dynamic states (such as gpu utilization)
+    ///     Holds information of thermal sensors settings (temperature values)
     /// </summary>
     [StructLayout(LayoutKind.Sequential, Pack = 8)]
     [StructureVersion(1)]
@@ -21,6 +22,15 @@ namespace NvAPIWrapper.Native.GPU.Structures
 
         public uint ThermalSensorsCount => _Count;
 
-        public IThermalSeonsorInfo Sensor => _Sensors[0];
+        public IThermalSeonsorInfo[] Sensor {
+            get {
+                var ret = new IThermalSeonsorInfo[MaxThermalSensorsPerGpu];
+                for (var i = 0; i < ret.Length; i++) {
+                    ret[i] = _Sensors[i];
+                }
+
+                return ret;
+            }
+        }
     }
 }

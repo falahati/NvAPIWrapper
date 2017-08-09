@@ -9,14 +9,13 @@ using NvAPIWrapper.Native.Attributes;
 namespace NvAPIWrapper.Native.GPU.Structures
 {
     [StructLayout(LayoutKind.Sequential)]
-    [StructureVersion(1)]
     public struct ThermalSeonsorInfoV1 : IThermalSeonsorInfo
     {
         internal readonly ThermalControllerType _Controller;
         internal readonly uint _DefaultMinTemp;
         internal readonly uint _DefaultMaxTemp;
         internal readonly uint _CurrentTemp;
-        internal readonly ThermalControllerTargetType _Target;
+        internal readonly ThermalSettingsTargetType _Target;
 
         public ThermalControllerType Controller => _Controller;
 
@@ -26,6 +25,6 @@ namespace NvAPIWrapper.Native.GPU.Structures
 
         public int CurrentTemp => (int)_CurrentTemp;
 
-        public ThermalControllerTargetType Target => _Target;
+        public ThermalSettingsTargetType Target => _Target;
     }
 }

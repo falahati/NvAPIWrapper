@@ -134,7 +134,7 @@ namespace NvAPIWrapper.GPU
 
         public DynamicPStatesInfo DynamicPStatesInfo => GPUApi.GetDynamicPstatesInfoEx(Handle);
 
-        public IThermalSettings ThermalSettings => GPUApi.GetThermalSettings(Handle, 0);
+        public IThermalSettings ThermalSettings => GPUApi.GetThermalSettings(Handle, (uint)ThermalSettingsTargetType.NVAPI_THERMAL_TARGET_ALL);
 
         /// <summary>
         ///     Gets the PCI identifiers
