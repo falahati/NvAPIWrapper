@@ -19,8 +19,18 @@ namespace NvAPIWrapper.Native.GPU.Structures
         internal readonly uint _Flags;
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxGpuUtilizations)] internal DynamicPStatesUtilizationInfo[] _Utilization;
 
-        public bool IsDynamicPstateEnabled => _Flags == 1;
+        public bool IsDynamicPStatesEnabled => _Flags == 0;
 
-        public DynamicPStatesUtilizationInfo[] Utilization => _Utilization;
+        /// Graphic engine (GPU) utilization
+        public DynamicPStatesUtilizationInfo GpuUtilization => _Utilization[0];
+
+        /// Frame buffer (FB) utilization
+        public DynamicPStatesUtilizationInfo FbUtilization => _Utilization[1];
+
+        /// Video engine (VID) utilization
+        public DynamicPStatesUtilizationInfo VidUtilization => _Utilization[2];
+
+        /// Bus interface (BUS) utilization
+        public DynamicPStatesUtilizationInfo BusUtilization => _Utilization[3];
     }
 }
