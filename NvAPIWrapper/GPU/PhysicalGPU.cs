@@ -132,6 +132,8 @@ namespace NvAPIWrapper.GPU
         /// </summary>
         public IDisplayDriverMemoryInfo MemoryInfo => GPUApi.GetMemoryInfo(Handle);
 
+        public DynamicPStatesInfo DynamicPStatesInfo => GPUApi.GetDynamicPstatesInfoEx(Handle);
+
         /// <summary>
         ///     Gets the PCI identifiers
         /// </summary>

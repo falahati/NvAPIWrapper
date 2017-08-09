@@ -531,6 +531,26 @@ namespace NvAPIWrapper.Native
             throw new NVIDIANotSupportedException("This operation is not supported.");
         }
 
+        public static DynamicPStatesInfo GetDynamicPstatesInfoEx(PhysicalGPUHandle physicalGPUHandle) 
+        {
+            var getDynamicPstatesInfoEx = DelegateFactory.Get<Delegates.GPU.NvAPI_GPU_GetDynamicPStatesInfoEx>();
+            foreach (var acceptType in getDynamicPstatesInfoEx.Accepts()) 
+            {
+                var instance = acceptType.Instantiate<DynamicPStatesInfo>();
+                using (var gpuDynamicPstateInfo = ValueTypeReference.FromValueType(instance, acceptType)) 
+                {
+                    var status = getDynamicPstatesInfoEx(physicalGPUHandle, gpuDynamicPstateInfo);
+                    if (status == Status.IncompatibleStructureVersion)
+                        continue;
+                    if (status != Status.Ok)
+                        throw new NVIDIAApiException(status);
+
+                    return gpuDynamicPstateInfo.ToValueType<DynamicPStatesInfo>(acceptType);
+                }
+            }
+            throw new NVIDIANotSupportedException("This operation is not supported.");
+        }
+
 
         /// <summary>
         ///     This function returns the output type. User can either specify both 'physical GPU handle and outputId (exactly 1

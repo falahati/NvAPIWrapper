@@ -79,6 +79,8 @@
     <Compile Include="Native\Attributes\AcceptsAttribute.cs" />
     <Compile Include="Native\Exceptions\NVIDIANotSupportedException.cs" />
     <Compile Include="Native\Exceptions\NVIDIAApiException.cs" />
+    <Compile Include="Native\GPU\Structures\DynamicPstatesInfo.cs" />
+    <Compile Include="Native\GPU\Structures\DynamicPStatesUtilizationInfo.cs" />
     <Compile Include="Native\GPU\SystemType.cs" />
     <Compile Include="Native\Helpers\ExtensionMethods.cs" />
     <Compile Include="Native\Delegates\Display.cs" />

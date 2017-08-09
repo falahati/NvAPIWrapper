@@ -112,6 +112,11 @@ namespace NvAPIWrapper.Native.Delegates
             [In] PhysicalGPUHandle gpuHandle,
             [Out] out uint count);
 
+        [FunctionId(FunctionId.NvAPI_GPU_GetDynamicPStatesInfoEx)]
+        public delegate Status NvAPI_GPU_GetDynamicPStatesInfoEx(
+            [In] PhysicalGPUHandle physicalGpu,
+            [In] [Accepts(typeof(DynamicPStatesInfo))] ValueTypeReference pstatesInfoEx);
+
         [FunctionId(FunctionId.NvAPI_GPU_GetGPUType)]
         public delegate Status NvAPI_GPU_GetGPUType(
             [In] PhysicalGPUHandle physicalGpu, [Out] out GPUType gpuType);
