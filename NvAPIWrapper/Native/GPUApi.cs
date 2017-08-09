@@ -564,6 +564,24 @@ namespace NvAPIWrapper.Native
             throw new NVIDIANotSupportedException("This operation is not supported.");
         }
 
+        public static IThermalSettings GetThermalSettings(PhysicalGPUHandle physicalGPUHandle, uint sensorIndex) {
+            var getThermalSettings = DelegateFactory.Get<Delegates.GPU.NvAPI_GPU_GetThermalSettings>();
+            foreach (var acceptType in getThermalSettings.Accepts()) 
+            {
+                var instance = acceptType.Instantiate<IThermalSettings>();
+                using (var gpuThermalSettings = ValueTypeReference.FromValueType(instance, acceptType)) 
+                {
+                    var status = getThermalSettings(physicalGPUHandle, sensorIndex, gpuThermalSettings);
+                    if (status == Status.IncompatibleStructureVersion)
+                        continue;
+                    if (status != Status.Ok)
+                        throw new NVIDIAApiException(status);
+
+                    return gpuThermalSettings.ToValueType<IThermalSettings>(acceptType);
+                }
+            }
+            throw new NVIDIANotSupportedException("This operation is not supported.");
+        }
 
         /// <summary>
         ///     This function returns the output type. User can either specify both 'physical GPU handle and outputId (exactly 1

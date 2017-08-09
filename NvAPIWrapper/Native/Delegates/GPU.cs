@@ -7,6 +7,7 @@ using NvAPIWrapper.Native.GPU;
 using NvAPIWrapper.Native.GPU.Structures;
 using NvAPIWrapper.Native.Helpers;
 using NvAPIWrapper.Native.Helpers.Structures;
+using NvAPIWrapper.Native.Interfaces.GPU;
 
 // ReSharper disable InconsistentNaming
 
@@ -116,6 +117,12 @@ namespace NvAPIWrapper.Native.Delegates
         public delegate Status NvAPI_GPU_GetDynamicPStatesInfoEx(
             [In] PhysicalGPUHandle physicalGpu,
             [In] [Accepts(typeof(DynamicPStatesInfo))] ValueTypeReference pstatesInfoEx);
+
+        [FunctionId(FunctionId.NvAPI_GPU_GetThermalSettings)]
+        public delegate Status NvAPI_GPU_GetThermalSettings(
+            [In] PhysicalGPUHandle physicalGpu,
+            [In] uint sensorIndex,
+            [In] [Accepts(typeof(ThermalSettingsV2), typeof(ThermalSettingsV1))] ValueTypeReference thermalSettings);
 
         [FunctionId(FunctionId.NvAPI_GPU_GetGPUType)]
         public delegate Status NvAPI_GPU_GetGPUType(
