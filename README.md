@@ -35,4 +35,5 @@ Aside from all this, the library is fully documented and this makes your journey
 
 ## LICENSE
 Copyright (C) 2017 Soroush Falahati
+
 Released under the GNU Lesser General Public License ("LGPL")
