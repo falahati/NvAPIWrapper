@@ -1,4 +1,4 @@
-﻿using NvAPIWrapper.Native.GPU;
+using NvAPIWrapper.Native.GPU;
 
 namespace NvAPIWrapper.Native.Interfaces.GPU
 {
