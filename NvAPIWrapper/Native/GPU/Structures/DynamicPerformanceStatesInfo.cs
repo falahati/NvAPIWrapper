@@ -34,5 +34,12 @@ namespace NvAPIWrapper.Native.GPU.Structures
 
         /// Bus interface (BUS) utilization
         public DynamicPerformanceStateUtilizationDomainInfo BusDomain => UtilizationDomain[3];
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            return
+                $"GPU = {GPUDomain} - FrameBuffer = {FrameBufferDomain} - VideoEngine = {VideoEngineDomain} - BusInterface = {BusDomain}";
+        }
     }
 }

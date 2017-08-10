@@ -52,6 +52,13 @@ namespace NvAPIWrapper.Native.GPU.Structures
 
             /// <inheritdoc />
             public ThermalSettingsTarget Target => _Target;
+
+            /// <inheritdoc />
+            public override string ToString()
+            {
+                return
+                    $"[{Controller}]: {Target} = {CurrentTemperature}°C [({DefaultMinimumTemperature}°C) , ({DefaultMaximumTemperature}°C)]";
+            }
         }
     }
 }
