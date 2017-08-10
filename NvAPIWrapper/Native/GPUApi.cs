@@ -311,35 +311,28 @@ namespace NvAPIWrapper.Native
         }
 
         /// <summary>
-        ///     <para>
-        ///         This function retreives the dynamic pstates information from specific GPU\n
-        ///         DynamicPStates contains GPU utilization information
-        ///     </para>
-        ///     <i>From NVAPI.h:</i>
-        ///     <para>
-        ///         There are currently 4 domains for which GPU utilization and dynamic P-State thresholds can be retrieved:
-        ///         graphic engine (GPU), frame buffer (FB), video engine (VID), and bus interface (BUS).
-        ///     </para>
+        ///     This function retrieves the dynamic performance states information from specific GPU
         /// </summary>
         /// <param name="physicalGPUHandle">Handle of the physical GPU for which the memory information is to be extracted.</param>
         /// <returns>The device utilizations information array.</returns>
         /// <exception cref="NVIDIANotSupportedException">This operation is not supported.</exception>
         /// <exception cref="NVIDIAApiException">Status.NvidiaDeviceNotFound: No NVIDIA GPU driving a display was found.</exception>
-        public static DynamicPStatesInfo GetDynamicPstatesInfoEx(PhysicalGPUHandle physicalGPUHandle)
+        public static DynamicPerformanceStatesInfo GetDynamicPerformanceStatesInfoEx(PhysicalGPUHandle physicalGPUHandle)
         {
-            var getDynamicPstatesInfoEx = DelegateFactory.Get<Delegates.GPU.NvAPI_GPU_GetDynamicPStatesInfoEx>();
-            foreach (var acceptType in getDynamicPstatesInfoEx.Accepts())
+            var getDynamicPerformanceStatesInfoEx =
+                DelegateFactory.Get<Delegates.GPU.NvAPI_GPU_GetDynamicPStatesInfoEx>();
+            foreach (var acceptType in getDynamicPerformanceStatesInfoEx.Accepts())
             {
-                var instance = acceptType.Instantiate<DynamicPStatesInfo>();
+                var instance = acceptType.Instantiate<DynamicPerformanceStatesInfo>();
                 using (var gpuDynamicPstateInfo = ValueTypeReference.FromValueType(instance, acceptType))
                 {
-                    var status = getDynamicPstatesInfoEx(physicalGPUHandle, gpuDynamicPstateInfo);
+                    var status = getDynamicPerformanceStatesInfoEx(physicalGPUHandle, gpuDynamicPstateInfo);
                     if (status == Status.IncompatibleStructureVersion)
                         continue;
                     if (status != Status.Ok)
                         throw new NVIDIAApiException(status);
 
-                    return gpuDynamicPstateInfo.ToValueType<DynamicPStatesInfo>(acceptType);
+                    return gpuDynamicPstateInfo.ToValueType<DynamicPerformanceStatesInfo>(acceptType);
                 }
             }
             throw new NVIDIANotSupportedException("This operation is not supported.");

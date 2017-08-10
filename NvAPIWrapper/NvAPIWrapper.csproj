@@ -80,8 +80,8 @@
     <Compile Include="Native\Attributes\AcceptsAttribute.cs" />
     <Compile Include="Native\Exceptions\NVIDIANotSupportedException.cs" />
     <Compile Include="Native\Exceptions\NVIDIAApiException.cs" />
-    <Compile Include="Native\GPU\Structures\DynamicPStatesInfo.cs" />
-    <Compile Include="Native\GPU\Structures\DynamicPStatesUtilizationInfo.cs" />
+    <Compile Include="Native\GPU\Structures\DynamicPerformanceStatesInfo.cs" />
+    <Compile Include="Native\GPU\Structures\DynamicPerformanceStateUtilizationDomainInfo.cs" />
     <Compile Include="Native\GPU\Structures\ThermalSettingsV1.cs" />
     <Compile Include="Native\GPU\Structures\ThermalSettingsV2.cs" />
     <Compile Include="Native\GPU\SystemType.cs" />

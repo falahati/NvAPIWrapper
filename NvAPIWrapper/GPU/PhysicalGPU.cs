@@ -103,6 +103,12 @@ namespace NvAPIWrapper.GPU
         public int CurrentPCIEDownStreamWidth => GPUApi.GetCurrentPCIEDownStreamWidth(Handle);
 
         /// <summary>
+        ///     Gets GPU dynamic performance states information (utilization domains)
+        /// </summary>
+        public DynamicPerformanceStatesInfo DynamicPerformanceStatesInfo
+            => GPUApi.GetDynamicPerformanceStatesInfoEx(Handle);
+
+        /// <summary>
         ///     Gets GPU full name
         /// </summary>
         public string FullName => GPUApi.GetFullName(Handle);
@@ -131,16 +137,6 @@ namespace NvAPIWrapper.GPU
         ///     Gets GPU memory information
         /// </summary>
         public IDisplayDriverMemoryInfo MemoryInfo => GPUApi.GetMemoryInfo(Handle);
-
-        /// <summary>
-        ///     Gets GPU dynamic PStates information (utilization)
-        /// </summary>
-        public DynamicPStatesInfo DynamicPStatesInfo => GPUApi.GetDynamicPstatesInfoEx(Handle);
-
-        /// <summary>
-        ///     Gets GPU thermal sensors information
-        /// </summary>
-        public IThermalSensor[] ThermalSensors => GPUApi.GetThermalSettings(Handle);
 
         /// <summary>
         ///     Gets the PCI identifiers
@@ -173,6 +169,11 @@ namespace NvAPIWrapper.GPU
         ///     Gets GPU system type
         /// </summary>
         public SystemType SystemType => GPUApi.GetSystemType(Handle);
+
+        /// <summary>
+        ///     Gets GPU thermal sensors information
+        /// </summary>
+        public IThermalSensor[] ThermalSensors => GPUApi.GetThermalSettings(Handle);
 
         /// <summary>
         ///     Gets virtual size of framebuffer in KB for this GPU. This includes the physical RAM plus any system RAM that has

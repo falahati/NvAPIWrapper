@@ -101,7 +101,7 @@ namespace NvAPIWrapper.Native.Delegates
         [FunctionId(FunctionId.NvAPI_GPU_GetDynamicPStatesInfoEx)]
         public delegate Status NvAPI_GPU_GetDynamicPStatesInfoEx(
             [In] PhysicalGPUHandle physicalGpu,
-            [In] [Accepts(typeof(DynamicPStatesInfo))] ValueTypeReference performanceStatesInfoEx);
+            [In] [Accepts(typeof(DynamicPerformanceStatesInfo))] ValueTypeReference performanceStatesInfoEx);
 
         [FunctionId(FunctionId.NvAPI_GPU_GetEDID)]
         public delegate Status NvAPI_GPU_GetEDID(
