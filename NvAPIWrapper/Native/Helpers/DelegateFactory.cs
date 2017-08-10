@@ -46,7 +46,7 @@ namespace NvAPIWrapper.Native.Helpers
             if (Environment.Is64BitOperatingSystem && !Environment.Is64BitProcess)
             {
                 // Should we throw an error?
-                // throw new NVIDIANotSupportedException("32bit process running in a 64bit environment can't access NVIDIA API.");
+                throw new NVIDIANotSupportedException("32bit process running in a 64bit environment can't access NVIDIA API.");
             }
             return Environment.Is64BitProcess
                 ? NvAPI64_QueryInterface(interfaceId)
