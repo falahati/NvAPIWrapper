@@ -1,19 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using NvAPIWrapper.Native.GPU;
-
-namespace NvAPIWrapper.Native.Interfaces.GPU
+﻿namespace NvAPIWrapper.Native.Interfaces.GPU
 {
+    /// <summary>
+    ///     Holds a list of thermal sensors
+    /// </summary>
     public interface IThermalSettings
     {
         /// <summary>
-        ///     Number of associated thermal sensors
+        ///     Gets a list of requested thermal sensor information
         /// </summary>
-        uint ThermalSensorsCount { get; }
-
-        IThermalSeonsorInfo[] Sensor { get; }
+        IThermalSensor[] Sensors { get; }
     }
 }

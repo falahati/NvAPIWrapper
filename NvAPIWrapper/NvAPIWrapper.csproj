@@ -68,7 +68,7 @@
     <Compile Include="Native\GPU\ConnectedIdsFlag.cs" />
     <Compile Include="Native\GPU\GPUBusType.cs" />
     <Compile Include="Native\GPU\GPUType.cs" />
-    <Compile Include="Native\GPU\IThermalSeonsorInfo.cs" />
+    <Compile Include="Native\Interfaces\GPU\IThermalSensor.cs" />
     <Compile Include="Native\GPU\MonitorConnectionType.cs" />
     <Compile Include="Native\GPU\OutputId.cs" />
     <Compile Include="Native\GPU\OutputType.cs" />
@@ -82,13 +82,11 @@
     <Compile Include="Native\Exceptions\NVIDIAApiException.cs" />
     <Compile Include="Native\GPU\Structures\DynamicPStatesInfo.cs" />
     <Compile Include="Native\GPU\Structures\DynamicPStatesUtilizationInfo.cs" />
-    <Compile Include="Native\GPU\Structures\ThermalSeonsorInfoV1.cs" />
-    <Compile Include="Native\GPU\Structures\ThermalSeonsorInfoV2.cs" />
     <Compile Include="Native\GPU\Structures\ThermalSettingsV1.cs" />
     <Compile Include="Native\GPU\Structures\ThermalSettingsV2.cs" />
     <Compile Include="Native\GPU\SystemType.cs" />
-    <Compile Include="Native\GPU\ThermalSettingsTargetType.cs" />
-    <Compile Include="Native\GPU\ThermalSettingsControllerType.cs" />
+    <Compile Include="Native\GPU\ThermalSettingsTarget.cs" />
+    <Compile Include="Native\GPU\ThermalSettingsController.cs" />
     <Compile Include="Native\Helpers\ExtensionMethods.cs" />
     <Compile Include="Native\Delegates\Display.cs" />
     <Compile Include="Native\Display\Structures\PathAdvancedTargetInfo.cs" />

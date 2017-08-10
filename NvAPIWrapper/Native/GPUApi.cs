@@ -311,6 +311,41 @@ namespace NvAPIWrapper.Native
         }
 
         /// <summary>
+        ///     <para>
+        ///         This function retreives the dynamic pstates information from specific GPU\n
+        ///         DynamicPStates contains GPU utilization information
+        ///     </para>
+        ///     <i>From NVAPI.h:</i>
+        ///     <para>
+        ///         There are currently 4 domains for which GPU utilization and dynamic P-State thresholds can be retrieved:
+        ///         graphic engine (GPU), frame buffer (FB), video engine (VID), and bus interface (BUS).
+        ///     </para>
+        /// </summary>
+        /// <param name="physicalGPUHandle">Handle of the physical GPU for which the memory information is to be extracted.</param>
+        /// <returns>The device utilizations information array.</returns>
+        /// <exception cref="NVIDIANotSupportedException">This operation is not supported.</exception>
+        /// <exception cref="NVIDIAApiException">Status.NvidiaDeviceNotFound: No NVIDIA GPU driving a display was found.</exception>
+        public static DynamicPStatesInfo GetDynamicPstatesInfoEx(PhysicalGPUHandle physicalGPUHandle)
+        {
+            var getDynamicPstatesInfoEx = DelegateFactory.Get<Delegates.GPU.NvAPI_GPU_GetDynamicPStatesInfoEx>();
+            foreach (var acceptType in getDynamicPstatesInfoEx.Accepts())
+            {
+                var instance = acceptType.Instantiate<DynamicPStatesInfo>();
+                using (var gpuDynamicPstateInfo = ValueTypeReference.FromValueType(instance, acceptType))
+                {
+                    var status = getDynamicPstatesInfoEx(physicalGPUHandle, gpuDynamicPstateInfo);
+                    if (status == Status.IncompatibleStructureVersion)
+                        continue;
+                    if (status != Status.Ok)
+                        throw new NVIDIAApiException(status);
+
+                    return gpuDynamicPstateInfo.ToValueType<DynamicPStatesInfo>(acceptType);
+                }
+            }
+            throw new NVIDIANotSupportedException("This operation is not supported.");
+        }
+
+        /// <summary>
         ///     This function returns the EDID data for the specified GPU handle and connection bit mask.
         ///     outputId should have exactly 1 bit set to indicate a single display.
         /// </summary>
@@ -532,69 +567,6 @@ namespace NvAPIWrapper.Native
         }
 
         /// <summary>
-        ///     <para>
-        ///         This function retreives the dynamic pstates information from specific GPU\n
-        ///         DynamicPStates contains GPU utilization information</para>
-        ///     <i>From NVAPI.h:</i> 
-        ///     <para>
-        ///         There are currently 4 domains for which GPU utilization and dynamic P-State thresholds can be retrieved:
-        ///         graphic engine (GPU), frame buffer (FB), video engine (VID), and bus interface (BUS).</para>
-        /// </summary>
-        /// <param name="physicalGPUHandle">Handle of the physical GPU for which the memory information is to be extracted.</param>
-        /// <returns>The device utilizations information array.</returns>
-        /// <exception cref="NVIDIANotSupportedException">This operation is not supported.</exception>
-        /// <exception cref="NVIDIAApiException">Status.NvidiaDeviceNotFound: No NVIDIA GPU driving a display was found.</exception>
-        public static DynamicPStatesInfo GetDynamicPstatesInfoEx(PhysicalGPUHandle physicalGPUHandle) 
-        {
-            var getDynamicPstatesInfoEx = DelegateFactory.Get<Delegates.GPU.NvAPI_GPU_GetDynamicPStatesInfoEx>();
-            foreach (var acceptType in getDynamicPstatesInfoEx.Accepts()) 
-            {
-                var instance = acceptType.Instantiate<DynamicPStatesInfo>();
-                using (var gpuDynamicPstateInfo = ValueTypeReference.FromValueType(instance, acceptType)) 
-                {
-                    var status = getDynamicPstatesInfoEx(physicalGPUHandle, gpuDynamicPstateInfo);
-                    if (status == Status.IncompatibleStructureVersion)
-                        continue;
-                    if (status != Status.Ok)
-                        throw new NVIDIAApiException(status);
-
-                    return gpuDynamicPstateInfo.ToValueType<DynamicPStatesInfo>(acceptType);
-                }
-            }
-            throw new NVIDIANotSupportedException("This operation is not supported.");
-        }
-
-        /// <summary>
-        ///     <para>
-        ///         This function retrieves the thermal information of all thermal sensors or specific thermal sensor associated with the selected GPU.
-        ///         Thermal sensors are indexed 0 to MaxThermalSensorsPerGpu-1.</para>
-        ///     <para>- To retrieve specific thermal sensor info, set the sensorIndex to the required thermal sensor index.</para>
-        ///     <para>- To retrieve info for all sensors, set sensorIndex to ThermalSettingsTargetType.</para>
-        /// </summary>
-        /// <param name="physicalGPUHandle">Handle of the physical GPU for which the memory information is to be extracted.</param>
-        /// <returns>The device thermal sensors information array.</returns>
-        /// <exception cref="NVIDIANotSupportedException">This operation is not supported.</exception>
-        /// <exception cref="NVIDIAApiException">Status.NvidiaDeviceNotFound: No NVIDIA GPU driving a display was found.</exception>
-        public static IThermalSettings GetThermalSettings(PhysicalGPUHandle physicalGPUHandle, uint sensorIndex) {
-            var getThermalSettings = DelegateFactory.Get<Delegates.GPU.NvAPI_GPU_GetThermalSettings>();
-            foreach (var acceptType in getThermalSettings.Accepts()) 
-            {
-                var instance = acceptType.Instantiate<IThermalSettings>();
-                using (var gpuThermalSettings = ValueTypeReference.FromValueType(instance, acceptType)) 
-                {
-                    var status = getThermalSettings(physicalGPUHandle, sensorIndex, gpuThermalSettings);
-                    if (status == Status.IncompatibleStructureVersion)
-                        continue;
-                    if (status != Status.Ok)
-                        throw new NVIDIAApiException(status);
-
-                    return gpuThermalSettings.ToValueType<IThermalSettings>(acceptType);
-                }
-            }
-            throw new NVIDIANotSupportedException("This operation is not supported.");
-        }
-
-        /// <summary>
         ///     This function returns the output type. User can either specify both 'physical GPU handle and outputId (exactly 1
         ///     bit set)' or a valid displayId in the outputId parameter.
         /// </summary>
@@ -792,6 +764,36 @@ namespace NvAPIWrapper.Native
             if (status != Status.Ok)
                 throw new NVIDIAApiException(status);
             return systemType;
+        }
+
+        /// <summary>
+        ///     This function retrieves the thermal information of all thermal sensors or specific thermal sensor associated with
+        ///     the selected GPU. To retrieve info for all sensors, set sensorTarget to ThermalSettingsTarget.All.
+        /// </summary>
+        /// <param name="physicalGPUHandle">Handle of the physical GPU for which the memory information is to be extracted.</param>
+        /// <param name="sensorTarget">Specifies the requested thermal sensor target.</param>
+        /// <returns>The device thermal sensors information array.</returns>
+        /// <exception cref="NVIDIANotSupportedException">This operation is not supported.</exception>
+        /// <exception cref="NVIDIAApiException">Status.NvidiaDeviceNotFound: No NVIDIA GPU driving a display was found.</exception>
+        public static IThermalSensor[] GetThermalSettings(PhysicalGPUHandle physicalGPUHandle,
+            ThermalSettingsTarget sensorTarget = ThermalSettingsTarget.All)
+        {
+            var getThermalSettings = DelegateFactory.Get<Delegates.GPU.NvAPI_GPU_GetThermalSettings>();
+            foreach (var acceptType in getThermalSettings.Accepts())
+            {
+                var instance = acceptType.Instantiate<IThermalSettings>();
+                using (var gpuThermalSettings = ValueTypeReference.FromValueType(instance, acceptType))
+                {
+                    var status = getThermalSettings(physicalGPUHandle, sensorTarget, gpuThermalSettings);
+                    if (status == Status.IncompatibleStructureVersion)
+                        continue;
+                    if (status != Status.Ok)
+                        throw new NVIDIAApiException(status);
+
+                    return gpuThermalSettings.ToValueType<IThermalSettings>(acceptType).Sensors;
+                }
+            }
+            throw new NVIDIANotSupportedException("This operation is not supported.");
         }
 
         /// <summary>

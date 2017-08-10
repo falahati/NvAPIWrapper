@@ -140,7 +140,7 @@ namespace NvAPIWrapper.GPU
         /// <summary>
         ///     Gets GPU thermal sensors information
         /// </summary>
-        public IThermalSettings ThermalSettings => GPUApi.GetThermalSettings(Handle, (uint)ThermalSettingsTargetType.NVAPI_THERMAL_TARGET_ALL);
+        public IThermalSensor[] ThermalSensors => GPUApi.GetThermalSettings(Handle);
 
         /// <summary>
         ///     Gets the PCI identifiers

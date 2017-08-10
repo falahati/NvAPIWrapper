@@ -7,7 +7,6 @@ using NvAPIWrapper.Native.GPU;
 using NvAPIWrapper.Native.GPU.Structures;
 using NvAPIWrapper.Native.Helpers;
 using NvAPIWrapper.Native.Helpers.Structures;
-using NvAPIWrapper.Native.Interfaces.GPU;
 
 // ReSharper disable InconsistentNaming
 
@@ -99,6 +98,11 @@ namespace NvAPIWrapper.Native.Delegates
         public delegate Status NvAPI_GPU_GetCurrentPCIEDownstreamWidth(
             [In] PhysicalGPUHandle physicalGpu, [Out] out uint width);
 
+        [FunctionId(FunctionId.NvAPI_GPU_GetDynamicPStatesInfoEx)]
+        public delegate Status NvAPI_GPU_GetDynamicPStatesInfoEx(
+            [In] PhysicalGPUHandle physicalGpu,
+            [In] [Accepts(typeof(DynamicPStatesInfo))] ValueTypeReference performanceStatesInfoEx);
+
         [FunctionId(FunctionId.NvAPI_GPU_GetEDID)]
         public delegate Status NvAPI_GPU_GetEDID(
             [In] PhysicalGPUHandle physicalGpu, [In] OutputId outputId,
@@ -112,17 +116,6 @@ namespace NvAPIWrapper.Native.Delegates
         public delegate Status NvAPI_GPU_GetGpuCoreCount(
             [In] PhysicalGPUHandle gpuHandle,
             [Out] out uint count);
-
-        [FunctionId(FunctionId.NvAPI_GPU_GetDynamicPStatesInfoEx)]
-        public delegate Status NvAPI_GPU_GetDynamicPStatesInfoEx(
-            [In] PhysicalGPUHandle physicalGpu,
-            [In] [Accepts(typeof(DynamicPStatesInfo))] ValueTypeReference pstatesInfoEx);
-
-        [FunctionId(FunctionId.NvAPI_GPU_GetThermalSettings)]
-        public delegate Status NvAPI_GPU_GetThermalSettings(
-            [In] PhysicalGPUHandle physicalGpu,
-            [In] uint sensorIndex,
-            [In] [Accepts(typeof(ThermalSettingsV2), typeof(ThermalSettingsV1))] ValueTypeReference thermalSettings);
 
         [FunctionId(FunctionId.NvAPI_GPU_GetGPUType)]
         public delegate Status NvAPI_GPU_GetGPUType(
@@ -163,6 +156,12 @@ namespace NvAPIWrapper.Native.Delegates
         [FunctionId(FunctionId.NvAPI_GPU_GetSystemType)]
         public delegate Status NvAPI_GPU_GetSystemType(
             [In] PhysicalGPUHandle physicalGpu, [Out] out SystemType systemType);
+
+        [FunctionId(FunctionId.NvAPI_GPU_GetThermalSettings)]
+        public delegate Status NvAPI_GPU_GetThermalSettings(
+            [In] PhysicalGPUHandle physicalGpu,
+            [In] ThermalSettingsTarget sensorIndex,
+            [In] [Accepts(typeof(ThermalSettingsV2), typeof(ThermalSettingsV1))] ValueTypeReference thermalSettings);
 
         [FunctionId(FunctionId.NvAPI_GPU_GetVbiosOEMRevision)]
         public delegate Status NvAPI_GPU_GetVbiosOEMRevision(
