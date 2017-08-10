@@ -33,12 +33,6 @@ Please also take a look at the `NvAPISample` project for a number of simple exam
 
 Aside from all this, the library is fully documented and this makes your journey through it as easy as it is possible.
 
-## GNU LESSER GENERAL PUBLIC LICENSE
-
-Version 3, 29 June 2007
-
-Copyright (C) 2007 Free Software Foundation, Inc.
-<http://fsf.org/>
-
-Everyone is permitted to copy and distribute verbatim copies of this
-license document, but changing it is not allowed.
+## LICENSE
+Copyright (C) 2017 Soroush Falahati
+Released under the GNU Lesser General Public License ("LGPL")
