@@ -14,7 +14,7 @@ namespace NvAPIWrapper.Native.GPU.Structures
     [StructureVersion(1)]
     public struct ThermalSettingsV1 : IInitializable, IThermalSettings
     {
-        public const int MaxThermalSensorsPerGPU = 3;
+        internal const int MaxThermalSensorsPerGPU = 3;
 
         internal StructureVersion _Version;
         internal readonly uint _Count;

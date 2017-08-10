@@ -13,7 +13,7 @@ namespace NvAPIWrapper.Native.GPU.Structures
     [StructureVersion(1)]
     public struct DynamicPerformanceStatesInfo : IInitializable
     {
-        public const int MaxGpuUtilizations = 8;
+        internal const int MaxGpuUtilizations = 8;
 
         internal StructureVersion _Version;
         internal readonly uint _Flags;
@@ -21,6 +21,9 @@ namespace NvAPIWrapper.Native.GPU.Structures
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxGpuUtilizations)] internal
             DynamicPerformanceStateUtilizationDomainInfo[] UtilizationDomain;
 
+        /// <summary>
+        ///     Gets a boolean value indicating if the dynamic performance state is enabled
+        /// </summary>
         public bool IsDynamicPerformanceStateEnabled => _Flags.GetBit(0);
 
         /// Graphic engine (GPU) utilization

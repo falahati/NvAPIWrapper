@@ -5,10 +5,13 @@
     /// </summary>
     public enum ThermalSettingsTarget
     {
+        /// <summary>
+        ///     None
+        /// </summary>
         None = 0,
 
         /// <summary>
-        ///     GPU core temperature requires
+        ///     GPU core temperature
         /// </summary>
         GPU = 1,
 
