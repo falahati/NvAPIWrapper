@@ -1,205 +1,48 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<!--EXTERNAL_PROPERTIES: MSBuildToolsVersion-->
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{D065BB6E-68A4-413D-9678-F9ABA73B38F2}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>NvAPIWrapper</RootNamespace>
-    <AssemblyName>NvAPIWrapper.Net</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <TargetFrameworks>netstandard2.0;net45</TargetFrameworks>
+    <Version>0.6.0.4</Version>
+    <Company>falahati.net</Company>
+    <Description>NvAPIWrapper is a .Net wrapper for NVIDIA public API</Description>
+    <Authors>Soroush Falahati</Authors>
+    <Copyright>Copyright © Soroush Falahati 2018 (falahati.net)</Copyright>
+    <Platforms>AnyCPU</Platforms>
+    <Product>NvAPIWrapper.Net</Product>
+    <PackageProjectUrl>https://github.com/falahati/NvAPIWrapper</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/falahati/NvAPIWrapper/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageIconUrl>https://github.com/falahati/NvAPIWrapper/blob/master/NvAPIWrapper/Icon.png?raw=true</PackageIconUrl>
+    <IncludeSymbols>true</IncludeSymbols>
+    <IncludeSource>true</IncludeSource>
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <Prefer32Bit>false</Prefer32Bit>
+    <Title>NvAPIWrapper (for NVAPI R375)</Title>
+    <PackageId>NvAPIWrapper.Net</PackageId>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\NvAPIWrapper.Net.xml</DocumentationFile>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <BumpLabel>dev</BumpLabel>
+    <BumpLabelDigits>4</BumpLabelDigits>
+    <OutputPath>..\Debug</OutputPath>
   </PropertyGroup>
-  <PropertyGroup>
-    <StartupObject>
-    </StartupObject>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <BumpRevision>True</BumpRevision>
+    <BumpResetLabel>dev</BumpResetLabel>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <OutputPath>..\Release</OutputPath>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
+    <PackageReference PrivateAssets="all" Include="MSBump" Version="2.3.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GPU\AGPInformation.cs" />
-    <Compile Include="GPU\GPUBus.cs" />
-    <Compile Include="GPU\GPUOutput.cs" />
-    <Compile Include="GPU\VideoBIOS.cs" />
-    <Compile Include="Display\DisplayDevice.cs" />
-    <Compile Include="Display\PathInfo.cs" />
-    <Compile Include="GPU\LogicalGPU.cs" />
-    <Compile Include="Mosaic\Overlap.cs" />
-    <Compile Include="Mosaic\OverlapLimit.cs" />
-    <Compile Include="Native\Delegates\GPU.cs" />
-    <Compile Include="Native\DisplayApi.cs" />
-    <Compile Include="Native\Display\Structures\LUID.cs" />
-    <Compile Include="Native\General\ChipsetInfoFlag.cs" />
-    <Compile Include="Native\General\Structures\ChipsetInfoV4.cs" />
-    <Compile Include="Native\General\Structures\ChipsetInfoV3.cs" />
-    <Compile Include="Native\General\Structures\ChipsetInfoV2.cs" />
-    <Compile Include="Native\General\Structures\ChipsetInfoV1.cs" />
-    <Compile Include="Native\General\Structures\LidDockParameters.cs" />
-    <Compile Include="Native\GPUApi.cs" />
-    <Compile Include="Native\Display\Structures\UnAttachedDisplayHandle.cs" />
-    <Compile Include="Native\Display\DisplayConfigFlags.cs" />
-    <Compile Include="Native\Display\Structures\DisplayHandle.cs" />
-    <Compile Include="Native\GPU\ConnectedIdsFlag.cs" />
-    <Compile Include="Native\GPU\GPUBusType.cs" />
-    <Compile Include="Native\GPU\GPUType.cs" />
-    <Compile Include="Native\Interfaces\GPU\IThermalSensor.cs" />
-    <Compile Include="Native\GPU\MonitorConnectionType.cs" />
-    <Compile Include="Native\GPU\OutputId.cs" />
-    <Compile Include="Native\GPU\OutputType.cs" />
-    <Compile Include="Native\GPU\Structures\BoardInfo.cs" />
-    <Compile Include="Native\GPU\Structures\DisplayDriverMemoryInfoV1.cs" />
-    <Compile Include="Native\GPU\Structures\DisplayDriverMemoryInfoV2.cs" />
-    <Compile Include="Native\GPU\Structures\DisplayDriverMemoryInfoV3.cs" />
-    <Compile Include="Native\GPU\Structures\DisplayIdsV2.cs" />
-    <Compile Include="Native\Attributes\AcceptsAttribute.cs" />
-    <Compile Include="Native\Exceptions\NVIDIANotSupportedException.cs" />
-    <Compile Include="Native\Exceptions\NVIDIAApiException.cs" />
-    <Compile Include="Native\GPU\Structures\DynamicPerformanceStatesInfo.cs" />
-    <Compile Include="Native\GPU\Structures\DynamicPerformanceStateUtilizationDomainInfo.cs" />
-    <Compile Include="Native\GPU\Structures\ThermalSettingsV1.cs" />
-    <Compile Include="Native\GPU\Structures\ThermalSettingsV2.cs" />
-    <Compile Include="Native\GPU\SystemType.cs" />
-    <Compile Include="Native\GPU\ThermalSettingsTarget.cs" />
-    <Compile Include="Native\GPU\ThermalSettingsController.cs" />
-    <Compile Include="Native\Helpers\ExtensionMethods.cs" />
-    <Compile Include="Native\Delegates\Display.cs" />
-    <Compile Include="Native\Display\Structures\PathAdvancedTargetInfo.cs" />
-    <Compile Include="Native\Display\Structures\PathInfoV2.cs" />
-    <Compile Include="Native\Display\Structures\PathInfoV1.cs" />
-    <Compile Include="Native\Display\Structures\PathTargetInfoV2.cs" />
-    <Compile Include="Native\Display\Structures\PathTargetInfoV1.cs" />
-    <Compile Include="Native\Display\ColorFormat.cs" />
-    <Compile Include="Native\Display\Structures\Position.cs" />
-    <Compile Include="Native\Display\Structures\Resolution.cs" />
-    <Compile Include="Native\Display\Scaling.cs" />
-    <Compile Include="Native\Constants\Display.cs" />
-    <Compile Include="Native\GPU\Structures\EDIDV3.cs" />
-    <Compile Include="Native\GPU\Structures\EDIDV2.cs" />
-    <Compile Include="Native\GPU\Structures\EDIDV1.cs" />
-    <Compile Include="Native\Display\Structures\SourceModeInfo.cs" />
-    <Compile Include="Native\Display\SpanningOrientation.cs" />
-    <Compile Include="Native\Display\TargetViewMode.cs" />
-    <Compile Include="Native\Display\Structures\Timing.cs" />
-    <Compile Include="Native\Display\Structures\TimingExtra.cs" />
-    <Compile Include="Native\Display\TimingScanMode.cs" />
-    <Compile Include="Native\Display\TimingVerticalSyncPolarity.cs" />
-    <Compile Include="Native\Display\TimingOverride.cs" />
-    <Compile Include="Native\Display\TimingHorizontalSyncPolarity.cs" />
-    <Compile Include="Native\Display\TVFormat.cs" />
-    <Compile Include="Native\GPU\ConnectorType.cs" />
-    <Compile Include="Native\GPU\Structures\PhysicalGPUHandle.cs" />
-    <Compile Include="Native\General\Structures\ShortString.cs" />
-    <Compile Include="Native\Helpers\Structures\ValueTypeArray`1.cs" />
-    <Compile Include="Native\Helpers\Structures\ValueTypeReference`1.cs" />
-    <Compile Include="Native\Helpers\Structures\ValueTypeReference.cs" />
-    <Compile Include="Native\Helpers\DelegateFactory.cs" />
-    <Compile Include="Native\Helpers\FunctionId.cs" />
-    <Compile Include="Native\GPU\Structures\LogicalGPUHandle.cs" />
-    <Compile Include="Native\Delegates\General.cs" />
-    <Compile Include="Native\General\Structures\StructureVersion.cs" />
-    <Compile Include="Native\Attributes\FunctionIdAttribute.cs" />
-    <Compile Include="Native\Attributes\StructureVersionAttribute.cs" />
-    <Compile Include="Native\Interfaces\GPU\IDisplayDriverMemoryInfo.cs" />
-    <Compile Include="Native\Interfaces\GPU\IEDID.cs" />
-    <Compile Include="Native\Interfaces\General\IChipsetInfo.cs" />
-    <Compile Include="Native\Interfaces\GPU\IDisplayIds.cs" />
-    <Compile Include="Native\Interfaces\GPU\IThermalSettings.cs" />
-    <Compile Include="Native\Interfaces\IInitializable.cs" />
-    <Compile Include="Native\Interfaces\IAllocatable.cs" />
-    <Compile Include="Native\Interfaces\Mosaic\IDisplaySettings.cs" />
-    <Compile Include="Native\Interfaces\Mosaic\IGridTopology.cs" />
-    <Compile Include="Native\Interfaces\Display\IPathInfo.cs" />
-    <Compile Include="Native\Interfaces\Display\IPathTargetInfo.cs" />
-    <Compile Include="Native\Interfaces\IHandle.cs" />
-    <Compile Include="Native\Interfaces\Mosaic\IGridTopologyDisplay.cs" />
-    <Compile Include="Native\Interfaces\Mosaic\ISupportedTopologiesInfo.cs" />
-    <Compile Include="Native\MosaicApi.cs" />
-    <Compile Include="Native\Delegates\Mosaic.cs" />
-    <Compile Include="Native\Mosaic\DisplayCapacityProblem.cs" />
-    <Compile Include="Native\Mosaic\Structures\DisplaySettingsV2.cs" />
-    <Compile Include="Native\Mosaic\Structures\DisplaySettingsV1.cs" />
-    <Compile Include="Native\Mosaic\Structures\DisplayTopologyStatus.cs" />
-    <Compile Include="Native\Mosaic\DisplayTopologyWarning.cs" />
-    <Compile Include="Native\Mosaic\Structures\GridTopologyV2.cs" />
-    <Compile Include="Native\Mosaic\Structures\GridTopologyDisplayV2.cs" />
-    <Compile Include="Native\Mosaic\Structures\GridTopologyDisplayV1.cs" />
-    <Compile Include="Native\Mosaic\Structures\GridTopologyV1.cs" />
-    <Compile Include="Native\Mosaic\PixelShiftType.cs" />
-    <Compile Include="Native\Mosaic\SetDisplayTopologyFlag.cs" />
-    <Compile Include="Native\Mosaic\Structures\SupportedTopologiesInfoV2.cs" />
-    <Compile Include="Native\Mosaic\Structures\SupportedTopologiesInfoV1.cs" />
-    <Compile Include="Native\Mosaic\Topology.cs" />
-    <Compile Include="Native\Mosaic\Structures\TopologyBrief.cs" />
-    <Compile Include="Native\Mosaic\Structures\TopologyDetails.cs" />
-    <Compile Include="Native\Mosaic\Structures\TopologyGroup.cs" />
-    <Compile Include="Native\Mosaic\TopologyType.cs" />
-    <Compile Include="Native\Mosaic\TopologyValidity.cs" />
-    <Compile Include="Native\Display\Rotate.cs" />
-    <Compile Include="Native\General\Status.cs" />
-    <Compile Include="Native\Constants\General.cs" />
-    <Compile Include="Native\GeneralApi.cs" />
-    <Compile Include="Native\Helpers\Structures\ValueTypeArray.cs" />
-    <Compile Include="GPU\PCIIdentifiers.cs" />
-    <Compile Include="Mosaic\GridTopology.cs" />
-    <Compile Include="Display\PathTargetInfo.cs" />
-    <Compile Include="Mosaic\TopologyDisplay.cs" />
-    <Compile Include="Mosaic\TopologyDetails.cs" />
-    <Compile Include="NVIDIA.cs" />
-    <Compile Include="GPU\PhysicalGPU.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Display\Display.cs" />
-    <Compile Include="Mosaic\Topology.cs" />
-    <Compile Include="Mosaic\GridTopologyDisplay.cs" />
-    <Compile Include="Display\UnAttachedDisplay.cs" />
+    <Content Include="readme.txt">
+      <Pack>true</Pack>
+      <PackagePath>\</PackagePath>
+    </Content>
+    <Content Include="Icon.png">
+      <Pack>true</Pack>
+      <PackagePath>\</PackagePath>
+    </Content>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Native\Direct3D\" />
-    <Folder Include="Native\DRS\" />
-    <Folder Include="Native\GSync\" />
-    <Folder Include="Native\OLG\" />
-    <Folder Include="Native\Stereo\" />
-    <Folder Include="Native\Vidio\" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Icon.png" />
-    <None Include="readme.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="NvAPIWrapper.nuspec" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="../NuGet.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

@@ -51,11 +51,11 @@ namespace NvAPIWrapper.Native.Helpers
                 : NvAPI32_QueryInterface(interfaceId);
         }
 
-        [DllImport(@"nvapi.dll", EntryPoint = @"nvapi_QueryInterface", CallingConvention = CallingConvention.Cdecl,
+        [DllImport(@"nvapi", EntryPoint = @"nvapi_QueryInterface", CallingConvention = CallingConvention.Cdecl,
              PreserveSig = true)]
         private static extern IntPtr NvAPI32_QueryInterface(uint interfaceId);
 
-        [DllImport(@"nvapi64.dll", EntryPoint = @"nvapi_QueryInterface", CallingConvention = CallingConvention.Cdecl,
+        [DllImport(@"nvapi64", EntryPoint = @"nvapi_QueryInterface", CallingConvention = CallingConvention.Cdecl,
              PreserveSig = true)]
         private static extern IntPtr NvAPI64_QueryInterface(uint interfaceId);
     }
