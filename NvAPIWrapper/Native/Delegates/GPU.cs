@@ -103,6 +103,11 @@ namespace NvAPIWrapper.Native.Delegates
             [In] PhysicalGPUHandle physicalGpu,
             [In] [Accepts(typeof(DynamicPerformanceStatesInfo))] ValueTypeReference performanceStatesInfoEx);
 
+        [FunctionId(FunctionId.NvAPI_GPU_GetAllClockFrequencies)]
+        public delegate Status NvAPI_GPU_GetAllClockFrequencies(
+            [In] PhysicalGPUHandle physicalGpu, 
+            [In] [Accepts(typeof(ClockFrequenciesV3), typeof(ClockFrequenciesV2), typeof(ClockFrequenciesV1))] ValueTypeReference nvClocks);
+
         [FunctionId(FunctionId.NvAPI_GPU_GetEDID)]
         public delegate Status NvAPI_GPU_GetEDID(
             [In] PhysicalGPUHandle physicalGpu, [In] OutputId outputId,

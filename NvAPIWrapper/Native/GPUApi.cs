@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using NvAPIWrapper.Native.Display.Structures;
 using NvAPIWrapper.Native.Exceptions;
 using NvAPIWrapper.Native.General;
@@ -216,6 +217,40 @@ namespace NvAPIWrapper.Native
                 throw new NVIDIAApiException(status);
             return busType;
         }
+
+        /// <summary>
+        ///     <para>
+        ///         This function retreives the clock frequencies information from specific GPU\n
+        ///         IClockFrequenciesInfo contains GPU clock frequencies domain array</para>
+        ///     <i>From NVAPI.h:</i> 
+        ///     <para>
+        ///         This function retrieves the NV_GPU_CLOCK_FREQUENCIES structure for the specified physical GPU.\n
+        ///         Each domain's info is indexed in the array</para>
+        /// </summary>
+        /// <param name="physicalGPUHandle">Handle of the physical GPU for which the memory information is to be extracted.</param>
+        /// <returns>The device clock frequencies interface (structures domain array).</returns>
+        /// <exception cref="NVIDIANotSupportedException">This operation is not supported.</exception>
+        /// <exception cref="NVIDIAApiException">Status.NvidiaDeviceNotFound: No NVIDIA GPU driving a display was found.</exception>
+        public static IClockFrequenciesInfo GetAllClockFrequencies(PhysicalGPUHandle physicalGPUHandle) 
+        {
+            var getClocksInfo = DelegateFactory.Get<Delegates.GPU.NvAPI_GPU_GetAllClockFrequencies>();
+            foreach (var acceptType in getClocksInfo.Accepts()) 
+            {
+                var instance = acceptType.Instantiate<IClockFrequenciesInfo>();
+                using (var clockFrequenciesInfo = ValueTypeReference.FromValueType(instance, acceptType)) 
+                {
+                    var status = getClocksInfo(physicalGPUHandle, clockFrequenciesInfo);
+                    if (status == Status.IncompatibleStructureVersion)
+                        continue;
+                    if (status != Status.Ok)
+                        throw new NVIDIAApiException(status);
+
+                    return clockFrequenciesInfo.ToValueType<IClockFrequenciesInfo>(acceptType);
+                }
+            }
+            throw new NVIDIANotSupportedException("This operation is not supported.");
+        }
+
 
         /// <summary>
         ///     Due to space limitation GetConnectedOutputs() can return maximum 32 devices, but this is no longer true for DPMST.
