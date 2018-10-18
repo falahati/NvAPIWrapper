@@ -109,9 +109,19 @@ namespace NvAPIWrapper.GPU
             => GPUApi.GetDynamicPerformanceStatesInfoEx(Handle);
 
         /// <summary>
-        ///     Gets GPU clock frequencies
+        ///     Gets GPU current clock frequencies
         /// </summary>
-        public IClockFrequenciesInfo ClockFrequencies => GPUApi.GetAllClockFrequencies(Handle);
+        public IClockFrequencies CurrentClockFrequencies => GPUApi.GetAllClockFrequencies(Handle);
+
+        /// <summary>
+        ///     Gets GPU base clock frequencies
+        /// </summary>
+        public IClockFrequencies BaseClockFrequencies => GPUApi.GetAllClockFrequencies(Handle, new ClockFrequenciesV2(ClockType.BaseClock));
+
+        /// <summary>
+        ///     Gets GPU boost clock frequencies
+        /// </summary>
+        public IClockFrequencies BoostClockFrequencies => GPUApi.GetAllClockFrequencies(Handle, new ClockFrequenciesV2(ClockType.BoostClock));
 
         /// <summary>
         ///     Gets GPU full name

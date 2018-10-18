@@ -219,35 +219,53 @@ namespace NvAPIWrapper.Native
         }
 
         /// <summary>
-        ///     <para>
-        ///         This function retreives the clock frequencies information from specific GPU\n
-        ///         IClockFrequenciesInfo contains GPU clock frequencies domain array</para>
-        ///     <i>From NVAPI.h:</i> 
-        ///     <para>
-        ///         This function retrieves the NV_GPU_CLOCK_FREQUENCIES structure for the specified physical GPU.\n
-        ///         Each domain's info is indexed in the array</para>
+        ///     This function retrieves the clock frequencies information from an specific physical GPU and fills the structure
         /// </summary>
-        /// <param name="physicalGPUHandle">Handle of the physical GPU for which the memory information is to be extracted.</param>
-        /// <returns>The device clock frequencies interface (structures domain array).</returns>
+        /// <param name="physicalGPUHandle">Handle of the physical GPU for which the clock frequency information is to be retrieved.</param>
+        /// <param name="clockFrequencyOptions">The structure that holds options for the operations and should be filled with the results, use null to return current clock frequencies</param>
+        /// <returns>The device clock frequencies information.</returns>
         /// <exception cref="NVIDIANotSupportedException">This operation is not supported.</exception>
         /// <exception cref="NVIDIAApiException">Status.NvidiaDeviceNotFound: No NVIDIA GPU driving a display was found.</exception>
-        public static IClockFrequenciesInfo GetAllClockFrequencies(PhysicalGPUHandle physicalGPUHandle) 
+        public static IClockFrequencies GetAllClockFrequencies(
+            PhysicalGPUHandle physicalGPUHandle,
+            IClockFrequencies clockFrequencyOptions = null)
         {
             var getClocksInfo = DelegateFactory.Get<Delegates.GPU.NvAPI_GPU_GetAllClockFrequencies>();
-            foreach (var acceptType in getClocksInfo.Accepts()) 
+
+            if (clockFrequencyOptions == null)
             {
-                var instance = acceptType.Instantiate<IClockFrequenciesInfo>();
-                using (var clockFrequenciesInfo = ValueTypeReference.FromValueType(instance, acceptType)) 
+                foreach (var acceptType in getClocksInfo.Accepts())
+                {
+                    var instance = acceptType.Instantiate<IClockFrequencies>();
+
+                    using (var clockFrequenciesInfo = ValueTypeReference.FromValueType(instance, acceptType))
+                    {
+                        var status = getClocksInfo(physicalGPUHandle, clockFrequenciesInfo);
+
+                        if (status == Status.IncompatibleStructureVersion)
+                            continue;
+
+                        if (status != Status.Ok)
+                            throw new NVIDIAApiException(status);
+
+                        return clockFrequenciesInfo.ToValueType<IClockFrequencies>(acceptType);
+                    }
+                }
+            }
+            else
+            {
+                using (var clockFrequenciesInfo =
+                    ValueTypeReference.FromValueType(clockFrequencyOptions, clockFrequencyOptions.GetType()))
                 {
                     var status = getClocksInfo(physicalGPUHandle, clockFrequenciesInfo);
-                    if (status == Status.IncompatibleStructureVersion)
-                        continue;
+
                     if (status != Status.Ok)
                         throw new NVIDIAApiException(status);
 
-                    return clockFrequenciesInfo.ToValueType<IClockFrequenciesInfo>(acceptType);
+                    return clockFrequenciesInfo.ToValueType<IClockFrequencies>(clockFrequencyOptions.GetType());
                 }
             }
+
             throw new NVIDIANotSupportedException("This operation is not supported.");
         }
 

@@ -60,17 +60,6 @@ namespace NvAPISample
                             "PhysicalGPU.GetPhysicalGPUs()", "Select a GPU to show thermal sensor values")
                 },
                 {
-                    "GPU Clock Frequencies", () =>
-                        ConsoleNavigation.PrintNavigation(
-                            PhysicalGPU.GetPhysicalGPUs()
-                                .ToDictionary(gpu => (object) gpu.ToString(), gpu => new Action(
-                                    () =>
-                                    {
-                                        ConsoleNavigation.PrintObject(gpu.ClockFrequencies, "gpu.ClockFrequencies");
-                                    })),
-                            "PhysicalGPU.GetPhysicalGPUs()", "Select a GPU to show thermal sensor values")
-                },
-                {
                     "GPU Dynamic Performance States", () =>
                         ConsoleNavigation.PrintNavigation(
                             PhysicalGPU.GetPhysicalGPUs()
@@ -81,6 +70,22 @@ namespace NvAPISample
                                             "PhysicalGPU.DynamicPerformanceStatesInfo");
                                     })),
                             "PhysicalGPU.GetPhysicalGPUs()", "Select a GPU to show dynamic performance state domains")
+                },
+                {
+                    "GPU Clock Frequencies", () =>
+                        ConsoleNavigation.PrintNavigation(
+                            PhysicalGPU.GetPhysicalGPUs()
+                                .ToDictionary(gpu => (object) gpu.ToString(), gpu => new Action(
+                                    () =>
+                                    {
+                                        ConsoleNavigation.PrintObject(new
+                                        {
+                                            CurrentClock = gpu.CurrentClockFrequencies,
+                                            BaseClock = gpu.BaseClockFrequencies,
+                                            BoostClock = gpu.BoostClockFrequencies
+                                        }, "PhysicalGPU.CurrentClockFrequencies, PhysicalGPU.BaseClockFrequencies, PhysicalGPU.BoostClockFrequencies");
+                                    })),
+                            "PhysicalGPU.GetPhysicalGPUs()", "Select a GPU to show clock frequencies")
                 },
                 {
                     "TCC GPUs", () =>
@@ -97,7 +102,7 @@ namespace NvAPISample
                                         ConsoleNavigation.PrintObject(display.DisplayDevice,
                                             "GridTopologyDisplay.DisplayDevice"), "GridTopology.Displays",
                                     "Select a grid topology display to show display device information"),
-                            "GridTopology.GetGridTopologies()", "Select a grid topology to show display informations")
+                            "GridTopology.GetGridTopologies()", "Select a grid topology to show display information")
                 },
                 {
                     "NVIDIA Driver and API version", () => ConsoleNavigation.PrintObject(new object[]

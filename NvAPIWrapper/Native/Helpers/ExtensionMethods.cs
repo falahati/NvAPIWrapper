@@ -88,6 +88,17 @@ namespace NvAPIWrapper.Native.Helpers
             return (bigInteger & (1ul << index)) != 0;
         }
 
+        public static ulong GetBits<T>(this T integer, int index, int count) where T : struct, IConvertible
+        {
+            var mask = 0ul;
+            for (int i = 0; i < count; i++)
+            {
+                mask = mask | (1ul << (index + i));
+            }
+            var bigInteger = BitwiseConvert<ulong, T>(integer);
+            return bigInteger & mask;
+        }
+
         // ReSharper disable once FunctionComplexityOverflow
         public static T Instantiate<T>(this Type type)
         {
@@ -155,9 +166,21 @@ namespace NvAPIWrapper.Native.Helpers
 
         public static T SetBit<T>(this T integer, int index, bool value) where T : struct, IConvertible
         {
-            var bigInteger = BitwiseConvert<ulong, T>(integer);
             var mask = 1ul << index;
+            var bigInteger = BitwiseConvert<ulong, T>(integer);
             var newInteger = value ? bigInteger | mask : bigInteger & ~mask;
+            return BitwiseConvert<T, ulong>(newInteger);
+        }
+
+        public static T SetBits<T>(this T integer, int index, int count, ulong value) where T : struct, IConvertible
+        {
+            var mask = 0ul;
+            for (int i = 0; i < count; i++)
+            {
+                mask = mask | (1ul << (index + i));
+            }
+            var bigInteger = BitwiseConvert<ulong, T>(integer);
+            var newInteger = bigInteger | (mask & value);
             return BitwiseConvert<T, ulong>(newInteger);
         }
     }
