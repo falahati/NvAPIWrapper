@@ -11,7 +11,7 @@ NvAPIWrapper is not a complete wrapper of NVAPI; at least, not yet. Following is
 * Mosaic (Surround): Full Support
 * Display: Full Support
 * Display Control: Partial Support (no color control, HUE control, etc)
-* GPU: Partial Support (incomplete sensor information, incomplete performance states information, etc)
+* GPU: Partial Support (incomplete Sensor, incomplete PStates, incomplete clock frequency, etc)
 * D3D: No Support
 * DRS: No Support
 * GSync: No Support
