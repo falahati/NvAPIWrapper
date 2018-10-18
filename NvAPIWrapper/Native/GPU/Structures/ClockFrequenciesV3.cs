@@ -22,7 +22,8 @@ namespace NvAPIWrapper.Native.GPU.Structures
         internal StructureVersion _Version;
         internal readonly uint _ClockTypeAndReserve;
 
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxClocksPerGpu)] internal
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxClocksPerGpu)]
+        internal
             ClockDomainInfo[] _Clocks;
 
         /// <summary>
@@ -36,32 +37,51 @@ namespace NvAPIWrapper.Native.GPU.Structures
         }
 
         /// <inheritdoc />
-        public Dictionary<PublicClock, ClockDomainInfo> Clocks => _Clocks
-            .Select((value, index) => new { index, value })
-            .Where(arg => Enum.IsDefined(typeof(PublicClock), arg.index))
-            .ToDictionary(arg => (PublicClock)arg.index, arg => arg.value);
+        public Dictionary<PublicClock, ClockDomainInfo> Clocks
+        {
+            get => _Clocks
+                .Select((value, index) => new {index, value})
+                .Where(arg => Enum.IsDefined(typeof(PublicClock), arg.index))
+                .ToDictionary(arg => (PublicClock) arg.index, arg => arg.value);
+        }
 
         /// <summary>
         ///     Gets the type of clock frequencies provided with this object
         /// </summary>
-        public ClockType ClockType => (ClockType) _ClockTypeAndReserve.GetBits(0, 2);
+        public ClockType ClockType
+        {
+            get => (ClockType) _ClockTypeAndReserve.GetBits(0, 2);
+        }
 
         /// <inheritdoc />
-        public ClockDomainInfo GraphicsClock => _Clocks[(int)PublicClock.Graphics];
+        public ClockDomainInfo GraphicsClock
+        {
+            get => _Clocks[(int) PublicClock.Graphics];
+        }
 
         /// <inheritdoc />
-        public ClockDomainInfo MemoryClock => _Clocks[(int)PublicClock.Memory];
+        public ClockDomainInfo MemoryClock
+        {
+            get => _Clocks[(int) PublicClock.Memory];
+        }
 
         /// <inheritdoc />
-        public ClockDomainInfo VideoDecodingClock => _Clocks[(int)PublicClock.Video];
+        public ClockDomainInfo VideoDecodingClock
+        {
+            get => _Clocks[(int) PublicClock.Video];
+        }
 
         /// <inheritdoc />
-        public ClockDomainInfo ProcessorClock => _Clocks[(int)PublicClock.Processor];
+        public ClockDomainInfo ProcessorClock
+        {
+            get => _Clocks[(int) PublicClock.Processor];
+        }
 
         /// <inheritdoc />
         public override string ToString()
         {
-            return $"[{ClockType}] 3D Graphics = {GraphicsClock} - Memory = {MemoryClock} - Video Decoding = {VideoDecodingClock} - Processor = {ProcessorClock}";
+            return
+                $"[{ClockType}] 3D Graphics = {GraphicsClock} - Memory = {MemoryClock} - Video Decoding = {VideoDecodingClock} - Processor = {ProcessorClock}";
         }
     }
 }

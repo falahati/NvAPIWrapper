@@ -19,12 +19,15 @@ namespace NvAPIWrapper.Native.GPU.Structures
         internal StructureVersion _Version;
         internal readonly uint _Count;
 
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxThermalSensorsPerGPU)] internal readonly ThermalSensor[]
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxThermalSensorsPerGPU)]
+        internal readonly ThermalSensor[]
             _Sensors;
 
         /// <inheritdoc />
         public IThermalSensor[] Sensors
-            => _Sensors.Take((int) _Count).Cast<IThermalSensor>().ToArray();
+        {
+            get => _Sensors.Take((int) _Count).Cast<IThermalSensor>().ToArray();
+        }
 
         /// <summary>
         ///     Holds information about a single thermal sensor
@@ -39,19 +42,34 @@ namespace NvAPIWrapper.Native.GPU.Structures
             internal readonly ThermalSettingsTarget _Target;
 
             /// <inheritdoc />
-            public ThermalSettingsController Controller => _Controller;
+            public ThermalSettingsController Controller
+            {
+                get => _Controller;
+            }
 
             /// <inheritdoc />
-            public int DefaultMinimumTemperature => (int) _DefaultMinTemp;
+            public int DefaultMinimumTemperature
+            {
+                get => (int) _DefaultMinTemp;
+            }
 
             /// <inheritdoc />
-            public int DefaultMaximumTemperature => (int) _DefaultMaxTemp;
+            public int DefaultMaximumTemperature
+            {
+                get => (int) _DefaultMaxTemp;
+            }
 
             /// <inheritdoc />
-            public int CurrentTemperature => (int) _CurrentTemp;
+            public int CurrentTemperature
+            {
+                get => (int) _CurrentTemp;
+            }
 
             /// <inheritdoc />
-            public ThermalSettingsTarget Target => _Target;
+            public ThermalSettingsTarget Target
+            {
+                get => _Target;
+            }
 
             /// <inheritdoc />
             public override string ToString()

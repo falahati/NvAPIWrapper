@@ -9,10 +9,20 @@ namespace NvAPIWrapper.Native.Helpers.Structures
     {
         private ValueTypeReference underlyingReference;
 
-        public IntPtr MemoryAddress => underlyingReference.MemoryAddress;
+        public IntPtr MemoryAddress
+        {
+            get => underlyingReference.MemoryAddress;
+        }
 
-        public static ValueTypeReference<T> Null => new ValueTypeReference<T>();
-        public bool IsNull => underlyingReference.IsNull;
+        public static ValueTypeReference<T> Null
+        {
+            get => new ValueTypeReference<T>();
+        }
+
+        public bool IsNull
+        {
+            get => underlyingReference.IsNull;
+        }
 
         public ValueTypeReference(IntPtr memoryAddress)
         {
@@ -41,8 +51,12 @@ namespace NvAPIWrapper.Native.Helpers.Structures
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            return obj is ValueTypeReference<T> && Equals((ValueTypeReference<T>) obj);
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+
+            return obj is ValueTypeReference<T> reference && Equals(reference);
         }
 
         public override int GetHashCode()
@@ -74,7 +88,9 @@ namespace NvAPIWrapper.Native.Helpers.Structures
         public void Dispose()
         {
             if (!IsNull)
+            {
                 underlyingReference.Dispose();
+            }
         }
     }
 }

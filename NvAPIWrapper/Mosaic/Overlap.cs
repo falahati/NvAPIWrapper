@@ -31,13 +31,17 @@ namespace NvAPIWrapper.Mosaic
         /// <inheritdoc />
         public bool Equals(Overlap other)
         {
-            return (HorizontalOverlap == other.HorizontalOverlap) && (VerticalOverlap == other.VerticalOverlap);
+            return HorizontalOverlap == other.HorizontalOverlap && VerticalOverlap == other.VerticalOverlap;
         }
 
         /// <inheritdoc />
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+
             return obj is Overlap && Equals((Overlap) obj);
         }
 
@@ -46,7 +50,7 @@ namespace NvAPIWrapper.Mosaic
         {
             unchecked
             {
-                return (HorizontalOverlap*397) ^ VerticalOverlap;
+                return (HorizontalOverlap * 397) ^ VerticalOverlap;
             }
         }
 

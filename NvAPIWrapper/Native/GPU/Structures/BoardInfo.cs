@@ -15,12 +15,17 @@ namespace NvAPIWrapper.Native.GPU.Structures
     public struct BoardInfo : IInitializable, IEquatable<BoardInfo>
     {
         internal StructureVersion _Version;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)] internal byte[] _SerialNumber;
+
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
+        internal byte[] _SerialNumber;
 
         /// <summary>
         ///     Board Serial Number
         /// </summary>
-        public byte[] SerialNumber => _SerialNumber;
+        public byte[] SerialNumber
+        {
+            get => _SerialNumber;
+        }
 
         /// <inheritdoc />
         public bool Equals(BoardInfo other)
@@ -31,8 +36,12 @@ namespace NvAPIWrapper.Native.GPU.Structures
         /// <inheritdoc />
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            return obj is BoardInfo && Equals((BoardInfo) obj);
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+
+            return obj is BoardInfo info && Equals(info);
         }
 
         /// <inheritdoc />

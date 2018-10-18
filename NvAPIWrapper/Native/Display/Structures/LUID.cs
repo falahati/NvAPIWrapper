@@ -28,14 +28,18 @@ namespace NvAPIWrapper.Native.Display.Structures
         /// <inheritdoc />
         public bool Equals(LUID other)
         {
-            return (LowPart == other.LowPart) && (HighPart == other.HighPart);
+            return LowPart == other.LowPart && HighPart == other.HighPart;
         }
 
         /// <inheritdoc />
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            return obj is LUID && Equals((LUID) obj);
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+
+            return obj is LUID luid && Equals(luid);
         }
 
         /// <summary>
@@ -65,7 +69,7 @@ namespace NvAPIWrapper.Native.Display.Structures
         {
             unchecked
             {
-                return ((int) LowPart*397) ^ HighPart;
+                return ((int) LowPart * 397) ^ HighPart;
             }
         }
     }

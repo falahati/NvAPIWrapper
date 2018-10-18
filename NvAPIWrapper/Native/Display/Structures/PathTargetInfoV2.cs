@@ -13,15 +13,22 @@ namespace NvAPIWrapper.Native.Display.Structures
     ///     Holds information about a path's target
     /// </summary>
     [StructLayout(LayoutKind.Sequential, Pack = 8)]
-    public struct PathTargetInfoV2 : IPathTargetInfo, IInitializable, IDisposable, IAllocatable,
-        IEquatable<PathTargetInfoV2>, IEquatable<PathTargetInfoV1>
+    public struct PathTargetInfoV2 : IPathTargetInfo,
+        IInitializable,
+        IDisposable,
+        IAllocatable,
+        IEquatable<PathTargetInfoV2>,
+        IEquatable<PathTargetInfoV1>
     {
         internal readonly uint _DisplayId;
         internal ValueTypeReference<PathAdvancedTargetInfo> _Details;
         internal readonly uint _WindowsCCDTargetId;
 
         /// <inheritdoc />
-        public uint DisplayId => _DisplayId;
+        public uint DisplayId
+        {
+            get => _DisplayId;
+        }
 
         /// <inheritdoc />
         public override string ToString()
@@ -30,12 +37,18 @@ namespace NvAPIWrapper.Native.Display.Structures
         }
 
         /// <inheritdoc />
-        public PathAdvancedTargetInfo? Details => _Details.ToValueType();
+        public PathAdvancedTargetInfo? Details
+        {
+            get => _Details.ToValueType();
+        }
 
         /// <summary>
         ///     Windows CCD target ID. Must be present only for non-NVIDIA adapter, for NVIDIA adapter this parameter is ignored.
         /// </summary>
-        public uint WindowsCCDTargetId => _WindowsCCDTargetId;
+        public uint WindowsCCDTargetId
+        {
+            get => _WindowsCCDTargetId;
+        }
 
         /// <summary>
         ///     Creates a new PathTargetInfoV1
@@ -49,20 +62,24 @@ namespace NvAPIWrapper.Native.Display.Structures
         /// <inheritdoc />
         public bool Equals(PathTargetInfoV2 other)
         {
-            return (_DisplayId == other._DisplayId) && _Details.Equals(other._Details);
+            return _DisplayId == other._DisplayId && _Details.Equals(other._Details);
         }
 
         /// <inheritdoc />
         public bool Equals(PathTargetInfoV1 other)
         {
-            return (_DisplayId == other._DisplayId) && _Details.Equals(other._Details);
+            return _DisplayId == other._DisplayId && _Details.Equals(other._Details);
         }
 
         /// <inheritdoc />
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            return obj is PathTargetInfoV2 && Equals((PathTargetInfoV2) obj);
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+
+            return obj is PathTargetInfoV2 v2 && Equals(v2);
         }
 
         /// <inheritdoc />
@@ -71,8 +88,10 @@ namespace NvAPIWrapper.Native.Display.Structures
             unchecked
             {
                 var hashCode = (int) _DisplayId;
-                hashCode = (hashCode*397) ^ _Details.GetHashCode();
-                hashCode = (hashCode*397) ^ (int) _WindowsCCDTargetId;
+                // ReSharper disable once NonReadonlyMemberInGetHashCode
+                hashCode = (hashCode * 397) ^ _Details.GetHashCode();
+                hashCode = (hashCode * 397) ^ (int) _WindowsCCDTargetId;
+
                 return hashCode;
             }
         }

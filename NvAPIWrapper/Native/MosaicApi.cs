@@ -32,9 +32,13 @@ namespace NvAPIWrapper.Native
         /// <exception cref="NVIDIAApiException">Status.Error: Miscellaneous error occurred.</exception>
         public static void EnableCurrentTopology(bool enable)
         {
-            var status = DelegateFactory.Get<Delegates.Mosaic.NvAPI_Mosaic_EnableCurrentTopo>()((uint) (enable ? 1 : 0));
+            var status =
+                DelegateFactory.GetDelegate<Delegates.Mosaic.NvAPI_Mosaic_EnableCurrentTopo>()((uint) (enable ? 1 : 0));
+
             if (status != Status.Ok)
+            {
                 throw new NVIDIAApiException(status);
+            }
         }
 
         /// <summary>
@@ -42,39 +46,54 @@ namespace NvAPIWrapper.Native
         ///     single displays.
         /// </summary>
         /// <returns>The list of active grid topologies.</returns>
-        /// <exception cref="NVIDIAApiException">Status.InvalidArgument: One or more argumentss passed in are invalid.</exception>
+        /// <exception cref="NVIDIAApiException">Status.InvalidArgument: One or more arguments passed in are invalid.</exception>
         /// <exception cref="NVIDIAApiException">Status.ApiNotInitialized: The NvAPI API needs to be initialized first.</exception>
         /// <exception cref="NVIDIAApiException">Status.NoImplementation: This entry point not available.</exception>
         /// <exception cref="NVIDIAApiException">Status.Error: Miscellaneous error occurred.</exception>
         /// <exception cref="NVIDIANotSupportedException">This operation is not supported.</exception>
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
         public static IGridTopology[] EnumDisplayGrids()
         {
             var mosaicEnumDisplayGrids =
-                DelegateFactory.Get<Delegates.Mosaic.NvAPI_Mosaic_EnumDisplayGrids>();
+                DelegateFactory.GetDelegate<Delegates.Mosaic.NvAPI_Mosaic_EnumDisplayGrids>();
 
             var totalAvailable = 0u;
             var status = mosaicEnumDisplayGrids(ValueTypeArray.Null, ref totalAvailable);
+
             if (status != Status.Ok)
+            {
                 throw new NVIDIAApiException(status);
+            }
 
             if (totalAvailable == 0)
+            {
                 return new IGridTopology[0];
+            }
 
             foreach (var acceptType in mosaicEnumDisplayGrids.Accepts())
             {
                 var counts = totalAvailable;
                 var instance = acceptType.Instantiate<IGridTopology>();
+
                 using (
                     var gridTopologiesByRef = ValueTypeArray.FromArray(instance.Repeat((int) counts).AsEnumerable()))
                 {
                     status = mosaicEnumDisplayGrids(gridTopologiesByRef, ref counts);
+
                     if (status == Status.IncompatibleStructureVersion)
+                    {
                         continue;
+                    }
+
                     if (status != Status.Ok)
+                    {
                         throw new NVIDIAApiException(status);
+                    }
+
                     return gridTopologiesByRef.ToArray<IGridTopology>((int) counts, acceptType);
                 }
             }
+
             throw new NVIDIANotSupportedException("This operation is not supported.");
         }
 
@@ -83,40 +102,56 @@ namespace NvAPIWrapper.Native
         /// </summary>
         /// <param name="gridTopology">The grid topology to use.</param>
         /// <returns></returns>
-        /// <exception cref="NVIDIAApiException">Status.InvalidArgument: One or more argumentss passed in are invalid.</exception>
+        /// <exception cref="NVIDIAApiException">Status.InvalidArgument: One or more arguments passed in are invalid.</exception>
         /// <exception cref="NVIDIAApiException">Status.ApiNotInitialized: The NvAPI API needs to be initialized first.</exception>
         /// <exception cref="NVIDIAApiException">Status.NoImplementation: This entry point not available.</exception>
         /// <exception cref="NVIDIAApiException">Status.Error: Miscellaneous error occurred.</exception>
         /// <exception cref="NVIDIANotSupportedException">This operation is not supported.</exception>
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
         public static IDisplaySettings[] EnumDisplayModes(IGridTopology gridTopology)
         {
-            var mosaicEnumDisplayModes = DelegateFactory.Get<Delegates.Mosaic.NvAPI_Mosaic_EnumDisplayModes>();
+            var mosaicEnumDisplayModes = DelegateFactory.GetDelegate<Delegates.Mosaic.NvAPI_Mosaic_EnumDisplayModes>();
+
             using (var gridTopologyByRef = ValueTypeReference.FromValueType(gridTopology, gridTopology.GetType()))
             {
                 var totalAvailable = 0u;
                 var status = mosaicEnumDisplayModes(gridTopologyByRef, ValueTypeArray.Null, ref totalAvailable);
+
                 if (status != Status.Ok)
+                {
                     throw new NVIDIAApiException(status);
+                }
 
                 if (totalAvailable == 0)
+                {
                     return new IDisplaySettings[0];
+                }
 
                 foreach (var acceptType in mosaicEnumDisplayModes.Accepts(2))
                 {
                     var counts = totalAvailable;
                     var instance = acceptType.Instantiate<IDisplaySettings>();
+
                     using (
                         var displaySettingByRef =
                             ValueTypeArray.FromArray(instance.Repeat((int) counts).AsEnumerable()))
                     {
                         status = mosaicEnumDisplayModes(gridTopologyByRef, displaySettingByRef, ref counts);
+
                         if (status == Status.IncompatibleStructureVersion)
+                        {
                             continue;
+                        }
+
                         if (status != Status.Ok)
+                        {
                             throw new NVIDIAApiException(status);
+                        }
+
                         return displaySettingByRef.ToArray<IDisplaySettings>((int) counts, acceptType);
                     }
                 }
+
                 throw new NVIDIANotSupportedException("This operation is not supported.");
             }
         }
@@ -132,30 +167,46 @@ namespace NvAPIWrapper.Native
         /// <param name="overlapX">The pixel overlap between horizontal displays</param>
         /// <param name="overlapY">The pixel overlap between vertical displays</param>
         /// <exception cref="NVIDIAApiException">Status.NotSupported: Mosaic is not supported with the existing hardware.</exception>
-        /// <exception cref="NVIDIAApiException">Status.InvalidArgument: One or more argumentss passed in are invalid.</exception>
+        /// <exception cref="NVIDIAApiException">Status.InvalidArgument: One or more arguments passed in are invalid.</exception>
         /// <exception cref="NVIDIAApiException">Status.ApiNotInitialized: The NvAPI API needs to be initialized first.</exception>
         /// <exception cref="NVIDIAApiException">Status.NoImplementation: This entry point not available.</exception>
         /// <exception cref="NVIDIAApiException">Status.Error: Miscellaneous error occurred.</exception>
         /// <exception cref="NVIDIANotSupportedException">This operation is not supported.</exception>
-        public static void GetCurrentTopology(out TopologyBrief topoBrief, out IDisplaySettings displaySettings,
-            out int overlapX, out int overlapY)
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        // ReSharper disable once TooManyArguments
+        public static void GetCurrentTopology(
+            out TopologyBrief topoBrief,
+            out IDisplaySettings displaySettings,
+            out int overlapX,
+            out int overlapY)
         {
-            var mosaicGetCurrentTopo = DelegateFactory.Get<Delegates.Mosaic.NvAPI_Mosaic_GetCurrentTopo>();
+            var mosaicGetCurrentTopo = DelegateFactory.GetDelegate<Delegates.Mosaic.NvAPI_Mosaic_GetCurrentTopo>();
             topoBrief = typeof(TopologyBrief).Instantiate<TopologyBrief>();
+
             foreach (var acceptType in mosaicGetCurrentTopo.Accepts())
             {
                 displaySettings = acceptType.Instantiate<IDisplaySettings>();
+
                 using (var displaySettingsByRef = ValueTypeReference.FromValueType(displaySettings, acceptType))
                 {
                     var status = mosaicGetCurrentTopo(ref topoBrief, displaySettingsByRef, out overlapX, out overlapY);
+
                     if (status == Status.IncompatibleStructureVersion)
+                    {
                         continue;
+                    }
+
                     if (status != Status.Ok)
+                    {
                         throw new NVIDIAApiException(status);
+                    }
+
                     displaySettings = displaySettingsByRef.ToValueType<IDisplaySettings>(acceptType);
+
                     return;
                 }
             }
+
             throw new NVIDIANotSupportedException("This operation is not supported.");
         }
 
@@ -177,23 +228,37 @@ namespace NvAPIWrapper.Native
         /// <param name="maxOverlapY">Y overlap maximum</param>
         /// <exception cref="ArgumentException">displaySettings is of invalid type.</exception>
         /// <exception cref="NVIDIAApiException">Status.NotSupported: Mosaic is not supported with the existing hardware.</exception>
-        /// <exception cref="NVIDIAApiException">Status.InvalidArgument: One or more argumentss passed in are invalid.</exception>
+        /// <exception cref="NVIDIAApiException">Status.InvalidArgument: One or more arguments passed in are invalid.</exception>
         /// <exception cref="NVIDIAApiException">Status.ApiNotInitialized: The NvAPI API needs to be initialized first.</exception>
         /// <exception cref="NVIDIAApiException">Status.NoImplementation: This entry point not available.</exception>
         /// <exception cref="NVIDIAApiException">Status.Error: Miscellaneous error occurred.</exception>
-        public static void GetOverlapLimits(TopologyBrief topoBrief, IDisplaySettings displaySettings,
-            out int minOverlapX, out int maxOverlapX, out int minOverlapY, out int maxOverlapY)
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        // ReSharper disable once TooManyArguments
+        public static void GetOverlapLimits(
+            TopologyBrief topoBrief,
+            IDisplaySettings displaySettings,
+            out int minOverlapX,
+            out int maxOverlapX,
+            out int minOverlapY,
+            out int maxOverlapY)
         {
-            var mosaicGetOverlapLimits = DelegateFactory.Get<Delegates.Mosaic.NvAPI_Mosaic_GetOverlapLimits>();
+            var mosaicGetOverlapLimits = DelegateFactory.GetDelegate<Delegates.Mosaic.NvAPI_Mosaic_GetOverlapLimits>();
+
             if (!mosaicGetOverlapLimits.Accepts().Contains(displaySettings.GetType()))
+            {
                 throw new ArgumentException("Parameter type is not supported.", nameof(displaySettings));
+            }
+
             using (
                 var displaySettingsByRef = ValueTypeReference.FromValueType(displaySettings, displaySettings.GetType()))
             {
                 var status = mosaicGetOverlapLimits(topoBrief, displaySettingsByRef, out minOverlapX, out maxOverlapX,
                     out minOverlapY, out maxOverlapY);
+
                 if (status != Status.Ok)
+                {
                     throw new NVIDIAApiException(status);
+                }
             }
         }
 
@@ -214,25 +279,37 @@ namespace NvAPIWrapper.Native
         /// <exception cref="NVIDIAApiException">Status.NotSupported: Mosaic is not supported with the existing hardware.</exception>
         /// <exception cref="NVIDIAApiException">Status.InvalidArgument: TopologyType is invalid.</exception>
         /// <exception cref="NVIDIAApiException">Status.ApiNotInitialized: The NvAPI API needs to be initialized first.</exception>
-        /// <exception cref="NVIDIAApiException">Status.NoImplementation: This entrypoint not available.</exception>
+        /// <exception cref="NVIDIAApiException">Status.NoImplementation: This entry-point not available.</exception>
         /// <exception cref="NVIDIAApiException">Status.Error: Miscellaneous error occurred.</exception>
         /// <exception cref="NVIDIANotSupportedException">This operation is not supported.</exception>
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
         public static ISupportedTopologiesInfo GetSupportedTopologiesInfo(TopologyType topologyType)
         {
-            var mosaicGetSupportedTopoInfo = DelegateFactory.Get<Delegates.Mosaic.NvAPI_Mosaic_GetSupportedTopoInfo>();
+            var mosaicGetSupportedTopoInfo =
+                DelegateFactory.GetDelegate<Delegates.Mosaic.NvAPI_Mosaic_GetSupportedTopoInfo>();
+
             foreach (var acceptType in mosaicGetSupportedTopoInfo.Accepts())
             {
                 var instance = acceptType.Instantiate<ISupportedTopologiesInfo>();
+
                 using (var supportedTopologiesInfoByRef = ValueTypeReference.FromValueType(instance, acceptType))
                 {
                     var status = mosaicGetSupportedTopoInfo(supportedTopologiesInfoByRef, topologyType);
+
                     if (status == Status.IncompatibleStructureVersion)
+                    {
                         continue;
+                    }
+
                     if (status != Status.Ok)
+                    {
                         throw new NVIDIAApiException(status);
+                    }
+
                     return supportedTopologiesInfoByRef.ToValueType<ISupportedTopologiesInfo>(acceptType);
                 }
             }
+
             throw new NVIDIANotSupportedException("This operation is not supported.");
         }
 
@@ -249,16 +326,21 @@ namespace NvAPIWrapper.Native
         /// </param>
         /// <returns>The topology details matching the brief</returns>
         /// <exception cref="NVIDIAApiException">Status.NotSupported: Mosaic is not supported with the existing hardware.</exception>
-        /// <exception cref="NVIDIAApiException">Status.InvalidArgument: One or more argumentss passed in are invalid.</exception>
+        /// <exception cref="NVIDIAApiException">Status.InvalidArgument: One or more arguments passed in are invalid.</exception>
         /// <exception cref="NVIDIAApiException">Status.ApiNotInitialized: The NvAPI API needs to be initialized first.</exception>
         /// <exception cref="NVIDIAApiException">Status.NoImplementation: This entry point not available.</exception>
         /// <exception cref="NVIDIAApiException">Status.Error: Miscellaneous error occurred.</exception>
         public static TopologyGroup GetTopologyGroup(TopologyBrief topoBrief)
         {
             var result = typeof(TopologyGroup).Instantiate<TopologyGroup>();
-            var status = DelegateFactory.Get<Delegates.Mosaic.NvAPI_Mosaic_GetTopoGroup>()(topoBrief, ref result);
+            var status =
+                DelegateFactory.GetDelegate<Delegates.Mosaic.NvAPI_Mosaic_GetTopoGroup>()(topoBrief, ref result);
+
             if (status != Status.Ok)
+            {
                 throw new NVIDIAApiException(status);
+            }
+
             return result;
         }
 
@@ -290,23 +372,36 @@ namespace NvAPIWrapper.Native
         /// </param>
         /// <exception cref="ArgumentException">displaySettings is of invalid type.</exception>
         /// <exception cref="NVIDIAApiException">Status.NotSupported: Mosaic is not supported with the existing hardware.</exception>
-        /// <exception cref="NVIDIAApiException">Status.InvalidArgument: One or more argumentss passed in are invalid.</exception>
+        /// <exception cref="NVIDIAApiException">Status.InvalidArgument: One or more arguments passed in are invalid.</exception>
         /// <exception cref="NVIDIAApiException">Status.ApiNotInitialized: The NvAPI API needs to be initialized first.</exception>
         /// <exception cref="NVIDIAApiException">Status.NoImplementation: This entry point not available.</exception>
         /// <exception cref="NVIDIAApiException">Status.Error: Miscellaneous error occurred.</exception>
-        public static void SetCurrentTopology(TopologyBrief topoBrief, IDisplaySettings displaySettings, int overlapX,
-            int overlapY, bool enable)
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        // ReSharper disable once TooManyArguments
+        public static void SetCurrentTopology(
+            TopologyBrief topoBrief,
+            IDisplaySettings displaySettings,
+            int overlapX,
+            int overlapY,
+            bool enable)
         {
-            var mosaicSetCurrentTopo = DelegateFactory.Get<Delegates.Mosaic.NvAPI_Mosaic_SetCurrentTopo>();
+            var mosaicSetCurrentTopo = DelegateFactory.GetDelegate<Delegates.Mosaic.NvAPI_Mosaic_SetCurrentTopo>();
+
             if (!mosaicSetCurrentTopo.Accepts().Contains(displaySettings.GetType()))
+            {
                 throw new ArgumentException("Parameter type is not supported.", nameof(displaySettings));
+            }
+
             using (
                 var displaySettingsByRef = ValueTypeReference.FromValueType(displaySettings, displaySettings.GetType()))
             {
                 var status = mosaicSetCurrentTopo(topoBrief, displaySettingsByRef, overlapX, overlapY,
                     (uint) (enable ? 1 : 0));
+
                 if (status != Status.Ok)
+                {
                     throw new NVIDIAApiException(status);
+                }
             }
         }
 
@@ -319,21 +414,25 @@ namespace NvAPIWrapper.Native
         /// <param name="flags">One of the SetDisplayTopologyFlag flags</param>
         /// <exception cref="NVIDIAApiException">Status.TopologyNotPossible: One or more of the display grids are not valid.</exception>
         /// <exception cref="NVIDIAApiException">Status.NoActiveSLITopology: No matching GPU topologies could be found.</exception>
-        /// <exception cref="NVIDIAApiException">Status.InvalidArgument: One or more argumentss passed in are invalid.</exception>
+        /// <exception cref="NVIDIAApiException">Status.InvalidArgument: One or more arguments passed in are invalid.</exception>
         /// <exception cref="NVIDIAApiException">Status.ApiNotInitialized: The NvAPI API needs to be initialized first.</exception>
         /// <exception cref="NVIDIAApiException">Status.NoImplementation: This entry point not available.</exception>
         /// <exception cref="NVIDIAApiException">Status.Error: Miscellaneous error occurred.</exception>
-        public static void SetDisplayGrids(IGridTopology[] gridTopologies,
+        public static void SetDisplayGrids(
+            IGridTopology[] gridTopologies,
             SetDisplayTopologyFlag flags = SetDisplayTopologyFlag.NoFlag)
         {
             using (var gridTopologiesByRef = ValueTypeArray.FromArray(gridTopologies.AsEnumerable()))
             {
                 var status =
-                    DelegateFactory.Get<Delegates.Mosaic.NvAPI_Mosaic_SetDisplayGrids>()(gridTopologiesByRef,
+                    DelegateFactory.GetDelegate<Delegates.Mosaic.NvAPI_Mosaic_SetDisplayGrids>()(gridTopologiesByRef,
                         (uint) gridTopologies.Length,
                         flags);
+
                 if (status != Status.Ok)
+                {
                     throw new NVIDIAApiException(status);
+                }
             }
         }
 
@@ -352,11 +451,12 @@ namespace NvAPIWrapper.Native
         /// <param name="gridTopologies">The array of grid topologies to verify.</param>
         /// <param name="flags">One of the SetDisplayTopologyFlag flags</param>
         /// <exception cref="NVIDIAApiException">Status.NoActiveSLITopology: No matching GPU topologies could be found.</exception>
-        /// <exception cref="NVIDIAApiException">Status.InvalidArgument: One or more argumentss passed in are invalid.</exception>
+        /// <exception cref="NVIDIAApiException">Status.InvalidArgument: One or more arguments passed in are invalid.</exception>
         /// <exception cref="NVIDIAApiException">Status.ApiNotInitialized: The NvAPI API needs to be initialized first.</exception>
         /// <exception cref="NVIDIAApiException">Status.NoImplementation: This entry point not available.</exception>
         /// <exception cref="NVIDIAApiException">Status.Error: Miscellaneous error occurred.</exception>
-        public static DisplayTopologyStatus[] ValidateDisplayGrids(IGridTopology[] gridTopologies,
+        public static DisplayTopologyStatus[] ValidateDisplayGrids(
+            IGridTopology[] gridTopologies,
             SetDisplayTopologyFlag flags = SetDisplayTopologyFlag.NoFlag)
         {
             using (var gridTopologiesByRef = ValueTypeArray.FromArray(gridTopologies.AsEnumerable()))
@@ -364,10 +464,15 @@ namespace NvAPIWrapper.Native
                 var statuses =
                     typeof(DisplayTopologyStatus).Instantiate<DisplayTopologyStatus>().Repeat(gridTopologies.Length);
                 var status =
-                    DelegateFactory.Get<Delegates.Mosaic.NvAPI_Mosaic_ValidateDisplayGrids>()(flags, gridTopologiesByRef,
+                    DelegateFactory.GetDelegate<Delegates.Mosaic.NvAPI_Mosaic_ValidateDisplayGrids>()(flags,
+                        gridTopologiesByRef,
                         ref statuses, (uint) gridTopologies.Length);
+
                 if (status != Status.Ok)
+                {
                     throw new NVIDIAApiException(status);
+                }
+
                 return statuses;
             }
         }

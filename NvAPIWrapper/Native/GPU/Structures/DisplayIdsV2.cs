@@ -21,7 +21,10 @@ namespace NvAPIWrapper.Native.GPU.Structures
         internal readonly uint _RawReserved;
 
         /// <inheritdoc />
-        public uint DisplayId => _DisplayId;
+        public uint DisplayId
+        {
+            get => _DisplayId;
+        }
 
         /// <inheritdoc />
         public bool Equals(DisplayIdsV2 other)
@@ -32,8 +35,12 @@ namespace NvAPIWrapper.Native.GPU.Structures
         /// <inheritdoc />
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            return obj is DisplayIdsV2 && Equals((DisplayIdsV2) obj);
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+
+            return obj is DisplayIdsV2 v2 && Equals(v2);
         }
 
         /// <inheritdoc />
@@ -43,30 +50,57 @@ namespace NvAPIWrapper.Native.GPU.Structures
         }
 
         /// <inheritdoc />
-        public MonitorConnectionType ConnectionType => _ConnectionType;
+        public MonitorConnectionType ConnectionType
+        {
+            get => _ConnectionType;
+        }
 
         /// <inheritdoc />
-        public bool IsDynamic => _RawReserved.GetBit(0);
+        public bool IsDynamic
+        {
+            get => _RawReserved.GetBit(0);
+        }
 
         /// <inheritdoc />
-        public bool IsMultiStreamRootNode => _RawReserved.GetBit(1);
+        public bool IsMultiStreamRootNode
+        {
+            get => _RawReserved.GetBit(1);
+        }
 
         /// <inheritdoc />
-        public bool IsActive => _RawReserved.GetBit(2);
+        public bool IsActive
+        {
+            get => _RawReserved.GetBit(2);
+        }
 
         /// <inheritdoc />
-        public bool IsCluster => _RawReserved.GetBit(3);
+        public bool IsCluster
+        {
+            get => _RawReserved.GetBit(3);
+        }
 
         /// <inheritdoc />
-        public bool IsOSVisible => _RawReserved.GetBit(4);
+        public bool IsOSVisible
+        {
+            get => _RawReserved.GetBit(4);
+        }
 
         /// <inheritdoc />
-        public bool IsWFD => _RawReserved.GetBit(5);
+        public bool IsWFD
+        {
+            get => _RawReserved.GetBit(5);
+        }
 
         /// <inheritdoc />
-        public bool IsConnected => _RawReserved.GetBit(6);
+        public bool IsConnected
+        {
+            get => _RawReserved.GetBit(6);
+        }
 
         /// <inheritdoc />
-        public bool IsPhysicallyConnected => _RawReserved.GetBit(17);
+        public bool IsPhysicallyConnected
+        {
+            get => _RawReserved.GetBit(17);
+        }
     }
 }

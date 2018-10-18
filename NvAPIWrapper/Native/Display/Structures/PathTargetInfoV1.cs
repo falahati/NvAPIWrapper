@@ -13,8 +13,12 @@ namespace NvAPIWrapper.Native.Display.Structures
     ///     Holds information about a path's target
     /// </summary>
     [StructLayout(LayoutKind.Sequential, Pack = 8)]
-    public struct PathTargetInfoV1 : IPathTargetInfo, IInitializable, IDisposable, IAllocatable,
-        IEquatable<PathTargetInfoV1>, IEquatable<PathTargetInfoV2>
+    public struct PathTargetInfoV1 : IPathTargetInfo,
+        IInitializable,
+        IDisposable,
+        IAllocatable,
+        IEquatable<PathTargetInfoV1>,
+        IEquatable<PathTargetInfoV2>
     {
         internal readonly uint _DisplayId;
         internal ValueTypeReference<PathAdvancedTargetInfo> _Details;
@@ -26,24 +30,31 @@ namespace NvAPIWrapper.Native.Display.Structures
         }
 
         /// <inheritdoc />
-        public uint DisplayId => _DisplayId;
+        public uint DisplayId
+        {
+            get => _DisplayId;
+        }
 
         /// <inheritdoc />
         public bool Equals(PathTargetInfoV1 other)
         {
-            return (_DisplayId == other._DisplayId) && _Details.Equals(other._Details);
+            return _DisplayId == other._DisplayId && _Details.Equals(other._Details);
         }
 
         /// <inheritdoc />
         public bool Equals(PathTargetInfoV2 other)
         {
-            return (_DisplayId == other._DisplayId) && _Details.Equals(other._Details);
+            return _DisplayId == other._DisplayId && _Details.Equals(other._Details);
         }
 
         /// <inheritdoc />
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+
             return obj is PathTargetInfoV1 && Equals((PathTargetInfoV1) obj);
         }
 
@@ -52,12 +63,16 @@ namespace NvAPIWrapper.Native.Display.Structures
         {
             unchecked
             {
-                return ((int) _DisplayId*397) ^ _Details.GetHashCode();
+                // ReSharper disable once NonReadonlyMemberInGetHashCode
+                return ((int) _DisplayId * 397) ^ _Details.GetHashCode();
             }
         }
 
         /// <inheritdoc />
-        public PathAdvancedTargetInfo? Details => _Details.ToValueType() ?? default(PathAdvancedTargetInfo);
+        public PathAdvancedTargetInfo? Details
+        {
+            get => _Details.ToValueType() ?? default(PathAdvancedTargetInfo);
+        }
 
         /// <summary>
         ///     Creates a new PathTargetInfoV1

@@ -479,7 +479,7 @@
         RequestUserToDisableDWM = -178,
 
         /// <summary>
-        ///     D3D device status is D3DERR_DEVICELOST or D3DERR_DEVICENOTRESET - the user has to reset the device.
+        ///     D3D device status is "D3DERR_DEVICELOST" or "D3DERR_DEVICENOTRESET" - the user has to reset the device.
         /// </summary>
         D3DDeviceLost = -179,
 
@@ -600,7 +600,7 @@
         D3DDeviceNotRegistered = -202,
 
         /// <summary>
-        ///     Head or SourceId was not reserved for the VR Display before doing the Modeset.
+        ///     Head or SourceId was not reserved for the VR Display before doing the Mode-Set.
         /// </summary>
         ResourceNotAcquired = -203,
 
@@ -630,7 +630,7 @@
         HDCPDisabled = -208,
 
         /// <summary>
-        ///     Atleast an API is still being called
+        ///     At least an API is still being called
         /// </summary>
         ApiInUse = -209,
 

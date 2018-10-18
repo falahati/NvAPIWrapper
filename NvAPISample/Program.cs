@@ -10,6 +10,7 @@ namespace NvAPISample
 {
     internal class Program
     {
+        // ReSharper disable once TooManyDeclarations
         private static void Main()
         {
             NVIDIA.Initialize();
@@ -27,7 +28,7 @@ namespace NvAPISample
                     () =>
                         ConsoleNavigation.PrintObject(UnAttachedDisplay.GetUnAttachedDisplays(),
                             display =>
-                                    ConsoleNavigation.PrintObject(display.PhysicalGPU, "UnAttachedDisplay.PhysicalGPU"),
+                                ConsoleNavigation.PrintObject(display.PhysicalGPU, "UnAttachedDisplay.PhysicalGPU"),
                             "UnAttachedDisplay.GetUnAttachedDisplays()", "Select a display to show GPU information")
                 },
                 {
@@ -79,11 +80,12 @@ namespace NvAPISample
                                     () =>
                                     {
                                         ConsoleNavigation.PrintObject(new
-                                        {
-                                            CurrentClock = gpu.CurrentClockFrequencies,
-                                            BaseClock = gpu.BaseClockFrequencies,
-                                            BoostClock = gpu.BoostClockFrequencies
-                                        }, "PhysicalGPU.CurrentClockFrequencies, PhysicalGPU.BaseClockFrequencies, PhysicalGPU.BoostClockFrequencies");
+                                            {
+                                                CurrentClock = gpu.CurrentClockFrequencies,
+                                                BaseClock = gpu.BaseClockFrequencies,
+                                                BoostClock = gpu.BoostClockFrequencies
+                                            },
+                                            "PhysicalGPU.CurrentClockFrequencies, PhysicalGPU.BaseClockFrequencies, PhysicalGPU.BoostClockFrequencies");
                                     })),
                             "PhysicalGPU.GetPhysicalGPUs()", "Select a GPU to show clock frequencies")
                 },

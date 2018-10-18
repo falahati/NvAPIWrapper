@@ -21,6 +21,7 @@ namespace NvAPIWrapper.Display
         {
             DisplayId = displayId;
             var extraInformation = PhysicalGPU.GetDisplayDevices().FirstOrDefault(ids => ids.DisplayId == DisplayId);
+
             if (extraInformation != null)
             {
                 IsAvailable = true;
@@ -132,6 +133,7 @@ namespace NvAPIWrapper.Display
             {
                 PhysicalGPUHandle handle;
                 var outputId = GPUApi.GetGPUAndOutputIdFromDisplayId(DisplayId, out handle);
+
                 return new GPUOutput(outputId, new PhysicalGPU(handle));
             }
         }
@@ -146,12 +148,14 @@ namespace NvAPIWrapper.Display
                 try
                 {
                     var gpuHandle = GPUApi.GetPhysicalGPUFromDisplayId(DisplayId);
+
                     return new PhysicalGPU(gpuHandle);
                 }
                 catch
                 {
                     // ignored
                 }
+
                 return Output.PhysicalGPU;
             }
         }
@@ -159,8 +163,16 @@ namespace NvAPIWrapper.Display
         /// <inheritdoc />
         public bool Equals(DisplayDevice other)
         {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
+            if (ReferenceEquals(null, other))
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, other))
+            {
+                return true;
+            }
+
             return DisplayId == other.DisplayId;
         }
 
@@ -189,9 +201,21 @@ namespace NvAPIWrapper.Display
         /// <inheritdoc />
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != GetType()) return false;
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
+            }
+
+            if (obj.GetType() != GetType())
+            {
+                return false;
+            }
+
             return Equals((DisplayDevice) obj);
         }
 

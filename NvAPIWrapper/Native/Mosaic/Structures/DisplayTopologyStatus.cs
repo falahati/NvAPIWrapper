@@ -19,28 +19,39 @@ namespace NvAPIWrapper.Native.Mosaic.Structures
         ///     Maximum number of displays for this structure
         /// </summary>
         public const int MaxDisplays =
-            PhysicalGPUHandle.PhysicalGPUs*Constants.Display.AdvancedDisplayHeads;
+            PhysicalGPUHandle.PhysicalGPUs * Constants.Display.AdvancedDisplayHeads;
 
         internal StructureVersion _Version;
         internal readonly DisplayCapacityProblem _Errors;
         internal readonly DisplayTopologyWarning _Warnings;
         internal readonly uint _DisplayCounts;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxDisplays)] internal Display[] _Displays;
+
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxDisplays)]
+        internal Display[] _Displays;
 
         /// <summary>
         ///     Gets all error flags for this topology
         /// </summary>
-        public DisplayCapacityProblem Errors => _Errors;
+        public DisplayCapacityProblem Errors
+        {
+            get => _Errors;
+        }
 
         /// <summary>
         ///     Gets all warning flags for this topology
         /// </summary>
-        public DisplayTopologyWarning Warnings => _Warnings;
+        public DisplayTopologyWarning Warnings
+        {
+            get => _Warnings;
+        }
 
         /// <summary>
         ///     Gets per display statuses
         /// </summary>
-        public Display[] Displays => _Displays.Take((int) _DisplayCounts).ToArray();
+        public Display[] Displays
+        {
+            get => _Displays.Take((int) _DisplayCounts).ToArray();
+        }
 
         /// <summary>
         ///     Holds information about a display validity status in a topology
@@ -56,22 +67,34 @@ namespace NvAPIWrapper.Native.Mosaic.Structures
             /// <summary>
             ///     Gets the Display identification of this display.
             /// </summary>
-            public uint DisplayId => _DisplayId;
+            public uint DisplayId
+            {
+                get => _DisplayId;
+            }
 
             /// <summary>
             ///     Gets all error flags for this display
             /// </summary>
-            public DisplayCapacityProblem Errors => _Errors;
+            public DisplayCapacityProblem Errors
+            {
+                get => _Errors;
+            }
 
             /// <summary>
             ///     Gets all warning flags for this display
             /// </summary>
-            public DisplayTopologyWarning Warnings => _Warnings;
+            public DisplayTopologyWarning Warnings
+            {
+                get => _Warnings;
+            }
 
             /// <summary>
             ///     Indicates if this display can be rotated
             /// </summary>
-            public bool SupportsRotation => _RawReserved.GetBit(0);
+            public bool SupportsRotation
+            {
+                get => _RawReserved.GetBit(0);
+            }
         }
     }
 }

@@ -9,7 +9,10 @@ namespace NvAPISample
     {
         public static void PrintNavigation(Dictionary<object, Action> menuItems, string title, string message)
         {
-            PrintObject(menuItems.Keys.ToArray(), index => { menuItems[index](); }, title, message);
+            PrintObject(menuItems.Keys.ToArray(), index =>
+            {
+                menuItems[index]();
+            }, title, message);
         }
 
         public static void PrintObject(object obj, string title, string message = null)
@@ -19,6 +22,7 @@ namespace NvAPISample
                 Console.WriteLine();
                 Console.WriteLine(title);
             }
+
             WriteObject(obj);
             Console.Write(string.IsNullOrWhiteSpace(message)
                 ? "Press enter to go back"
@@ -26,6 +30,8 @@ namespace NvAPISample
             Console.ReadLine();
         }
 
+        // ReSharper disable once MethodTooLong
+        // ReSharper disable once TooManyArguments
         public static void PrintObject<T>(T[] objects, Action<T> action, string title, string message)
         {
             while (true)
@@ -35,15 +41,20 @@ namespace NvAPISample
                     Console.WriteLine();
                     Console.WriteLine(title);
                 }
+
                 WriteObject(objects);
                 Console.Write($"{message} (Press enter to go back): ");
                 var userInput = Console.ReadLine();
+
                 if (string.IsNullOrWhiteSpace(userInput))
+                {
                     return;
-                int pathIndex;
-                if (int.TryParse(userInput, out pathIndex) &&
-                    (pathIndex >= objects.GetLowerBound(0)) &&
-                    (pathIndex <= objects.GetUpperBound(0)))
+                }
+
+                if (int.TryParse(userInput, out var pathIndex) &&
+                    pathIndex >= objects.GetLowerBound(0) &&
+                    pathIndex <= objects.GetUpperBound(0))
+                {
                     try
                     {
                         action(objects[pathIndex]);
@@ -52,6 +63,7 @@ namespace NvAPISample
                     {
                         WriteException(ex);
                     }
+                }
             }
         }
 
@@ -65,14 +77,18 @@ namespace NvAPISample
             try
             {
                 if (padding == 0)
+                {
                     Console.WriteLine(new string('_', Console.BufferWidth));
+                }
+
                 if (obj.GetType().IsValueType || obj is string)
                 {
-                    Console.WriteLine(new string(' ', padding*3) + obj);
+                    Console.WriteLine(new string(' ', padding * 3) + obj);
                 }
                 else if (obj is IEnumerable)
                 {
                     var i = 0;
+
                     foreach (var arrayItem in (IEnumerable) obj)
                     {
                         Console.WriteLine("[{0}]: {{", i);
@@ -84,11 +100,18 @@ namespace NvAPISample
                 else
                 {
                     foreach (var propertyInfo in obj.GetType().GetProperties().OrderBy(info => info.Name))
-                        Console.WriteLine(new string(' ', padding*3) + propertyInfo.Name + ": " +
+                    {
+                        Console.WriteLine(new string(' ', padding * 3) +
+                                          propertyInfo.Name +
+                                          ": " +
                                           propertyInfo.GetValue(obj));
+                    }
                 }
+
                 if (padding == 0)
+                {
                     Console.WriteLine(new string('_', Console.BufferWidth));
+                }
             }
             catch (Exception ex)
             {

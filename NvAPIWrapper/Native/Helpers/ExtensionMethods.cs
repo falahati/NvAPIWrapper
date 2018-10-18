@@ -11,27 +11,41 @@ namespace NvAPIWrapper.Native.Helpers
 {
     internal static class ExtensionMethods
     {
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
         public static Type[] Accepts(this Delegate @delegate, int parameterIndex = 0)
         {
             Type[] types = null;
             var parameters = @delegate.GetType().GetMethod("Invoke")?.GetParameters();
+
             if (parameterIndex > 0)
+            {
                 if (parameters?.Length >= parameterIndex)
+                {
                     types = parameters[parameterIndex - 1].GetCustomAttributes(typeof(AcceptsAttribute), true)
                         .Cast<AcceptsAttribute>()
                         .FirstOrDefault()?
                         .Types;
+                }
+            }
+
             if (types == null)
+            {
                 if (parameters != null)
+                {
                     types = parameters.SelectMany(param => param.GetCustomAttributes(typeof(AcceptsAttribute), true))
                         .Cast<AcceptsAttribute>()
                         .FirstOrDefault()?
                         .Types;
+                }
                 else
+                {
                     types = @delegate.GetType().GetCustomAttributes(typeof(AcceptsAttribute), false)
                         .Cast<AcceptsAttribute>()
                         .FirstOrDefault()?
                         .Types;
+                }
+            }
+
             return types ?? new Type[0];
         }
 
@@ -43,30 +57,42 @@ namespace NvAPIWrapper.Native.Helpers
             {
                 var boxedCopy = (IAllocatable) allocatable;
                 boxedCopy.Allocate();
+
                 yield return (T) boxedCopy;
             }
         }
 
-        public static TResult BitwiseConvert<TResult, T>(T source) where TResult : struct, IConvertible
+        public static TResult BitWiseConvert<TResult, T>(T source)
+            where TResult : struct, IConvertible
             where T : struct, IConvertible
         {
             if (typeof(T) == typeof(TResult))
+            {
                 return (TResult) (object) source;
+            }
+
             var sourceSize = Marshal.SizeOf(typeof(T));
             var destinationSize = Marshal.SizeOf(typeof(TResult));
             var minSize = Math.Min(sourceSize, destinationSize);
             var sourcePointer = Marshal.AllocHGlobal(sourceSize);
             Marshal.StructureToPtr(source, sourcePointer, false);
             var bytes = new byte[destinationSize];
+
             if (BitConverter.IsLittleEndian)
+            {
                 Marshal.Copy(sourcePointer, bytes, 0, minSize);
+            }
             else
+            {
                 Marshal.Copy(sourcePointer + (sourceSize - minSize), bytes, destinationSize - minSize, minSize);
+            }
+
             Marshal.FreeHGlobal(sourcePointer);
             var destinationPointer = Marshal.AllocHGlobal(destinationSize);
             Marshal.Copy(bytes, 0, destinationPointer, destinationSize);
             var destination = (TResult) Marshal.PtrToStructure(destinationPointer, typeof(TResult));
             Marshal.FreeHGlobal(destinationPointer);
+
             return destination;
         }
 
@@ -78,40 +104,55 @@ namespace NvAPIWrapper.Native.Helpers
                     item =>
                         item.GetType()
                             .GetInterfaces()
-                            .Any(i => (i == typeof(IDisposable)) || (i == typeof(IAllocatable)))))
+                            .Any(i => i == typeof(IDisposable) || i == typeof(IAllocatable))))
+            {
                 ((IDisposable) disposable).Dispose();
+            }
         }
 
         public static bool GetBit<T>(this T integer, int index) where T : struct, IConvertible
         {
-            var bigInteger = BitwiseConvert<ulong, T>(integer);
+            var bigInteger = BitWiseConvert<ulong, T>(integer);
+
             return (bigInteger & (1ul << index)) != 0;
         }
 
         public static ulong GetBits<T>(this T integer, int index, int count) where T : struct, IConvertible
         {
             var mask = 0ul;
-            for (int i = 0; i < count; i++)
+
+            for (var i = 0; i < count; i++)
             {
                 mask = mask | (1ul << (index + i));
             }
-            var bigInteger = BitwiseConvert<ulong, T>(integer);
+
+            var bigInteger = BitWiseConvert<ulong, T>(integer);
+
             return bigInteger & mask;
         }
 
         // ReSharper disable once FunctionComplexityOverflow
+        // ReSharper disable once ExcessiveIndentation
         public static T Instantiate<T>(this Type type)
         {
             object instance = default(T);
+
             try
             {
                 if (type.IsValueType)
+                {
                     instance = (T) Activator.CreateInstance(type);
-                if (type.GetInterfaces().Any(i => (i == typeof(IInitializable)) || (i == typeof(IAllocatable))))
+                }
+
+                if (type.GetInterfaces().Any(i => i == typeof(IInitializable) || i == typeof(IAllocatable)))
+                {
                     foreach (var field in type.GetRuntimeFields())
                     {
                         if (field.IsStatic || field.IsLiteral)
+                        {
                             continue;
+                        }
+
                         if (field.FieldType == typeof(StructureVersion))
                         {
                             var version =
@@ -130,13 +171,18 @@ namespace NvAPIWrapper.Native.Helpers
                                     .FirstOrDefault(attribute => attribute.Value != UnmanagedType.LPArray)?
                                     .SizeConst;
                             var arrayType = field.FieldType.GetElementType();
-                            var array = Array.CreateInstance(arrayType, size ?? 0);
+                            var array = Array.CreateInstance(
+                                arrayType ?? throw new InvalidOperationException("Field type is null."), size ?? 0);
+
                             if (arrayType.IsValueType)
+                            {
                                 for (var i = 0; i < array.Length; i++)
                                 {
                                     var obj = arrayType.Instantiate<object>();
                                     array.SetValue(obj, i);
                                 }
+                            }
+
                             field.SetValue(instance, array);
                         }
                         else if (field.FieldType.IsValueType)
@@ -144,6 +190,7 @@ namespace NvAPIWrapper.Native.Helpers
                             var isByRef = field.GetCustomAttributes(typeof(MarshalAsAttribute), false)
                                 .Cast<MarshalAsAttribute>()
                                 .Any(attribute => attribute.Value == UnmanagedType.LPStruct);
+
                             if (!isByRef)
                             {
                                 var value = field.FieldType.Instantiate<object>();
@@ -151,11 +198,13 @@ namespace NvAPIWrapper.Native.Helpers
                             }
                         }
                     }
+                }
             }
             catch
             {
                 // ignored
             }
+
             return (T) instance;
         }
 
@@ -167,21 +216,26 @@ namespace NvAPIWrapper.Native.Helpers
         public static T SetBit<T>(this T integer, int index, bool value) where T : struct, IConvertible
         {
             var mask = 1ul << index;
-            var bigInteger = BitwiseConvert<ulong, T>(integer);
+            var bigInteger = BitWiseConvert<ulong, T>(integer);
             var newInteger = value ? bigInteger | mask : bigInteger & ~mask;
-            return BitwiseConvert<T, ulong>(newInteger);
+
+            return BitWiseConvert<T, ulong>(newInteger);
         }
 
+        // ReSharper disable once TooManyArguments
         public static T SetBits<T>(this T integer, int index, int count, ulong value) where T : struct, IConvertible
         {
             var mask = 0ul;
-            for (int i = 0; i < count; i++)
+
+            for (var i = 0; i < count; i++)
             {
                 mask = mask | (1ul << (index + i));
             }
-            var bigInteger = BitwiseConvert<ulong, T>(integer);
+
+            var bigInteger = BitWiseConvert<ulong, T>(integer);
             var newInteger = bigInteger | (mask & value);
-            return BitwiseConvert<T, ulong>(newInteger);
+
+            return BitWiseConvert<T, ulong>(newInteger);
         }
     }
 }

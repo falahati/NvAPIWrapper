@@ -16,7 +16,7 @@ namespace NvAPIWrapper.Native.Mosaic.Structures
     ///     The structure is primarily used internally, but is exposed to applications in a read-only fashion because there are
     ///     some details in it that might be useful (like the number of rows/cols, or connected display information).  A user
     ///     can get the filled-in structure by calling NvAPI_Mosaic_GetTopoGroup().
-    ///     You can then look at the detailed values within the structure.  There are no entrypoints which take this structure
+    ///     You can then look at the detailed values within the structure.  There are no entry points which take this structure
     ///     as input (effectively making it read-only).
     /// </summary>
     [StructLayout(LayoutKind.Sequential, Pack = 8)]
@@ -29,34 +29,46 @@ namespace NvAPIWrapper.Native.Mosaic.Structures
         public const int MaxTopologyPerGroup = 2;
 
         internal StructureVersion _Version;
-        internal TopologyBrief _Brief;
+        internal readonly TopologyBrief _Brief;
         internal readonly uint _TopologiesCount;
 
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxTopologyPerGroup)] internal TopologyDetails[]
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxTopologyPerGroup)]
+        internal readonly TopologyDetails[]
             _TopologyDetails;
 
         /// <summary>
         ///     The brief details of this topology
         /// </summary>
-        public TopologyBrief Brief => _Brief;
+        public TopologyBrief Brief
+        {
+            get => _Brief;
+        }
 
         /// <summary>
         ///     Information about the topologies within this group
         /// </summary>
-        public TopologyDetails[] TopologyDetails => _TopologyDetails.Take((int) _TopologiesCount).ToArray();
+        public TopologyDetails[] TopologyDetails
+        {
+            get => _TopologyDetails.Take((int) _TopologiesCount).ToArray();
+        }
 
         /// <inheritdoc />
         public bool Equals(TopologyGroup other)
         {
-            return _Brief.Equals(other._Brief) && (_TopologiesCount == other._TopologiesCount) &&
+            return _Brief.Equals(other._Brief) &&
+                   _TopologiesCount == other._TopologiesCount &&
                    _TopologyDetails.SequenceEqual(other._TopologyDetails);
         }
 
         /// <inheritdoc />
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            return obj is TopologyGroup && Equals((TopologyGroup) obj);
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+
+            return obj is TopologyGroup group && Equals(group);
         }
 
         /// <summary>
@@ -87,8 +99,9 @@ namespace NvAPIWrapper.Native.Mosaic.Structures
             unchecked
             {
                 var hashCode = _Brief.GetHashCode();
-                hashCode = (hashCode*397) ^ (int) _TopologiesCount;
-                hashCode = (hashCode*397) ^ (_TopologyDetails?.GetHashCode() ?? 0);
+                hashCode = (hashCode * 397) ^ (int) _TopologiesCount;
+                hashCode = (hashCode * 397) ^ (_TopologyDetails?.GetHashCode() ?? 0);
+
                 return hashCode;
             }
         }

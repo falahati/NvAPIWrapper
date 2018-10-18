@@ -106,7 +106,7 @@
         LFH_DVI_I2 = 0x00000039,
 
         /// <summary>
-        ///     SPWG pinout connector
+        ///     SPWG pin-out connector
         /// </summary>
         SPWG = 0x00000040,
 
@@ -150,7 +150,7 @@
         /// <summary>
         ///     DisplayPort 2 through LFH
         /// </summary>
-        LFHDisplayport2 = 0x00000065,
+        LFHDisplayPort2 = 0x00000065,
 
         /// <summary>
         ///     Virtual Wireless

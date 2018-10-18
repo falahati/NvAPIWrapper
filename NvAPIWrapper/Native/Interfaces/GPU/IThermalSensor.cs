@@ -28,7 +28,7 @@ namespace NvAPIWrapper.Native.Interfaces.GPU
         int DefaultMinimumTemperature { get; }
 
         /// <summary>
-        ///     Thermal sensor targeted - GPU, memory, chipset, powersupply, Visual Computing Device, etc
+        ///     Thermal sensor targeted - GPU, memory, chipset, power supply, Visual Computing Device, etc
         /// </summary>
         ThermalSettingsTarget Target { get; }
     }

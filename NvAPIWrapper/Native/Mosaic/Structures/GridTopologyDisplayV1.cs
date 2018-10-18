@@ -11,7 +11,7 @@ namespace NvAPIWrapper.Native.Mosaic.Structures
     [StructLayout(LayoutKind.Sequential, Pack = 8)]
     public struct GridTopologyDisplayV1 : IGridTopologyDisplay, IEquatable<GridTopologyDisplayV1>
     {
-        internal uint _DisplayId;
+        internal readonly uint _DisplayId;
         internal readonly int _OverlapX;
         internal readonly int _OverlapY;
         internal readonly Rotate _Rotation;
@@ -25,6 +25,7 @@ namespace NvAPIWrapper.Native.Mosaic.Structures
         /// <param name="overlapY">Vertical overlap (+overlap, -gap)</param>
         /// <param name="rotation">Rotation of display</param>
         /// <param name="cloneGroup">Clone group identification; Reserved, must be 0</param>
+        // ReSharper disable once TooManyDependencies
         public GridTopologyDisplayV1(uint displayId, int overlapX, int overlapY, Rotate rotation, uint cloneGroup = 0)
             : this()
         {
@@ -38,15 +39,22 @@ namespace NvAPIWrapper.Native.Mosaic.Structures
         /// <inheritdoc />
         public bool Equals(GridTopologyDisplayV1 other)
         {
-            return (_DisplayId == other._DisplayId) && (_OverlapX == other._OverlapX) && (_OverlapY == other._OverlapY) &&
-                   (_Rotation == other._Rotation) && (_CloneGroup == other._CloneGroup);
+            return _DisplayId == other._DisplayId &&
+                   _OverlapX == other._OverlapX &&
+                   _OverlapY == other._OverlapY &&
+                   _Rotation == other._Rotation &&
+                   _CloneGroup == other._CloneGroup;
         }
 
         /// <inheritdoc />
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            return obj is GridTopologyDisplayV1 && Equals((GridTopologyDisplayV1) obj);
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+
+            return obj is GridTopologyDisplayV1 v1 && Equals(v1);
         }
 
         /// <inheritdoc />
@@ -55,10 +63,11 @@ namespace NvAPIWrapper.Native.Mosaic.Structures
             unchecked
             {
                 var hashCode = (int) _DisplayId;
-                hashCode = (hashCode*397) ^ _OverlapX;
-                hashCode = (hashCode*397) ^ _OverlapY;
-                hashCode = (hashCode*397) ^ (int) _Rotation;
-                hashCode = (hashCode*397) ^ (int) _CloneGroup;
+                hashCode = (hashCode * 397) ^ _OverlapX;
+                hashCode = (hashCode * 397) ^ _OverlapY;
+                hashCode = (hashCode * 397) ^ (int) _Rotation;
+                hashCode = (hashCode * 397) ^ (int) _CloneGroup;
+
                 return hashCode;
             }
         }
@@ -86,21 +95,39 @@ namespace NvAPIWrapper.Native.Mosaic.Structures
         }
 
         /// <inheritdoc />
-        public uint DisplayId => _DisplayId;
+        public uint DisplayId
+        {
+            get => _DisplayId;
+        }
 
         /// <inheritdoc />
-        public int OverlapX => _OverlapX;
+        public int OverlapX
+        {
+            get => _OverlapX;
+        }
 
         /// <inheritdoc />
-        public int OverlapY => _OverlapY;
+        public int OverlapY
+        {
+            get => _OverlapY;
+        }
 
         /// <inheritdoc />
-        public Rotate Rotation => _Rotation;
+        public Rotate Rotation
+        {
+            get => _Rotation;
+        }
 
         /// <inheritdoc />
-        public uint CloneGroup => _CloneGroup;
+        public uint CloneGroup
+        {
+            get => _CloneGroup;
+        }
 
         /// <inheritdoc />
-        public PixelShiftType PixelShiftType => PixelShiftType.NoPixelShift;
+        public PixelShiftType PixelShiftType
+        {
+            get => PixelShiftType.NoPixelShift;
+        }
     }
 }

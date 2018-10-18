@@ -14,7 +14,7 @@ namespace NvAPIWrapper.Native.GPU
         None = 0,
 
         /// <summary>
-        ///     Get uncached connected devices
+        ///     Get un-cached connected devices
         /// </summary>
         UnCached = 1,
 

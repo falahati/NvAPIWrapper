@@ -14,10 +14,16 @@ namespace NvAPIWrapper.Native.Display.Structures
         internal readonly IntPtr _MemoryAddress;
 
         /// <inheritdoc />
-        public IntPtr MemoryAddress => _MemoryAddress;
+        public IntPtr MemoryAddress
+        {
+            get => _MemoryAddress;
+        }
 
         /// <inheritdoc />
-        public bool IsNull => _MemoryAddress == IntPtr.Zero;
+        public bool IsNull
+        {
+            get => _MemoryAddress == IntPtr.Zero;
+        }
 
         /// <inheritdoc />
         public bool Equals(DisplayHandle other)
@@ -28,8 +34,12 @@ namespace NvAPIWrapper.Native.Display.Structures
         /// <inheritdoc />
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            return obj is DisplayHandle && Equals((DisplayHandle) obj);
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+
+            return obj is DisplayHandle handle && Equals(handle);
         }
 
         /// <inheritdoc />
@@ -69,6 +79,9 @@ namespace NvAPIWrapper.Native.Display.Structures
         /// <summary>
         ///     Gets default DisplayHandle with a null pointer
         /// </summary>
-        public static DisplayHandle DefaultHandle => default(DisplayHandle);
+        public static DisplayHandle DefaultHandle
+        {
+            get => default(DisplayHandle);
+        }
     }
 }

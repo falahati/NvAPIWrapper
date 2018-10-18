@@ -15,17 +15,23 @@ namespace NvAPIWrapper.Native.GPU.Structures
         /// <summary>
         ///     Gets a boolean value that indicates if this utilization domain is present on this GPU.
         /// </summary>
-        public bool IsPresent => _IsPresent.GetBit(0);
+        public bool IsPresent
+        {
+            get => _IsPresent.GetBit(0);
+        }
 
         /// <summary>
         ///     Gets the percentage of time where the domain is considered busy in the last 1 second interval.
         /// </summary>
-        public uint Percentage => _Percentage;
+        public uint Percentage
+        {
+            get => _Percentage;
+        }
 
         /// <inheritdoc />
         public override string ToString()
         {
-            return IsPresent ? $"{Percentage}%" : "Not Present";
+            return IsPresent ? $"{Percentage}%" : "N/A";
         }
     }
 }

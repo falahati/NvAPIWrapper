@@ -10,14 +10,14 @@ namespace NvAPIWrapper.Native.Interfaces.GPU
     public interface IClockFrequencies
     {
         /// <summary>
-        ///     Gets the type of clock frequencies provided with this object
-        /// </summary>
-        ClockType ClockType { get; }
-
-        /// <summary>
         ///     Gets all valid clocks
         /// </summary>
         Dictionary<PublicClock, ClockDomainInfo> Clocks { get; }
+
+        /// <summary>
+        ///     Gets the type of clock frequencies provided with this object
+        /// </summary>
+        ClockType ClockType { get; }
 
         /// <summary>
         ///     Gets graphics engine clock
@@ -30,13 +30,13 @@ namespace NvAPIWrapper.Native.Interfaces.GPU
         ClockDomainInfo MemoryClock { get; }
 
         /// <summary>
-        ///     Gets video decoding clock
-        /// </summary>
-        ClockDomainInfo VideoDecodingClock { get; }
-
-        /// <summary>
         ///     Gets processor clock
         /// </summary>
         ClockDomainInfo ProcessorClock { get; }
+
+        /// <summary>
+        ///     Gets video decoding clock
+        /// </summary>
+        ClockDomainInfo VideoDecodingClock { get; }
     }
 }

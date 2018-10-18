@@ -27,8 +27,11 @@ namespace NvAPIWrapper.Native.Mosaic.Structures
         internal readonly uint _Columns;
         internal readonly uint _DisplayCount;
         internal uint _RawReserved;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxDisplays)] internal GridTopologyDisplayV2[] _Displays;
-        internal DisplaySettingsV1 _DisplaySettings;
+
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxDisplays)]
+        internal readonly GridTopologyDisplayV2[] _Displays;
+
+        internal readonly DisplaySettingsV1 _DisplaySettings;
 
         /// <summary>
         ///     Creates a new GridTopologyV2
@@ -38,7 +41,7 @@ namespace NvAPIWrapper.Native.Mosaic.Structures
         /// <param name="displays">Topology displays; Displays are done as [(row * columns) + column]</param>
         /// <param name="displaySettings">Display settings</param>
         /// <param name="applyWithBezelCorrectedResolution">
-        ///     When enabling and doing the modeset, do we switch to the
+        ///     When enabling and doing the mode-set, do we switch to the
         ///     bezel-corrected resolution
         /// </param>
         /// <param name="immersiveGaming">Enable as immersive gaming instead of Mosaic SLI (for Quadro-boards only)</param>
@@ -57,18 +60,35 @@ namespace NvAPIWrapper.Native.Mosaic.Structures
         /// <param name="pixelShift">Enable Pixel shift</param>
         /// <exception cref="ArgumentOutOfRangeException">Total number of topology displays is below or equal to zero</exception>
         /// <exception cref="ArgumentException">Number of displays doesn't match the arrangement</exception>
-        public GridTopologyV2(int rows, int columns, GridTopologyDisplayV2[] displays, DisplaySettingsV1 displaySettings,
-            bool applyWithBezelCorrectedResolution, bool immersiveGaming, bool baseMosaicPanoramic,
+        // ReSharper disable once TooManyDependencies
+        public GridTopologyV2(
+            int rows,
+            int columns,
+            GridTopologyDisplayV2[] displays,
+            DisplaySettingsV1 displaySettings,
+            bool applyWithBezelCorrectedResolution,
+            bool immersiveGaming,
+            bool baseMosaicPanoramic,
             bool driverReloadAllowed,
-            bool acceleratePrimaryDisplay, bool pixelShift)
+            bool acceleratePrimaryDisplay,
+            bool pixelShift)
         {
-            if (rows*columns <= 0)
+            if (rows * columns <= 0)
+            {
                 throw new ArgumentOutOfRangeException($"{nameof(rows)}, {nameof(columns)}",
                     "Invalid display arrangement.");
+            }
+
             if (displays.Length > MaxDisplays)
+            {
                 throw new ArgumentException("Too many displays.");
-            if (displays.Length != rows*columns)
+            }
+
+            if (displays.Length != rows * columns)
+            {
                 throw new ArgumentException("Number of displays should match the arrangement.", nameof(displays));
+            }
+
             this = typeof(GridTopologyV2).Instantiate<GridTopologyV2>();
             _Rows = (uint) rows;
             _Columns = (uint) columns;
@@ -87,16 +107,23 @@ namespace NvAPIWrapper.Native.Mosaic.Structures
         /// <inheritdoc />
         public bool Equals(GridTopologyV2 other)
         {
-            return (_Rows == other._Rows) && (_Columns == other._Columns) && (_DisplayCount == other._DisplayCount) &&
-                   (_RawReserved == other._RawReserved) && _Displays.SequenceEqual(other._Displays) &&
+            return _Rows == other._Rows &&
+                   _Columns == other._Columns &&
+                   _DisplayCount == other._DisplayCount &&
+                   _RawReserved == other._RawReserved &&
+                   _Displays.SequenceEqual(other._Displays) &&
                    _DisplaySettings.Equals(other._DisplaySettings);
         }
 
         /// <inheritdoc />
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            return obj is GridTopologyV2 && Equals((GridTopologyV2) obj);
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+
+            return obj is GridTopologyV2 v2 && Equals(v2);
         }
 
         /// <inheritdoc />
@@ -105,61 +132,74 @@ namespace NvAPIWrapper.Native.Mosaic.Structures
             unchecked
             {
                 var hashCode = (int) _Rows;
-                hashCode = (hashCode*397) ^ (int) _Columns;
-                hashCode = (hashCode*397) ^ (int) _DisplayCount;
-                hashCode = (hashCode*397) ^ (int) _RawReserved;
-                hashCode = (hashCode*397) ^ (_Displays?.GetHashCode() ?? 0);
-                hashCode = (hashCode*397) ^ _DisplaySettings.GetHashCode();
+                hashCode = (hashCode * 397) ^ (int) _Columns;
+                hashCode = (hashCode * 397) ^ (int) _DisplayCount;
+                // ReSharper disable once NonReadonlyMemberInGetHashCode
+                hashCode = (hashCode * 397) ^ (int) _RawReserved;
+                hashCode = (hashCode * 397) ^ (_Displays?.GetHashCode() ?? 0);
+                hashCode = (hashCode * 397) ^ _DisplaySettings.GetHashCode();
+
                 return hashCode;
             }
         }
 
         /// <inheritdoc />
-        public int Rows => (int) _Rows;
+        public int Rows
+        {
+            get => (int) _Rows;
+        }
 
         /// <inheritdoc />
-        public int Columns => (int) _Columns;
+        public int Columns
+        {
+            get => (int) _Columns;
+        }
 
         /// <inheritdoc />
         public IEnumerable<IGridTopologyDisplay> Displays
-            => _Displays.Take((int) _DisplayCount).Cast<IGridTopologyDisplay>();
+        {
+            get => _Displays.Take((int) _DisplayCount).Cast<IGridTopologyDisplay>();
+        }
 
         /// <inheritdoc />
-        public DisplaySettingsV1 DisplaySettings => _DisplaySettings;
+        public DisplaySettingsV1 DisplaySettings
+        {
+            get => _DisplaySettings;
+        }
 
         /// <inheritdoc />
         public bool ApplyWithBezelCorrectedResolution
         {
-            get { return _RawReserved.GetBit(0); }
-            private set { _RawReserved = _RawReserved.SetBit(0, value); }
+            get => _RawReserved.GetBit(0);
+            private set => _RawReserved = _RawReserved.SetBit(0, value);
         }
 
         /// <inheritdoc />
         public bool ImmersiveGaming
         {
-            get { return _RawReserved.GetBit(1); }
-            private set { _RawReserved = _RawReserved.SetBit(1, value); }
+            get => _RawReserved.GetBit(1);
+            private set => _RawReserved = _RawReserved.SetBit(1, value);
         }
 
         /// <inheritdoc />
         public bool BaseMosaicPanoramic
         {
-            get { return _RawReserved.GetBit(2); }
-            private set { _RawReserved = _RawReserved.SetBit(2, value); }
+            get => _RawReserved.GetBit(2);
+            private set => _RawReserved = _RawReserved.SetBit(2, value);
         }
 
         /// <inheritdoc />
         public bool DriverReloadAllowed
         {
-            get { return _RawReserved.GetBit(3); }
-            private set { _RawReserved = _RawReserved.SetBit(3, value); }
+            get => _RawReserved.GetBit(3);
+            private set => _RawReserved = _RawReserved.SetBit(3, value);
         }
 
         /// <inheritdoc />
         public bool AcceleratePrimaryDisplay
         {
-            get { return _RawReserved.GetBit(4); }
-            private set { _RawReserved = _RawReserved.SetBit(4, value); }
+            get => _RawReserved.GetBit(4);
+            private set => _RawReserved = _RawReserved.SetBit(4, value);
         }
 
         /// <summary>
@@ -167,8 +207,8 @@ namespace NvAPIWrapper.Native.Mosaic.Structures
         /// </summary>
         public bool PixelShift
         {
-            get { return _RawReserved.GetBit(5); }
-            private set { _RawReserved = _RawReserved.SetBit(5, value); }
+            get => _RawReserved.GetBit(5);
+            private set => _RawReserved = _RawReserved.SetBit(5, value);
         }
     }
 }

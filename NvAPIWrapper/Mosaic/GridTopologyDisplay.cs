@@ -20,7 +20,10 @@ namespace NvAPIWrapper.Mosaic
         /// <param name="rotation">The display rotation</param>
         /// <param name="cloneGroup">The display clone group</param>
         /// <param name="pixelShiftType">The display pixel shift type</param>
-        public GridTopologyDisplay(uint displayId, Overlap overlap = default(Overlap), Rotate rotation = Rotate.Degree0,
+        public GridTopologyDisplay(
+            uint displayId,
+            Overlap overlap = default(Overlap),
+            Rotate rotation = Rotate.Degree0,
             uint cloneGroup = 0,
             PixelShiftType pixelShiftType = PixelShiftType.NoPixelShift)
             : this(new DisplayDevice(displayId), overlap, rotation, cloneGroup, pixelShiftType)
@@ -35,7 +38,9 @@ namespace NvAPIWrapper.Mosaic
         /// <param name="rotation">The display rotation</param>
         /// <param name="cloneGroup">The display clone group</param>
         /// <param name="pixelShiftType">The display pixel shift type</param>
-        public GridTopologyDisplay(DisplayDevice display, Overlap overlap = default(Overlap),
+        public GridTopologyDisplay(
+            DisplayDevice display,
+            Overlap overlap = default(Overlap),
             Rotate rotation = Rotate.Degree0,
             uint cloneGroup = 0,
             PixelShiftType pixelShiftType = PixelShiftType.NoPixelShift)
@@ -87,11 +92,21 @@ namespace NvAPIWrapper.Mosaic
         /// <inheritdoc />
         public bool Equals(GridTopologyDisplay other)
         {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
-            return DisplayDevice.Equals(other.DisplayDevice) && Overlap.Equals(other.Overlap) &&
-                   (Rotation == other.Rotation) && (CloneGroup == other.CloneGroup) &&
-                   (PixelShiftType == other.PixelShiftType);
+            if (ReferenceEquals(null, other))
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, other))
+            {
+                return true;
+            }
+
+            return DisplayDevice.Equals(other.DisplayDevice) &&
+                   Overlap.Equals(other.Overlap) &&
+                   Rotation == other.Rotation &&
+                   CloneGroup == other.CloneGroup &&
+                   PixelShiftType == other.PixelShiftType;
         }
 
         /// <summary>
@@ -119,9 +134,21 @@ namespace NvAPIWrapper.Mosaic
         /// <inheritdoc />
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != GetType()) return false;
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
+            }
+
+            if (obj.GetType() != GetType())
+            {
+                return false;
+            }
+
             return Equals((GridTopologyDisplay) obj);
         }
 
@@ -131,10 +158,11 @@ namespace NvAPIWrapper.Mosaic
             unchecked
             {
                 var hashCode = DisplayDevice?.GetHashCode() ?? 0;
-                hashCode = (hashCode*397) ^ Overlap.GetHashCode();
-                hashCode = (hashCode*397) ^ (int) Rotation;
-                hashCode = (hashCode*397) ^ (int) CloneGroup;
-                hashCode = (hashCode*397) ^ (int) PixelShiftType;
+                hashCode = (hashCode * 397) ^ Overlap.GetHashCode();
+                hashCode = (hashCode * 397) ^ (int) Rotation;
+                hashCode = (hashCode * 397) ^ (int) CloneGroup;
+                hashCode = (hashCode * 397) ^ (int) PixelShiftType;
+
                 return hashCode;
             }
         }
@@ -145,7 +173,8 @@ namespace NvAPIWrapper.Mosaic
         /// <returns>The newly created GridTopologyDisplayV1 object</returns>
         public GridTopologyDisplayV1 GetGridTopologyDisplayV1()
         {
-            return new GridTopologyDisplayV1(DisplayDevice.DisplayId, Overlap.HorizontalOverlap, Overlap.VerticalOverlap,
+            return new GridTopologyDisplayV1(DisplayDevice.DisplayId, Overlap.HorizontalOverlap,
+                Overlap.VerticalOverlap,
                 Rotation, CloneGroup);
         }
 
@@ -155,7 +184,8 @@ namespace NvAPIWrapper.Mosaic
         /// <returns>The newly created GridTopologyDisplayV2 object</returns>
         public GridTopologyDisplayV2 GetGridTopologyDisplayV2()
         {
-            return new GridTopologyDisplayV2(DisplayDevice.DisplayId, Overlap.HorizontalOverlap, Overlap.VerticalOverlap,
+            return new GridTopologyDisplayV2(DisplayDevice.DisplayId, Overlap.HorizontalOverlap,
+                Overlap.VerticalOverlap,
                 Rotation, CloneGroup, PixelShiftType);
         }
     }

@@ -25,11 +25,17 @@ namespace NvAPIWrapper.Mosaic
         {
             SetDisplays(rows, columns, displays);
             var possibleDisplaySettings = GetPossibleDisplaySettings();
+
             if (possibleDisplaySettings.Any())
+            {
                 SetDisplaySettings(
                     possibleDisplaySettings.OrderByDescending(
-                            settings => (long) settings.Width*settings.Height*settings.BitsPerPixel*settings.Frequency)
+                            settings => (long) settings.Width *
+                                        settings.Height *
+                                        settings.BitsPerPixel *
+                                        settings.Frequency)
                         .First());
+            }
         }
 
         /// <summary>
@@ -105,13 +111,25 @@ namespace NvAPIWrapper.Mosaic
         /// <inheritdoc />
         public bool Equals(GridTopology other)
         {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
-            return Resolution.Equals(other.Resolution) && (Frequency == other.Frequency) && (Rows == other.Rows) &&
-                   (Columns == other.Columns) && Displays.SequenceEqual(other.Displays) &&
-                   (ApplyWithBezelCorrectedResolution == other.ApplyWithBezelCorrectedResolution) &&
-                   (ImmersiveGaming == other.ImmersiveGaming) && (BaseMosaicPanoramic == other.BaseMosaicPanoramic) &&
-                   (AcceleratePrimaryDisplay == other.AcceleratePrimaryDisplay);
+            if (ReferenceEquals(null, other))
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, other))
+            {
+                return true;
+            }
+
+            return Resolution.Equals(other.Resolution) &&
+                   Frequency == other.Frequency &&
+                   Rows == other.Rows &&
+                   Columns == other.Columns &&
+                   Displays.SequenceEqual(other.Displays) &&
+                   ApplyWithBezelCorrectedResolution == other.ApplyWithBezelCorrectedResolution &&
+                   ImmersiveGaming == other.ImmersiveGaming &&
+                   BaseMosaicPanoramic == other.BaseMosaicPanoramic &&
+                   AcceleratePrimaryDisplay == other.AcceleratePrimaryDisplay;
         }
 
         /// <summary>
@@ -150,10 +168,12 @@ namespace NvAPIWrapper.Mosaic
         /// </summary>
         /// <param name="grids">An array of grid topologies to apply</param>
         /// <param name="flags">SetDisplayTopologyFlag flag</param>
-        public static void SetGridTopologies(GridTopology[] grids,
+        public static void SetGridTopologies(
+            GridTopology[] grids,
             SetDisplayTopologyFlag flags = SetDisplayTopologyFlag.NoFlag)
         {
             var gridTopologyV2 = grids.Select(grid => grid.GetGridTopologyV2()).Cast<IGridTopology>().ToArray();
+
             try
             {
                 MosaicApi.SetDisplayGrids(gridTopologyV2, flags);
@@ -161,12 +181,15 @@ namespace NvAPIWrapper.Mosaic
             catch (NVIDIAApiException ex)
             {
                 if (ex.Status != Status.IncompatibleStructureVersion)
+                {
                     throw;
+                }
             }
             catch (NVIDIANotSupportedException)
             {
                 // ignore
             }
+
             var gridTopologyV1 = grids.Select(grid => grid.GetGridTopologyV1()).Cast<IGridTopology>().ToArray();
             MosaicApi.SetDisplayGrids(gridTopologyV1, flags);
         }
@@ -177,10 +200,12 @@ namespace NvAPIWrapper.Mosaic
         /// <param name="grids">An array of grid topologies to validate</param>
         /// <param name="flags">SetDisplayTopologyFlag flag</param>
         /// <returns>An array of DisplayTopologyStatus object containing the result of the validation</returns>
-        public static DisplayTopologyStatus[] ValidateGridTopologies(GridTopology[] grids,
+        public static DisplayTopologyStatus[] ValidateGridTopologies(
+            GridTopology[] grids,
             SetDisplayTopologyFlag flags = SetDisplayTopologyFlag.AllowInvalid)
         {
             var gridTopologyV2 = grids.Select(grid => grid.GetGridTopologyV2()).Cast<IGridTopology>().ToArray();
+
             try
             {
                 return MosaicApi.ValidateDisplayGrids(gridTopologyV2, flags);
@@ -188,22 +213,38 @@ namespace NvAPIWrapper.Mosaic
             catch (NVIDIAApiException ex)
             {
                 if (ex.Status != Status.IncompatibleStructureVersion)
+                {
                     throw;
+                }
             }
             catch (NVIDIANotSupportedException)
             {
                 // ignore
             }
+
             var gridTopologyV1 = grids.Select(grid => grid.GetGridTopologyV1()).Cast<IGridTopology>().ToArray();
+
             return MosaicApi.ValidateDisplayGrids(gridTopologyV1, flags);
         }
 
         /// <inheritdoc />
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != GetType()) return false;
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
+            }
+
+            if (obj.GetType() != GetType())
+            {
+                return false;
+            }
+
             return Equals((GridTopology) obj);
         }
 
@@ -213,14 +254,15 @@ namespace NvAPIWrapper.Mosaic
             unchecked
             {
                 var hashCode = Resolution.GetHashCode();
-                hashCode = (hashCode*397) ^ Frequency;
-                hashCode = (hashCode*397) ^ Rows;
-                hashCode = (hashCode*397) ^ Columns;
-                hashCode = (hashCode*397) ^ (Displays?.GetHashCode() ?? 0);
-                hashCode = (hashCode*397) ^ ApplyWithBezelCorrectedResolution.GetHashCode();
-                hashCode = (hashCode*397) ^ ImmersiveGaming.GetHashCode();
-                hashCode = (hashCode*397) ^ BaseMosaicPanoramic.GetHashCode();
-                hashCode = (hashCode*397) ^ AcceleratePrimaryDisplay.GetHashCode();
+                hashCode = (hashCode * 397) ^ Frequency;
+                hashCode = (hashCode * 397) ^ Rows;
+                hashCode = (hashCode * 397) ^ Columns;
+                hashCode = (hashCode * 397) ^ (Displays?.GetHashCode() ?? 0);
+                hashCode = (hashCode * 397) ^ ApplyWithBezelCorrectedResolution.GetHashCode();
+                hashCode = (hashCode * 397) ^ ImmersiveGaming.GetHashCode();
+                hashCode = (hashCode * 397) ^ BaseMosaicPanoramic.GetHashCode();
+                hashCode = (hashCode * 397) ^ AcceleratePrimaryDisplay.GetHashCode();
+
                 return hashCode;
             }
         }
@@ -241,6 +283,7 @@ namespace NvAPIWrapper.Mosaic
         public GridTopologyV1 GetGridTopologyV1()
         {
             var displaySettings = GetDisplaySettingsV1();
+
             return new GridTopologyV1(Rows, Columns,
                 Displays.Select(display => display.GetGridTopologyDisplayV1()).ToArray(), displaySettings,
                 ApplyWithBezelCorrectedResolution, ImmersiveGaming, BaseMosaicPanoramic, DriverReloadAllowed,
@@ -254,10 +297,12 @@ namespace NvAPIWrapper.Mosaic
         public GridTopologyV2 GetGridTopologyV2()
         {
             var displaySettings = GetDisplaySettingsV1();
+
             return new GridTopologyV2(Rows, Columns,
                 Displays.Select(display => display.GetGridTopologyDisplayV2()).ToArray(), displaySettings,
                 ApplyWithBezelCorrectedResolution, ImmersiveGaming, BaseMosaicPanoramic, DriverReloadAllowed,
-                AcceleratePrimaryDisplay, Displays.Any(display => display.PixelShiftType != PixelShiftType.NoPixelShift));
+                AcceleratePrimaryDisplay,
+                Displays.Any(display => display.PixelShiftType != PixelShiftType.NoPixelShift));
         }
 
         /// <summary>
@@ -267,6 +312,7 @@ namespace NvAPIWrapper.Mosaic
         public IDisplaySettings[] GetPossibleDisplaySettings()
         {
             var gridTopologyV2 = GetGridTopologyV2();
+
             try
             {
                 return MosaicApi.EnumDisplayModes(gridTopologyV2);
@@ -274,13 +320,17 @@ namespace NvAPIWrapper.Mosaic
             catch (NVIDIAApiException ex)
             {
                 if (ex.Status != Status.IncompatibleStructureVersion)
+                {
                     throw;
+                }
             }
             catch (NVIDIANotSupportedException)
             {
                 // ignore
             }
+
             var gridTopologyV1 = GetGridTopologyV1();
+
             return MosaicApi.EnumDisplayModes(gridTopologyV1);
         }
 
@@ -294,11 +344,17 @@ namespace NvAPIWrapper.Mosaic
         /// <exception cref="ArgumentException">Number of displays should match the arrangement.</exception>
         public void SetDisplays(int rows, int columns, GridTopologyDisplay[] displays)
         {
-            if (rows*columns <= 0)
+            if (rows * columns <= 0)
+            {
                 throw new ArgumentOutOfRangeException($"{nameof(rows)}, {nameof(columns)}",
                     "Invalid display arrangement.");
-            if (displays.Length != rows*columns)
+            }
+
+            if (displays.Length != rows * columns)
+            {
                 throw new ArgumentException("Number of displays should match the arrangement.", nameof(displays));
+            }
+
             Rows = rows;
             Columns = columns;
             Displays = displays;

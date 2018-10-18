@@ -27,25 +27,33 @@ namespace NvAPIWrapper.Native.Mosaic.Structures
         public const int MaxLayoutColumns = 8;
 
         internal StructureVersion _Version;
-        internal LogicalGPUHandle _LogicalGPUHandle;
+        internal readonly LogicalGPUHandle _LogicalGPUHandle;
         internal readonly TopologyValidity _ValidityFlags;
         internal readonly uint _Rows;
         internal readonly uint _Columns;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxLayoutRows)] internal LayoutRow[] _LayoutRows;
+
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxLayoutRows)]
+        internal readonly LayoutRow[] _LayoutRows;
 
         /// <inheritdoc />
         public bool Equals(TopologyDetails other)
         {
-            return _LogicalGPUHandle.Equals(other._LogicalGPUHandle) && (_ValidityFlags == other._ValidityFlags) &&
-                   (_Rows == other._Rows) && (_Columns == other._Columns) &&
+            return _LogicalGPUHandle.Equals(other._LogicalGPUHandle) &&
+                   _ValidityFlags == other._ValidityFlags &&
+                   _Rows == other._Rows &&
+                   _Columns == other._Columns &&
                    _LayoutRows.SequenceEqual(other._LayoutRows);
         }
 
         /// <inheritdoc />
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            return obj is TopologyDetails && Equals((TopologyDetails) obj);
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+
+            return obj is TopologyDetails details && Equals(details);
         }
 
         /// <inheritdoc />
@@ -54,10 +62,11 @@ namespace NvAPIWrapper.Native.Mosaic.Structures
             unchecked
             {
                 var hashCode = _LogicalGPUHandle.GetHashCode();
-                hashCode = (hashCode*397) ^ (int) _ValidityFlags;
-                hashCode = (hashCode*397) ^ (int) _Rows;
-                hashCode = (hashCode*397) ^ (int) _Columns;
-                hashCode = (hashCode*397) ^ (_LayoutRows?.GetHashCode() ?? 0);
+                hashCode = (hashCode * 397) ^ (int) _ValidityFlags;
+                hashCode = (hashCode * 397) ^ (int) _Rows;
+                hashCode = (hashCode * 397) ^ (int) _Columns;
+                hashCode = (hashCode * 397) ^ (_LayoutRows?.GetHashCode() ?? 0);
+
                 return hashCode;
             }
         }
@@ -87,22 +96,34 @@ namespace NvAPIWrapper.Native.Mosaic.Structures
         /// <summary>
         ///     Logical GPU for this topology
         /// </summary>
-        public LogicalGPUHandle LogicalGPUHandle => _LogicalGPUHandle;
+        public LogicalGPUHandle LogicalGPUHandle
+        {
+            get => _LogicalGPUHandle;
+        }
 
         /// <summary>
         ///     Indicates topology validity. TopologyValidity.Valid means topology is valid with the current hardware.
         /// </summary>
-        public TopologyValidity ValidityFlags => _ValidityFlags;
+        public TopologyValidity ValidityFlags
+        {
+            get => _ValidityFlags;
+        }
 
         /// <summary>
         ///     Number of displays in a row
         /// </summary>
-        public int Rows => (int) _Rows;
+        public int Rows
+        {
+            get => (int) _Rows;
+        }
 
         /// <summary>
         ///     Number of displays in a column
         /// </summary>
-        public int Columns => (int) _Columns;
+        public int Columns
+        {
+            get => (int) _Columns;
+        }
 
         /// <summary>
         ///     Gets a 2D array of layout cells containing information about the display layout of the topology
@@ -112,6 +133,7 @@ namespace NvAPIWrapper.Native.Mosaic.Structures
             get
             {
                 var columns = (int) _Columns;
+
                 return _LayoutRows.Take((int) _Rows).Select(row => row.LayoutCells.Take(columns).ToArray()).ToArray();
             }
         }
@@ -119,7 +141,8 @@ namespace NvAPIWrapper.Native.Mosaic.Structures
         [StructLayout(LayoutKind.Sequential)]
         internal struct LayoutRow : IInitializable, IEquatable<LayoutRow>
         {
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxLayoutColumns)] internal readonly LayoutCell[]
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxLayoutColumns)]
+            internal readonly LayoutCell[]
                 LayoutCells;
 
             public bool Equals(LayoutRow other)
@@ -129,8 +152,12 @@ namespace NvAPIWrapper.Native.Mosaic.Structures
 
             public override bool Equals(object obj)
             {
-                if (ReferenceEquals(null, obj)) return false;
-                return obj is LayoutRow && Equals((LayoutRow) obj);
+                if (ReferenceEquals(null, obj))
+                {
+                    return false;
+                }
+
+                return obj is LayoutRow row && Equals(row);
             }
 
             public override int GetHashCode()
@@ -145,24 +172,29 @@ namespace NvAPIWrapper.Native.Mosaic.Structures
         [StructLayout(LayoutKind.Sequential)]
         public struct LayoutCell : IEquatable<LayoutCell>
         {
-            internal PhysicalGPUHandle _PhysicalGPUHandle;
-            internal OutputId _DisplayOutputId;
-            internal int _OverlapX;
-            internal int _OverlapY;
+            internal readonly PhysicalGPUHandle _PhysicalGPUHandle;
+            internal readonly OutputId _DisplayOutputId;
+            internal readonly int _OverlapX;
+            internal readonly int _OverlapY;
 
             /// <inheritdoc />
             public bool Equals(LayoutCell other)
             {
                 return _PhysicalGPUHandle.Equals(other._PhysicalGPUHandle) &&
-                       (_DisplayOutputId == other._DisplayOutputId) && (_OverlapX == other._OverlapX) &&
-                       (_OverlapY == other._OverlapY);
+                       _DisplayOutputId == other._DisplayOutputId &&
+                       _OverlapX == other._OverlapX &&
+                       _OverlapY == other._OverlapY;
             }
 
             /// <inheritdoc />
             public override bool Equals(object obj)
             {
-                if (ReferenceEquals(null, obj)) return false;
-                return obj is LayoutCell && Equals((LayoutCell) obj);
+                if (ReferenceEquals(null, obj))
+                {
+                    return false;
+                }
+
+                return obj is LayoutCell cell && Equals(cell);
             }
 
             /// <inheritdoc />
@@ -171,9 +203,10 @@ namespace NvAPIWrapper.Native.Mosaic.Structures
                 unchecked
                 {
                     var hashCode = _PhysicalGPUHandle.GetHashCode();
-                    hashCode = (hashCode*397) ^ (int) _DisplayOutputId;
-                    hashCode = (hashCode*397) ^ _OverlapX;
-                    hashCode = (hashCode*397) ^ _OverlapY;
+                    hashCode = (hashCode * 397) ^ (int) _DisplayOutputId;
+                    hashCode = (hashCode * 397) ^ _OverlapX;
+                    hashCode = (hashCode * 397) ^ _OverlapY;
+
                     return hashCode;
                 }
             }
@@ -203,22 +236,34 @@ namespace NvAPIWrapper.Native.Mosaic.Structures
             /// <summary>
             ///     Physical GPU to be used in the topology (0 if GPU missing)
             /// </summary>
-            public PhysicalGPUHandle PhysicalGPUHandle => _PhysicalGPUHandle;
+            public PhysicalGPUHandle PhysicalGPUHandle
+            {
+                get => _PhysicalGPUHandle;
+            }
 
             /// <summary>
             ///     Connected display target (0 if no display connected)
             /// </summary>
-            public OutputId DisplayOutputId => _DisplayOutputId;
+            public OutputId DisplayOutputId
+            {
+                get => _DisplayOutputId;
+            }
 
             /// <summary>
             ///     Pixels of overlap on left of target: (+overlap, -gap)
             /// </summary>
-            public int OverlapX => _OverlapX;
+            public int OverlapX
+            {
+                get => _OverlapX;
+            }
 
             /// <summary>
             ///     Pixels of overlap on top of target: (+overlap, -gap)
             /// </summary>
-            public int OverlapY => _OverlapY;
+            public int OverlapY
+            {
+                get => _OverlapY;
+            }
         }
     }
 }

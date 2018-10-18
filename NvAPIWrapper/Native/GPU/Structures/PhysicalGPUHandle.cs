@@ -32,8 +32,12 @@ namespace NvAPIWrapper.Native.GPU.Structures
         /// <inheritdoc />
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            return obj is PhysicalGPUHandle && Equals((PhysicalGPUHandle) obj);
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+
+            return obj is PhysicalGPUHandle handle && Equals(handle);
         }
 
         /// <inheritdoc />
@@ -50,10 +54,16 @@ namespace NvAPIWrapper.Native.GPU.Structures
         }
 
         /// <inheritdoc />
-        public IntPtr MemoryAddress => _MemoryAddress;
+        public IntPtr MemoryAddress
+        {
+            get => _MemoryAddress;
+        }
 
         /// <inheritdoc />
-        public bool IsNull => _MemoryAddress == IntPtr.Zero;
+        public bool IsNull
+        {
+            get => _MemoryAddress == IntPtr.Zero;
+        }
 
         /// <summary>
         ///     Checks for equality between two objects of same type
@@ -80,6 +90,9 @@ namespace NvAPIWrapper.Native.GPU.Structures
         /// <summary>
         ///     Gets default PhysicalGPUHandle with a null pointer
         /// </summary>
-        public static PhysicalGPUHandle DefaultHandle => default(PhysicalGPUHandle);
+        public static PhysicalGPUHandle DefaultHandle
+        {
+            get => default(PhysicalGPUHandle);
+        }
     }
 }

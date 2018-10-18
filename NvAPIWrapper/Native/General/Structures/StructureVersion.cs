@@ -8,8 +8,15 @@ namespace NvAPIWrapper.Native.General.Structures
     {
         private readonly uint _version;
 
-        public int VersionNumber => (int) (_version >> 16);
-        public int StructureSize => (int) (_version & ~(0xFFFF << 16));
+        public int VersionNumber
+        {
+            get => (int) (_version >> 16);
+        }
+
+        public int StructureSize
+        {
+            get => (int) (_version & ~(0xFFFF << 16));
+        }
 
         public StructureVersion(int version, Type structureType)
         {

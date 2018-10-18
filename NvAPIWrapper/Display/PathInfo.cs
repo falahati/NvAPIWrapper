@@ -43,8 +43,11 @@ namespace NvAPIWrapper.Display
             IsSLIFocus = info.SourceModeInfo.IsSLIFocus;
             TargetsInfo =
                 info.TargetsInfo.Select(targetInfo => new PathTargetInfo(targetInfo)).ToArray();
+
             if (info is PathInfoV2)
+            {
                 OSAdapterLUID = ((PathInfoV2) info).OSAdapterLUID;
+            }
         }
 
         /// <summary>
@@ -101,11 +104,22 @@ namespace NvAPIWrapper.Display
         /// <returns>true if both objects are equal, otherwise false</returns>
         public bool Equals(PathInfo other)
         {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
-            return Resolution.Equals(other.Resolution) && (ColorFormat == other.ColorFormat) &&
-                   Position.Equals(other.Position) && (SpanningOrientation == other.SpanningOrientation) &&
-                   (IsGDIPrimary == other.IsGDIPrimary) && (IsSLIFocus == other.IsSLIFocus) &&
+            if (ReferenceEquals(null, other))
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, other))
+            {
+                return true;
+            }
+
+            return Resolution.Equals(other.Resolution) &&
+                   ColorFormat == other.ColorFormat &&
+                   Position.Equals(other.Position) &&
+                   SpanningOrientation == other.SpanningOrientation &&
+                   IsGDIPrimary == other.IsGDIPrimary &&
+                   IsSLIFocus == other.IsSLIFocus &&
                    TargetsInfo.SequenceEqual(other.TargetsInfo);
         }
 
@@ -119,6 +133,7 @@ namespace NvAPIWrapper.Display
             var configs = DisplayApi.GetDisplayConfig();
             var logicalDisplays = configs.Select(info => new PathInfo(info)).ToArray();
             configs.DisposeAll();
+
             return logicalDisplays;
         }
 
@@ -160,12 +175,15 @@ namespace NvAPIWrapper.Display
             catch (NVIDIAApiException ex)
             {
                 if (ex.Status != Status.IncompatibleStructureVersion)
+                {
                     throw;
+                }
             }
             catch (NVIDIANotSupportedException)
             {
                 // ignore
             }
+
             var configsV1 = pathInfos.Select(config => config.GetPathInfoV1()).Cast<IPathInfo>().ToArray();
             DisplayApi.SetDisplayConfig(configsV1, flags);
             configsV1.DisposeAll();
@@ -174,9 +192,21 @@ namespace NvAPIWrapper.Display
         /// <inheritdoc />
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != GetType()) return false;
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
+            }
+
+            if (obj.GetType() != GetType())
+            {
+                return false;
+            }
+
             return Equals((PathInfo) obj);
         }
 
@@ -186,12 +216,13 @@ namespace NvAPIWrapper.Display
             unchecked
             {
                 var hashCode = Resolution.GetHashCode();
-                hashCode = (hashCode*397) ^ (int) ColorFormat;
-                hashCode = (hashCode*397) ^ Position.GetHashCode();
-                hashCode = (hashCode*397) ^ (int) SpanningOrientation;
-                hashCode = (hashCode*397) ^ IsGDIPrimary.GetHashCode();
-                hashCode = (hashCode*397) ^ IsSLIFocus.GetHashCode();
-                hashCode = (hashCode*397) ^ (TargetsInfo?.GetHashCode() ?? 0);
+                hashCode = (hashCode * 397) ^ (int) ColorFormat;
+                hashCode = (hashCode * 397) ^ Position.GetHashCode();
+                hashCode = (hashCode * 397) ^ (int) SpanningOrientation;
+                hashCode = (hashCode * 397) ^ IsGDIPrimary.GetHashCode();
+                hashCode = (hashCode * 397) ^ IsSLIFocus.GetHashCode();
+                hashCode = (hashCode * 397) ^ (TargetsInfo?.GetHashCode() ?? 0);
+
                 return hashCode;
             }
         }
@@ -211,6 +242,7 @@ namespace NvAPIWrapper.Display
         {
             var sourceModeInfo = GetSourceModeInfo();
             var pathTargetInfoV1 = GetPathTargetInfoV1Array();
+
             return new PathInfoV1(pathTargetInfoV1, sourceModeInfo, SourceId);
         }
 
@@ -222,6 +254,7 @@ namespace NvAPIWrapper.Display
         {
             var sourceModeInfo = GetSourceModeInfo();
             var pathTargetInfoV2 = GetPathTargetInfoV2Array();
+
             return new PathInfoV2(pathTargetInfoV2, sourceModeInfo, SourceId);
         }
 

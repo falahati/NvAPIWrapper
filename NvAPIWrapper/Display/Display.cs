@@ -33,7 +33,10 @@ namespace NvAPIWrapper.Display
         /// <summary>
         ///     Gets corresponding DisplayDevice based on display name
         /// </summary>
-        public DisplayDevice DisplayDevice => new DisplayDevice(Name);
+        public DisplayDevice DisplayDevice
+        {
+            get => new DisplayDevice(Name);
+        }
 
         /// <summary>
         ///     Gets display handle
@@ -43,31 +46,49 @@ namespace NvAPIWrapper.Display
         /// <summary>
         ///     Gets the driving logical GPU
         /// </summary>
-        public LogicalGPU LogicalGPU => new LogicalGPU(GPUApi.GetLogicalGPUFromDisplay(Handle));
+        public LogicalGPU LogicalGPU
+        {
+            get => new LogicalGPU(GPUApi.GetLogicalGPUFromDisplay(Handle));
+        }
 
         /// <summary>
         ///     Gets display name
         /// </summary>
-        public string Name => DisplayApi.GetAssociatedNvidiaDisplayName(Handle);
+        public string Name
+        {
+            get => DisplayApi.GetAssociatedNvidiaDisplayName(Handle);
+        }
 
         /// <summary>
         ///     Gets the connected GPU output
         /// </summary>
         public GPUOutput Output
-            => new GPUOutput(DisplayApi.GetAssociatedDisplayOutputId(Handle), PhysicalGPUs.FirstOrDefault());
+        {
+            get => new GPUOutput(DisplayApi.GetAssociatedDisplayOutputId(Handle), PhysicalGPUs.FirstOrDefault());
+        }
 
         /// <summary>
         ///     Gets the list of all physical GPUs responsible for this display, with the first GPU returned as the one with the
         ///     attached active output.
         /// </summary>
         public PhysicalGPU[] PhysicalGPUs
-            => GPUApi.GetPhysicalGPUsFromDisplay(Handle).Select(handle => new PhysicalGPU(handle)).ToArray();
+        {
+            get => GPUApi.GetPhysicalGPUsFromDisplay(Handle).Select(handle => new PhysicalGPU(handle)).ToArray();
+        }
 
         /// <inheritdoc />
         public bool Equals(Display other)
         {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
+            if (ReferenceEquals(null, other))
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, other))
+            {
+                return true;
+            }
+
             return Handle.Equals(other.Handle);
         }
 
@@ -106,9 +127,21 @@ namespace NvAPIWrapper.Display
         /// <inheritdoc />
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != GetType()) return false;
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
+            }
+
+            if (obj.GetType() != GetType())
+            {
+                return false;
+            }
+
             return Equals((Display) obj);
         }
 

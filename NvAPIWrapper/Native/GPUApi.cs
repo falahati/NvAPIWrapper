@@ -3,7 +3,6 @@ using System.Linq;
 using NvAPIWrapper.Native.Display.Structures;
 using NvAPIWrapper.Native.Exceptions;
 using NvAPIWrapper.Native.General;
-using NvAPIWrapper.Native.General.Structures;
 using NvAPIWrapper.Native.GPU;
 using NvAPIWrapper.Native.GPU.Structures;
 using NvAPIWrapper.Native.Helpers;
@@ -15,13 +14,15 @@ namespace NvAPIWrapper.Native
     /// <summary>
     ///     Contains GPU static functions
     /// </summary>
+    // ReSharper disable once ClassTooBig
     public static class GPUApi
     {
         /// <summary>
         ///     This function returns an array of logical GPU handles.
         ///     Each handle represents one or more GPUs acting in concert as a single graphics device.
         ///     At least one GPU must be present in the system and running an NVIDIA display driver.
-        ///     All logical GPUs handles get invalidated on a GPU topology change, so the calling application is required to reenum
+        ///     All logical GPUs handles get invalidated on a GPU topology change, so the calling application is required to
+        ///     re-enum
         ///     the logical GPU handles to get latest physical handle mapping after every GPU topology change activated by a call
         ///     to SetGpuTopologies().
         ///     To detect if SLI rendering is enabled, use Direct3DApi.GetCurrentSLIState().
@@ -32,10 +33,13 @@ namespace NvAPIWrapper.Native
         {
             var gpuList =
                 typeof(LogicalGPUHandle).Instantiate<LogicalGPUHandle>().Repeat(LogicalGPUHandle.MaxLogicalGPUs);
-            uint count;
-            var status = DelegateFactory.Get<Delegates.GPU.NvAPI_EnumLogicalGPUs>()(gpuList, out count);
+            var status = DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_EnumLogicalGPUs>()(gpuList, out var count);
+
             if (status != Status.Ok)
+            {
                 throw new NVIDIAApiException(status);
+            }
+
             return gpuList.Take((int) count).ToArray();
         }
 
@@ -44,8 +48,8 @@ namespace NvAPIWrapper.Native
         ///     Each handle represents a physical GPU present in the system.
         ///     That GPU may be part of an SLI configuration, or may not be visible to the OS directly.
         ///     At least one GPU must be present in the system and running an NVIDIA display driver.
-        ///     Note: In drivers older than 105.00, all physical GPU handles get invalidated on a modeset. So the calling
-        ///     applications need to reenum the handles after every modeset. With drivers 105.00 and up, all physical GPU handles
+        ///     Note: In drivers older than 105.00, all physical GPU handles get invalidated on a mode-set. So the calling
+        ///     applications need to re-enum the handles after every mode-set. With drivers 105.00 and up, all physical GPU handles
         ///     are constant. Physical GPU handles are constant as long as the GPUs are not physically moved and the SBIOS VGA
         ///     order is unchanged.
         ///     For GPU handles in TCC MODE please use EnumTCCPhysicalGPUs()
@@ -56,10 +60,13 @@ namespace NvAPIWrapper.Native
         {
             var gpuList =
                 typeof(PhysicalGPUHandle).Instantiate<PhysicalGPUHandle>().Repeat(PhysicalGPUHandle.PhysicalGPUs);
-            uint count;
-            var status = DelegateFactory.Get<Delegates.GPU.NvAPI_EnumPhysicalGPUs>()(gpuList, out count);
+            var status = DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_EnumPhysicalGPUs>()(gpuList, out var count);
+
             if (status != Status.Ok)
+            {
                 throw new NVIDIAApiException(status);
+            }
+
             return gpuList.Take((int) count).ToArray();
         }
 
@@ -77,10 +84,13 @@ namespace NvAPIWrapper.Native
         {
             var gpuList =
                 typeof(PhysicalGPUHandle).Instantiate<PhysicalGPUHandle>().Repeat(PhysicalGPUHandle.PhysicalGPUs);
-            uint count;
-            var status = DelegateFactory.Get<Delegates.GPU.NvAPI_EnumTCCPhysicalGPUs>()(gpuList, out count);
+            var status = DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_EnumTCCPhysicalGPUs>()(gpuList, out var count);
+
             if (status != Status.Ok)
+            {
                 throw new NVIDIAApiException(status);
+            }
+
             return gpuList.Take((int) count).ToArray();
         }
 
@@ -95,10 +105,14 @@ namespace NvAPIWrapper.Native
         /// <exception cref="NVIDIAApiException">Status.ExpectedPhysicalGPUHandle: gpuHandle was not a physical GPU handle.</exception>
         public static OutputId GetActiveOutputs(PhysicalGPUHandle gpuHandle)
         {
-            OutputId outputMask;
-            var status = DelegateFactory.Get<Delegates.GPU.NvAPI_GPU_GetActiveOutputs>()(gpuHandle, out outputMask);
+            var status =
+                DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_GetActiveOutputs>()(gpuHandle, out var outputMask);
+
             if (status != Status.Ok)
+            {
                 throw new NVIDIAApiException(status);
+            }
+
             return outputMask;
         }
 
@@ -112,11 +126,79 @@ namespace NvAPIWrapper.Native
         /// <exception cref="NVIDIAApiException">Status.ExpectedPhysicalGPUHandle: gpuHandle was not a physical GPU handle.</exception>
         public static int GetAGPAperture(PhysicalGPUHandle gpuHandle)
         {
-            uint agpAperture;
-            var status = DelegateFactory.Get<Delegates.GPU.NvAPI_GPU_GetAGPAperture>()(gpuHandle, out agpAperture);
+            var status =
+                DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_GetAGPAperture>()(gpuHandle, out var agpAperture);
+
             if (status != Status.Ok)
+            {
                 throw new NVIDIAApiException(status);
+            }
+
             return (int) agpAperture;
+        }
+
+        /// <summary>
+        ///     This function retrieves the clock frequencies information from an specific physical GPU and fills the structure
+        /// </summary>
+        /// <param name="physicalGPUHandle">
+        ///     Handle of the physical GPU for which the clock frequency information is to be
+        ///     retrieved.
+        /// </param>
+        /// <param name="clockFrequencyOptions">
+        ///     The structure that holds options for the operations and should be filled with the
+        ///     results, use null to return current clock frequencies
+        /// </param>
+        /// <returns>The device clock frequencies information.</returns>
+        /// <exception cref="NVIDIANotSupportedException">This operation is not supported.</exception>
+        /// <exception cref="NVIDIAApiException">Status.NvidiaDeviceNotFound: No NVIDIA GPU driving a display was found.</exception>
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        public static IClockFrequencies GetAllClockFrequencies(
+            PhysicalGPUHandle physicalGPUHandle,
+            IClockFrequencies clockFrequencyOptions = null)
+        {
+            var getClocksInfo = DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_GetAllClockFrequencies>();
+
+            if (clockFrequencyOptions == null)
+            {
+                foreach (var acceptType in getClocksInfo.Accepts())
+                {
+                    var instance = acceptType.Instantiate<IClockFrequencies>();
+
+                    using (var clockFrequenciesInfo = ValueTypeReference.FromValueType(instance, acceptType))
+                    {
+                        var status = getClocksInfo(physicalGPUHandle, clockFrequenciesInfo);
+
+                        if (status == Status.IncompatibleStructureVersion)
+                        {
+                            continue;
+                        }
+
+                        if (status != Status.Ok)
+                        {
+                            throw new NVIDIAApiException(status);
+                        }
+
+                        return clockFrequenciesInfo.ToValueType<IClockFrequencies>(acceptType);
+                    }
+                }
+            }
+            else
+            {
+                using (var clockFrequenciesInfo =
+                    ValueTypeReference.FromValueType(clockFrequencyOptions, clockFrequencyOptions.GetType()))
+                {
+                    var status = getClocksInfo(physicalGPUHandle, clockFrequenciesInfo);
+
+                    if (status != Status.Ok)
+                    {
+                        throw new NVIDIAApiException(status);
+                    }
+
+                    return clockFrequenciesInfo.ToValueType<IClockFrequencies>(clockFrequencyOptions.GetType());
+                }
+            }
+
+            throw new NVIDIANotSupportedException("This operation is not supported.");
         }
 
         /// <summary>
@@ -127,27 +209,40 @@ namespace NvAPIWrapper.Native
         /// <returns>An array of display identifications and their attributes</returns>
         /// <exception cref="NVIDIANotSupportedException">This operation is not supported.</exception>
         /// <exception cref="NVIDIAApiException">See NVIDIAApiException.Status for the reason of the exception.</exception>
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
         public static DisplayIdsV2[] GetAllDisplayIds(PhysicalGPUHandle gpuHandle)
         {
-            var gpuGetConnectedDisplayIds = DelegateFactory.Get<Delegates.GPU.NvAPI_GPU_GetAllDisplayIds>();
+            var gpuGetConnectedDisplayIds = DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_GetAllDisplayIds>();
+
             if (!gpuGetConnectedDisplayIds.Accepts().Contains(typeof(DisplayIdsV2)))
+            {
                 throw new NVIDIANotSupportedException("This operation is not supported.");
+            }
 
             uint count = 0;
             var status = gpuGetConnectedDisplayIds(gpuHandle, ValueTypeArray.Null, ref count);
 
             if (status != Status.Ok)
+            {
                 throw new NVIDIAApiException(status);
+            }
 
             if (count == 0)
+            {
                 return new DisplayIdsV2[0];
+            }
+
             using (
                 var displayIds =
                     ValueTypeArray.FromArray(typeof(DisplayIdsV2).Instantiate<DisplayIdsV2>().Repeat((int) count)))
             {
                 status = gpuGetConnectedDisplayIds(gpuHandle, displayIds, ref count);
+
                 if (status != Status.Ok)
+                {
                     throw new NVIDIAApiException(status);
+                }
+
                 return displayIds.ToArray<DisplayIdsV2>((int) count);
             }
         }
@@ -163,9 +258,13 @@ namespace NvAPIWrapper.Native
         public static BoardInfo GetBoardInfo(PhysicalGPUHandle gpuHandle)
         {
             var boardInfo = typeof(BoardInfo).Instantiate<BoardInfo>();
-            var status = DelegateFactory.Get<Delegates.GPU.NvAPI_GPU_GetBoardInfo>()(gpuHandle, ref boardInfo);
+            var status = DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_GetBoardInfo>()(gpuHandle, ref boardInfo);
+
             if (status != Status.Ok)
+            {
                 throw new NVIDIAApiException(status);
+            }
+
             return boardInfo;
         }
 
@@ -178,10 +277,13 @@ namespace NvAPIWrapper.Native
         /// <exception cref="NVIDIAApiException">Status.ExpectedPhysicalGPUHandle: gpuHandle was not a physical GPU handle.</exception>
         public static int GetBusId(PhysicalGPUHandle gpuHandle)
         {
-            uint busId;
-            var status = DelegateFactory.Get<Delegates.GPU.NvAPI_GPU_GetBusId>()(gpuHandle, out busId);
+            var status = DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_GetBusId>()(gpuHandle, out var busId);
+
             if (status != Status.Ok)
+            {
                 throw new NVIDIAApiException(status);
+            }
+
             return (int) busId;
         }
 
@@ -195,10 +297,13 @@ namespace NvAPIWrapper.Native
         /// <exception cref="NVIDIAApiException">Status.ExpectedPhysicalGPUHandle: gpuHandle was not a physical GPU handle</exception>
         public static int GetBusSlotId(PhysicalGPUHandle gpuHandle)
         {
-            uint busId;
-            var status = DelegateFactory.Get<Delegates.GPU.NvAPI_GPU_GetBusSlotId>()(gpuHandle, out busId);
+            var status = DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_GetBusSlotId>()(gpuHandle, out var busId);
+
             if (status != Status.Ok)
+            {
                 throw new NVIDIAApiException(status);
+            }
+
             return (int) busId;
         }
 
@@ -211,62 +316,14 @@ namespace NvAPIWrapper.Native
         /// <exception cref="NVIDIAApiException">Status.InvalidArgument: gpuHandle is NULL</exception>
         public static GPUBusType GetBusType(PhysicalGPUHandle gpuHandle)
         {
-            GPUBusType busType;
-            var status = DelegateFactory.Get<Delegates.GPU.NvAPI_GPU_GetBusType>()(gpuHandle, out busType);
+            var status = DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_GetBusType>()(gpuHandle, out var busType);
+
             if (status != Status.Ok)
+            {
                 throw new NVIDIAApiException(status);
+            }
+
             return busType;
-        }
-
-        /// <summary>
-        ///     This function retrieves the clock frequencies information from an specific physical GPU and fills the structure
-        /// </summary>
-        /// <param name="physicalGPUHandle">Handle of the physical GPU for which the clock frequency information is to be retrieved.</param>
-        /// <param name="clockFrequencyOptions">The structure that holds options for the operations and should be filled with the results, use null to return current clock frequencies</param>
-        /// <returns>The device clock frequencies information.</returns>
-        /// <exception cref="NVIDIANotSupportedException">This operation is not supported.</exception>
-        /// <exception cref="NVIDIAApiException">Status.NvidiaDeviceNotFound: No NVIDIA GPU driving a display was found.</exception>
-        public static IClockFrequencies GetAllClockFrequencies(
-            PhysicalGPUHandle physicalGPUHandle,
-            IClockFrequencies clockFrequencyOptions = null)
-        {
-            var getClocksInfo = DelegateFactory.Get<Delegates.GPU.NvAPI_GPU_GetAllClockFrequencies>();
-
-            if (clockFrequencyOptions == null)
-            {
-                foreach (var acceptType in getClocksInfo.Accepts())
-                {
-                    var instance = acceptType.Instantiate<IClockFrequencies>();
-
-                    using (var clockFrequenciesInfo = ValueTypeReference.FromValueType(instance, acceptType))
-                    {
-                        var status = getClocksInfo(physicalGPUHandle, clockFrequenciesInfo);
-
-                        if (status == Status.IncompatibleStructureVersion)
-                            continue;
-
-                        if (status != Status.Ok)
-                            throw new NVIDIAApiException(status);
-
-                        return clockFrequenciesInfo.ToValueType<IClockFrequencies>(acceptType);
-                    }
-                }
-            }
-            else
-            {
-                using (var clockFrequenciesInfo =
-                    ValueTypeReference.FromValueType(clockFrequencyOptions, clockFrequencyOptions.GetType()))
-                {
-                    var status = getClocksInfo(physicalGPUHandle, clockFrequenciesInfo);
-
-                    if (status != Status.Ok)
-                        throw new NVIDIAApiException(status);
-
-                    return clockFrequenciesInfo.ToValueType<IClockFrequencies>(clockFrequencyOptions.GetType());
-                }
-            }
-
-            throw new NVIDIANotSupportedException("This operation is not supported.");
         }
 
 
@@ -274,7 +331,7 @@ namespace NvAPIWrapper.Native
         ///     Due to space limitation GetConnectedOutputs() can return maximum 32 devices, but this is no longer true for DPMST.
         ///     GetConnectedDisplayIds() will return all the connected display devices in the form of displayIds for the associated
         ///     gpuHandle.
-        ///     This function can accept set of flags to request cached, uncached, sli and lid to get the connected devices.
+        ///     This function can accept set of flags to request cached, un-cached, sli and lid to get the connected devices.
         ///     Default value for flags will be cached.
         /// </summary>
         /// <param name="gpuHandle">Physical GPU handle to get information about</param>
@@ -284,27 +341,41 @@ namespace NvAPIWrapper.Native
         /// <exception cref="NVIDIAApiException">Status.InvalidArgument: gpuHandle is invalid</exception>
         /// <exception cref="NVIDIAApiException">Status.NvidiaDeviceNotFound: No NVIDIA GPU driving a display was found</exception>
         /// <exception cref="NVIDIAApiException">Status.ExpectedPhysicalGPUHandle: gpuHandle was not a physical GPU handle</exception>
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
         public static DisplayIdsV2[] GetConnectedDisplayIds(PhysicalGPUHandle gpuHandle, ConnectedIdsFlag flags)
         {
-            var gpuGetConnectedDisplayIds = DelegateFactory.Get<Delegates.GPU.NvAPI_GPU_GetConnectedDisplayIds>();
+            var gpuGetConnectedDisplayIds =
+                DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_GetConnectedDisplayIds>();
+
             if (!gpuGetConnectedDisplayIds.Accepts().Contains(typeof(DisplayIdsV2)))
+            {
                 throw new NVIDIANotSupportedException("This operation is not supported.");
+            }
 
             uint count = 0;
             var status = gpuGetConnectedDisplayIds(gpuHandle, ValueTypeArray.Null, ref count, flags);
 
             if (status != Status.Ok)
+            {
                 throw new NVIDIAApiException(status);
+            }
 
             if (count == 0)
+            {
                 return new DisplayIdsV2[0];
+            }
+
             using (
                 var displayIds =
                     ValueTypeArray.FromArray(typeof(DisplayIdsV2).Instantiate<DisplayIdsV2>().Repeat((int) count)))
             {
                 status = gpuGetConnectedDisplayIds(gpuHandle, displayIds, ref count, flags);
+
                 if (status != Status.Ok)
+                {
                     throw new NVIDIAApiException(status);
+                }
+
                 return displayIds.ToArray<DisplayIdsV2>((int) count);
             }
         }
@@ -319,10 +390,14 @@ namespace NvAPIWrapper.Native
         /// <exception cref="NVIDIAApiException">Status.ExpectedPhysicalGPUHandle: gpuHandle was not a physical GPU handle.</exception>
         public static int GetCurrentAGPRate(PhysicalGPUHandle gpuHandle)
         {
-            uint agpRate;
-            var status = DelegateFactory.Get<Delegates.GPU.NvAPI_GPU_GetCurrentAGPRate>()(gpuHandle, out agpRate);
+            var status =
+                DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_GetCurrentAGPRate>()(gpuHandle, out var agpRate);
+
             if (status != Status.Ok)
+            {
                 throw new NVIDIAApiException(status);
+            }
+
             return (int) agpRate;
         }
 
@@ -336,11 +411,14 @@ namespace NvAPIWrapper.Native
         /// <exception cref="NVIDIAApiException">Status.ExpectedPhysicalGPUHandle: gpuHandle was not a physical GPU handle.</exception>
         public static int GetCurrentPCIEDownStreamWidth(PhysicalGPUHandle gpuHandle)
         {
-            uint width;
-            var status = DelegateFactory.Get<Delegates.GPU.NvAPI_GPU_GetCurrentPCIEDownstreamWidth>()(gpuHandle,
-                out width);
+            var status = DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_GetCurrentPCIEDownstreamWidth>()(gpuHandle,
+                out var width);
+
             if (status != Status.Ok)
+            {
                 throw new NVIDIAApiException(status);
+            }
+
             return (int) width;
         }
 
@@ -355,11 +433,15 @@ namespace NvAPIWrapper.Native
         /// <exception cref="NVIDIAApiException">Status.InvalidArgument: Invalid input parameter.</exception>
         public static uint GetDisplayIdFromGPUAndOutputId(PhysicalGPUHandle gpuHandle, OutputId outputId)
         {
-            uint display;
-            var status = DelegateFactory.Get<Delegates.GPU.NvAPI_SYS_GetDisplayIdFromGpuAndOutputId>()(gpuHandle,
-                outputId, out display);
+            var status = DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_SYS_GetDisplayIdFromGpuAndOutputId>()(
+                gpuHandle,
+                outputId, out var display);
+
             if (status != Status.Ok)
+            {
                 throw new NVIDIAApiException(status);
+            }
+
             return display;
         }
 
@@ -370,24 +452,35 @@ namespace NvAPIWrapper.Native
         /// <returns>The device utilizations information array.</returns>
         /// <exception cref="NVIDIANotSupportedException">This operation is not supported.</exception>
         /// <exception cref="NVIDIAApiException">Status.NvidiaDeviceNotFound: No NVIDIA GPU driving a display was found.</exception>
-        public static DynamicPerformanceStatesInfo GetDynamicPerformanceStatesInfoEx(PhysicalGPUHandle physicalGPUHandle)
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        public static DynamicPerformanceStatesInfo GetDynamicPerformanceStatesInfoEx(
+            PhysicalGPUHandle physicalGPUHandle)
         {
             var getDynamicPerformanceStatesInfoEx =
-                DelegateFactory.Get<Delegates.GPU.NvAPI_GPU_GetDynamicPStatesInfoEx>();
+                DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_GetDynamicPStatesInfoEx>();
+
             foreach (var acceptType in getDynamicPerformanceStatesInfoEx.Accepts())
             {
                 var instance = acceptType.Instantiate<DynamicPerformanceStatesInfo>();
-                using (var gpuDynamicPstateInfo = ValueTypeReference.FromValueType(instance, acceptType))
-                {
-                    var status = getDynamicPerformanceStatesInfoEx(physicalGPUHandle, gpuDynamicPstateInfo);
-                    if (status == Status.IncompatibleStructureVersion)
-                        continue;
-                    if (status != Status.Ok)
-                        throw new NVIDIAApiException(status);
 
-                    return gpuDynamicPstateInfo.ToValueType<DynamicPerformanceStatesInfo>(acceptType);
+                using (var gpuDynamicPStateInfo = ValueTypeReference.FromValueType(instance, acceptType))
+                {
+                    var status = getDynamicPerformanceStatesInfoEx(physicalGPUHandle, gpuDynamicPStateInfo);
+
+                    if (status == Status.IncompatibleStructureVersion)
+                    {
+                        continue;
+                    }
+
+                    if (status != Status.Ok)
+                    {
+                        throw new NVIDIAApiException(status);
+                    }
+
+                    return gpuDynamicPStateInfo.ToValueType<DynamicPerformanceStatesInfo>(acceptType);
                 }
             }
+
             throw new NVIDIANotSupportedException("This operation is not supported.");
         }
 
@@ -408,18 +501,32 @@ namespace NvAPIWrapper.Native
         /// <exception cref="NVIDIAApiException">Status.NvidiaDeviceNotFound: No NVIDIA GPU driving a display was found.</exception>
         /// <exception cref="NVIDIAApiException">Status.ExpectedPhysicalGPUHandle: gpuHandle was not a physical GPU handle.</exception>
         /// <exception cref="NVIDIAApiException">Status.DataNotFound: The requested display does not contain an EDID.</exception>
-        public static EDIDV3 GetEDID(PhysicalGPUHandle gpuHandle, OutputId outputId, int offset,
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        // ReSharper disable once TooManyArguments
+        public static EDIDV3 GetEDID(
+            PhysicalGPUHandle gpuHandle,
+            OutputId outputId,
+            int offset,
             int readIdentification = 0)
         {
-            var gpuGetEDID = DelegateFactory.Get<Delegates.GPU.NvAPI_GPU_GetEDID>();
+            var gpuGetEDID = DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_GetEDID>();
+
             if (!gpuGetEDID.Accepts().Contains(typeof(EDIDV3)))
+            {
                 throw new NVIDIANotSupportedException("This operation is not supported.");
+            }
+
             var instance = EDIDV3.CreateWithOffset((uint) readIdentification, (uint) offset);
+
             using (var edidReference = ValueTypeReference.FromValueType(instance))
             {
                 var status = gpuGetEDID(gpuHandle, outputId, edidReference);
+
                 if (status != Status.Ok)
+                {
                     throw new NVIDIAApiException(status);
+                }
+
                 return edidReference.ToValueType<EDIDV3>() ?? default(EDIDV3);
             }
         }
@@ -439,20 +546,32 @@ namespace NvAPIWrapper.Native
         /// <exception cref="NVIDIAApiException">Status.NvidiaDeviceNotFound: No NVIDIA GPU driving a display was found.</exception>
         /// <exception cref="NVIDIAApiException">Status.ExpectedPhysicalGPUHandle: gpuHandle was not a physical GPU handle.</exception>
         /// <exception cref="NVIDIAApiException">Status.DataNotFound: The requested display does not contain an EDID.</exception>
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
         public static IEDID GetEDID(PhysicalGPUHandle gpuHandle, OutputId outputId)
         {
-            var gpuGetEDID = DelegateFactory.Get<Delegates.GPU.NvAPI_GPU_GetEDID>();
+            var gpuGetEDID = DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_GetEDID>();
+
             foreach (var acceptType in gpuGetEDID.Accepts())
+            {
                 using (var edidReference = ValueTypeReference.FromValueType(acceptType.Instantiate<IEDID>(), acceptType)
                 )
                 {
                     var status = gpuGetEDID(gpuHandle, outputId, edidReference);
+
                     if (status != Status.IncompatibleStructureVersion)
+                    {
                         continue;
+                    }
+
                     if (status != Status.Ok)
+                    {
                         throw new NVIDIAApiException(status);
+                    }
+
                     return edidReference.ToValueType<IEDID>(acceptType);
                 }
+            }
+
             throw new NVIDIANotSupportedException("This operation is not supported.");
         }
 
@@ -464,10 +583,13 @@ namespace NvAPIWrapper.Native
         /// <exception cref="NVIDIAApiException">See NVIDIAApiException.Status for the reason of the exception.</exception>
         public static string GetFullName(PhysicalGPUHandle gpuHandle)
         {
-            ShortString name;
-            var status = DelegateFactory.Get<Delegates.GPU.NvAPI_GPU_GetFullName>()(gpuHandle, out name);
+            var status = DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_GetFullName>()(gpuHandle, out var name);
+
             if (status != Status.Ok)
+            {
                 throw new NVIDIAApiException(status);
+            }
+
             return name.Value;
         }
 
@@ -486,11 +608,15 @@ namespace NvAPIWrapper.Native
         /// </exception>
         public static OutputId GetGPUAndOutputIdFromDisplayId(uint displayId, out PhysicalGPUHandle gpuHandle)
         {
-            OutputId outputId;
-            var status = DelegateFactory.Get<Delegates.GPU.NvAPI_SYS_GetGpuAndOutputIdFromDisplayId>()(displayId,
-                out gpuHandle, out outputId);
+            var status = DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_SYS_GetGpuAndOutputIdFromDisplayId>()(
+                displayId,
+                out gpuHandle, out var outputId);
+
             if (status != Status.Ok)
+            {
                 throw new NVIDIAApiException(status);
+            }
+
             return outputId;
         }
 
@@ -506,10 +632,14 @@ namespace NvAPIWrapper.Native
         /// <exception cref="NVIDIAApiException">Status.NotSupported: API call is not supported on current architecture</exception>
         public static int GetGPUCoreCount(PhysicalGPUHandle gpuHandle)
         {
-            uint cores;
-            var status = DelegateFactory.Get<Delegates.GPU.NvAPI_GPU_GetGpuCoreCount>()(gpuHandle, out cores);
+            var status =
+                DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_GetGpuCoreCount>()(gpuHandle, out var cores);
+
             if (status != Status.Ok)
+            {
                 throw new NVIDIAApiException(status);
+            }
+
             return (int) cores;
         }
 
@@ -525,10 +655,13 @@ namespace NvAPIWrapper.Native
         /// <exception cref="NVIDIAApiException">Status.ExpectedPhysicalGPUHandle: gpuHandle was not a physical GPU handle</exception>
         public static GPUType GetGPUType(PhysicalGPUHandle gpuHandle)
         {
-            GPUType type;
-            var status = DelegateFactory.Get<Delegates.GPU.NvAPI_GPU_GetGPUType>()(gpuHandle, out type);
+            var status = DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_GetGPUType>()(gpuHandle, out var type);
+
             if (status != Status.Ok)
+            {
                 throw new NVIDIAApiException(status);
+            }
+
             return type;
         }
 
@@ -542,10 +675,13 @@ namespace NvAPIWrapper.Native
         /// <exception cref="NVIDIAApiException">Status.ExpectedPhysicalGPUHandle: gpuHandle was not a physical GPU handle</exception>
         public static int GetIRQ(PhysicalGPUHandle gpuHandle)
         {
-            uint irq;
-            var status = DelegateFactory.Get<Delegates.GPU.NvAPI_GPU_GetIRQ>()(gpuHandle, out irq);
+            var status = DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_GetIRQ>()(gpuHandle, out var irq);
+
             if (status != Status.Ok)
+            {
                 throw new NVIDIAApiException(status);
+            }
+
             return (int) irq;
         }
 
@@ -560,10 +696,14 @@ namespace NvAPIWrapper.Native
         /// <exception cref="NVIDIAApiException">Status.NvidiaDeviceNotFound: No NVIDIA GPU driving a display was found</exception>
         public static LogicalGPUHandle GetLogicalGPUFromDisplay(DisplayHandle display)
         {
-            LogicalGPUHandle gpu;
-            var status = DelegateFactory.Get<Delegates.GPU.NvAPI_GetLogicalGPUFromDisplay>()(display, out gpu);
+            var status =
+                DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GetLogicalGPUFromDisplay>()(display, out var gpu);
+
             if (status != Status.Ok)
+            {
                 throw new NVIDIAApiException(status);
+            }
+
             return gpu;
         }
 
@@ -578,10 +718,14 @@ namespace NvAPIWrapper.Native
         /// <exception cref="NVIDIAApiException">Status.NvidiaDeviceNotFound: No NVIDIA GPU driving a display was found</exception>
         public static LogicalGPUHandle GetLogicalGPUFromPhysicalGPU(PhysicalGPUHandle gpuHandle)
         {
-            LogicalGPUHandle gpu;
-            var status = DelegateFactory.Get<Delegates.GPU.NvAPI_GetLogicalGPUFromPhysicalGPU>()(gpuHandle, out gpu);
+            var status =
+                DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GetLogicalGPUFromPhysicalGPU>()(gpuHandle, out var gpu);
+
             if (status != Status.Ok)
+            {
                 throw new NVIDIAApiException(status);
+            }
+
             return gpu;
         }
 
@@ -593,22 +737,33 @@ namespace NvAPIWrapper.Native
         /// <returns>The memory footprint available in the driver.</returns>
         /// <exception cref="NVIDIANotSupportedException">This operation is not supported.</exception>
         /// <exception cref="NVIDIAApiException">Status.NvidiaDeviceNotFound: No NVIDIA GPU driving a display was found.</exception>
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
         public static IDisplayDriverMemoryInfo GetMemoryInfo(PhysicalGPUHandle physicalGPUHandle)
         {
-            var getMemoryInfo = DelegateFactory.Get<Delegates.GPU.NvAPI_GPU_GetMemoryInfo>();
+            var getMemoryInfo = DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_GetMemoryInfo>();
+
             foreach (var acceptType in getMemoryInfo.Accepts())
             {
                 var instance = acceptType.Instantiate<IDisplayDriverMemoryInfo>();
+
                 using (var displayDriverMemoryInfo = ValueTypeReference.FromValueType(instance, acceptType))
                 {
                     var status = getMemoryInfo(physicalGPUHandle, displayDriverMemoryInfo);
+
                     if (status == Status.IncompatibleStructureVersion)
+                    {
                         continue;
+                    }
+
                     if (status != Status.Ok)
+                    {
                         throw new NVIDIAApiException(status);
+                    }
+
                     return displayDriverMemoryInfo.ToValueType<IDisplayDriverMemoryInfo>(acceptType);
                 }
             }
+
             throw new NVIDIANotSupportedException("This operation is not supported.");
         }
 
@@ -632,17 +787,22 @@ namespace NvAPIWrapper.Native
         ///     bit set)' or a valid displayId in the outputId parameter.
         /// </summary>
         /// <param name="gpuHandle">GPU handle to get information about</param>
-        /// <param name="displayId">Display identification of the devide to get information about</param>
+        /// <param name="displayId">Display identification of the divide to get information about</param>
         /// <returns>Type of the output</returns>
         /// <exception cref="NVIDIAApiException">Status.InvalidArgument: gpuHandle is NULL</exception>
         /// <exception cref="NVIDIAApiException">Status.NvidiaDeviceNotFound: No NVIDIA GPU driving a display was found</exception>
         /// <exception cref="NVIDIAApiException">Status.ExpectedPhysicalGPUHandle: gpuHandle was not a physical GPU handle</exception>
         public static OutputType GetOutputType(PhysicalGPUHandle gpuHandle, uint displayId)
         {
-            OutputType type;
-            var status = DelegateFactory.Get<Delegates.GPU.NvAPI_GPU_GetOutputType>()(gpuHandle, displayId, out type);
+            var status =
+                DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_GetOutputType>()(gpuHandle, displayId,
+                    out var type);
+
             if (status != Status.Ok)
+            {
                 throw new NVIDIAApiException(status);
+            }
+
             return type;
         }
 
@@ -658,30 +818,44 @@ namespace NvAPIWrapper.Native
         /// <exception cref="NVIDIAApiException">Status.InvalidArgument: gpuHandle or an argument is NULL</exception>
         /// <exception cref="NVIDIAApiException">Status.NvidiaDeviceNotFound: No NVIDIA GPU driving a display was found</exception>
         /// <exception cref="NVIDIAApiException">Status.ExpectedPhysicalGPUHandle: gpuHandle was not a physical GPU handle</exception>
-        public static void GetPCIIdentifiers(PhysicalGPUHandle gpuHandle, out uint deviceId, out uint subSystemId,
-            out uint revisionId, out uint extDeviceId)
+        // ReSharper disable once TooManyArguments
+        public static void GetPCIIdentifiers(
+            PhysicalGPUHandle gpuHandle,
+            out uint deviceId,
+            out uint subSystemId,
+            out uint revisionId,
+            out uint extDeviceId)
         {
-            var status = DelegateFactory.Get<Delegates.GPU.NvAPI_GPU_GetPCIIdentifiers>()(gpuHandle, out deviceId,
+            var status = DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_GetPCIIdentifiers>()(gpuHandle,
+                out deviceId,
                 out subSystemId, out revisionId, out extDeviceId);
+
             if (status != Status.Ok)
+            {
                 throw new NVIDIAApiException(status);
+            }
         }
 
         /// <summary>
-        ///     This function returns the physical size of framebuffer in KB.  This does NOT include any system RAM that may be
+        ///     This function returns the physical size of frame buffer in KB.  This does NOT include any system RAM that may be
         ///     dedicated for use by the GPU.
         ///     TCC_SUPPORTED
         /// </summary>
         /// <param name="gpuHandle">GPU handle to get information about</param>
-        /// <returns>Physical size of framebuffer in KB</returns>
+        /// <returns>Physical size of frame buffer in KB</returns>
         /// <exception cref="NVIDIAApiException">Status.NvidiaDeviceNotFound: No NVIDIA GPU driving a display was found</exception>
         /// <exception cref="NVIDIAApiException">Status.ExpectedPhysicalGPUHandle: gpuHandle was not a physical GPU handle</exception>
         public static int GetPhysicalFrameBufferSize(PhysicalGPUHandle gpuHandle)
         {
-            uint size;
-            var status = DelegateFactory.Get<Delegates.GPU.NvAPI_GPU_GetPhysicalFrameBufferSize>()(gpuHandle, out size);
+            var status =
+                DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_GetPhysicalFrameBufferSize>()(gpuHandle,
+                    out var size);
+
             if (status != Status.Ok)
+            {
                 throw new NVIDIAApiException(status);
+            }
+
             return (int) size;
         }
 
@@ -695,10 +869,15 @@ namespace NvAPIWrapper.Native
         /// <exception cref="NVIDIAApiException">Status.InvalidArgument: Invalid input parameter</exception>
         public static PhysicalGPUHandle GetPhysicalGPUFromDisplayId(uint displayId)
         {
-            PhysicalGPUHandle gpu;
-            var status = DelegateFactory.Get<Delegates.GPU.NvAPI_SYS_GetPhysicalGpuFromDisplayId>()(displayId, out gpu);
+            var status =
+                DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_SYS_GetPhysicalGpuFromDisplayId>()(displayId,
+                    out var gpu);
+
             if (status != Status.Ok)
+            {
                 throw new NVIDIAApiException(status);
+            }
+
             return gpu;
         }
 
@@ -713,10 +892,15 @@ namespace NvAPIWrapper.Native
         /// <exception cref="NVIDIAApiException">Status.NvidiaDeviceNotFound: No NVIDIA GPU driving a display was found</exception>
         public static PhysicalGPUHandle GetPhysicalGPUFromUnAttachedDisplay(UnAttachedDisplayHandle display)
         {
-            PhysicalGPUHandle gpu;
-            var status = DelegateFactory.Get<Delegates.GPU.NvAPI_GetPhysicalGPUFromUnAttachedDisplay>()(display, out gpu);
+            var status =
+                DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GetPhysicalGPUFromUnAttachedDisplay>()(display,
+                    out var gpu);
+
             if (status != Status.Ok)
+            {
                 throw new NVIDIAApiException(status);
+            }
+
             return gpu;
         }
 
@@ -734,11 +918,14 @@ namespace NvAPIWrapper.Native
         {
             var gpuList =
                 typeof(PhysicalGPUHandle).Instantiate<PhysicalGPUHandle>().Repeat(PhysicalGPUHandle.MaxPhysicalGPUs);
-            uint count;
-            var status = DelegateFactory.Get<Delegates.GPU.NvAPI_GetPhysicalGPUsFromDisplay>()(display, gpuList,
-                out count);
+            var status = DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GetPhysicalGPUsFromDisplay>()(display, gpuList,
+                out var count);
+
             if (status != Status.Ok)
+            {
                 throw new NVIDIAApiException(status);
+            }
+
             return gpuList.Take((int) count).ToArray();
         }
 
@@ -755,11 +942,15 @@ namespace NvAPIWrapper.Native
         {
             var gpuList =
                 typeof(PhysicalGPUHandle).Instantiate<PhysicalGPUHandle>().Repeat(PhysicalGPUHandle.MaxPhysicalGPUs);
-            uint count;
-            var status = DelegateFactory.Get<Delegates.GPU.NvAPI_GetPhysicalGPUsFromLogicalGPU>()(gpuHandle, gpuList,
-                out count);
+            var status = DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GetPhysicalGPUsFromLogicalGPU>()(gpuHandle,
+                gpuList,
+                out var count);
+
             if (status != Status.Ok)
+            {
                 throw new NVIDIAApiException(status);
+            }
+
             return gpuList.Take((int) count).ToArray();
         }
 
@@ -771,10 +962,14 @@ namespace NvAPIWrapper.Native
         /// <exception cref="NVIDIAApiException">Status.Error: Miscellaneous error occurred</exception>
         public static bool GetQuadroStatus(PhysicalGPUHandle gpuHandle)
         {
-            uint isQuadro;
-            var status = DelegateFactory.Get<Delegates.GPU.NvAPI_GPU_GetQuadroStatus>()(gpuHandle, out isQuadro);
+            var status =
+                DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_GetQuadroStatus>()(gpuHandle, out var isQuadro);
+
             if (status != Status.Ok)
+            {
                 throw new NVIDIAApiException(status);
+            }
+
             return isQuadro > 0;
         }
 
@@ -788,10 +983,14 @@ namespace NvAPIWrapper.Native
         /// <exception cref="NVIDIAApiException">Status.ExpectedPhysicalGPUHandle: gpuHandle was not a physical GPU handle</exception>
         public static int GetShaderSubPipeCount(PhysicalGPUHandle gpuHandle)
         {
-            uint count;
-            var status = DelegateFactory.Get<Delegates.GPU.NvAPI_GPU_GetShaderSubPipeCount>()(gpuHandle, out count);
+            var status =
+                DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_GetShaderSubPipeCount>()(gpuHandle, out var count);
+
             if (status != Status.Ok)
+            {
                 throw new NVIDIAApiException(status);
+            }
+
             return (int) count;
         }
 
@@ -805,10 +1004,14 @@ namespace NvAPIWrapper.Native
         /// <exception cref="NVIDIAApiException">Status.ExpectedPhysicalGPUHandle: gpuHandle was not a physical GPU handle</exception>
         public static SystemType GetSystemType(PhysicalGPUHandle gpuHandle)
         {
-            SystemType systemType;
-            var status = DelegateFactory.Get<Delegates.GPU.NvAPI_GPU_GetSystemType>()(gpuHandle, out systemType);
+            var status =
+                DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_GetSystemType>()(gpuHandle, out var systemType);
+
             if (status != Status.Ok)
+            {
                 throw new NVIDIAApiException(status);
+            }
+
             return systemType;
         }
 
@@ -821,24 +1024,35 @@ namespace NvAPIWrapper.Native
         /// <returns>The device thermal sensors information array.</returns>
         /// <exception cref="NVIDIANotSupportedException">This operation is not supported.</exception>
         /// <exception cref="NVIDIAApiException">Status.NvidiaDeviceNotFound: No NVIDIA GPU driving a display was found.</exception>
-        public static IThermalSensor[] GetThermalSettings(PhysicalGPUHandle physicalGPUHandle,
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        public static IThermalSensor[] GetThermalSettings(
+            PhysicalGPUHandle physicalGPUHandle,
             ThermalSettingsTarget sensorTarget = ThermalSettingsTarget.All)
         {
-            var getThermalSettings = DelegateFactory.Get<Delegates.GPU.NvAPI_GPU_GetThermalSettings>();
+            var getThermalSettings = DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_GetThermalSettings>();
+
             foreach (var acceptType in getThermalSettings.Accepts())
             {
                 var instance = acceptType.Instantiate<IThermalSettings>();
+
                 using (var gpuThermalSettings = ValueTypeReference.FromValueType(instance, acceptType))
                 {
                     var status = getThermalSettings(physicalGPUHandle, sensorTarget, gpuThermalSettings);
+
                     if (status == Status.IncompatibleStructureVersion)
+                    {
                         continue;
+                    }
+
                     if (status != Status.Ok)
+                    {
                         throw new NVIDIAApiException(status);
+                    }
 
                     return gpuThermalSettings.ToValueType<IThermalSettings>(acceptType).Sensors;
                 }
             }
+
             throw new NVIDIANotSupportedException("This operation is not supported.");
         }
 
@@ -851,10 +1065,14 @@ namespace NvAPIWrapper.Native
         /// <exception cref="NVIDIAApiException">Status.ExpectedPhysicalGPUHandle: gpuHandle was not a physical GPU handle.</exception>
         public static uint GetVBIOSOEMRevision(PhysicalGPUHandle gpuHandle)
         {
-            uint revision;
-            var status = DelegateFactory.Get<Delegates.GPU.NvAPI_GPU_GetVbiosOEMRevision>()(gpuHandle, out revision);
+            var status =
+                DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_GetVbiosOEMRevision>()(gpuHandle, out var revision);
+
             if (status != Status.Ok)
+            {
                 throw new NVIDIAApiException(status);
+            }
+
             return revision;
         }
 
@@ -868,10 +1086,14 @@ namespace NvAPIWrapper.Native
         /// <exception cref="NVIDIAApiException">Status.ExpectedPhysicalGPUHandle: gpuHandle was not a physical GPU handle.</exception>
         public static uint GetVBIOSRevision(PhysicalGPUHandle gpuHandle)
         {
-            uint revision;
-            var status = DelegateFactory.Get<Delegates.GPU.NvAPI_GPU_GetVbiosRevision>()(gpuHandle, out revision);
+            var status =
+                DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_GetVbiosRevision>()(gpuHandle, out var revision);
+
             if (status != Status.Ok)
+            {
                 throw new NVIDIAApiException(status);
+            }
+
             return revision;
         }
 
@@ -886,29 +1108,37 @@ namespace NvAPIWrapper.Native
         /// <exception cref="NVIDIAApiException">Status.ExpectedPhysicalGPUHandle: gpuHandle was not a physical GPU handle.</exception>
         public static string GetVBIOSVersionString(PhysicalGPUHandle gpuHandle)
         {
-            ShortString version;
-            var status = DelegateFactory.Get<Delegates.GPU.NvAPI_GPU_GetVbiosVersionString>()(gpuHandle, out version);
+            var status =
+                DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_GetVbiosVersionString>()(gpuHandle,
+                    out var version);
+
             if (status != Status.Ok)
+            {
                 throw new NVIDIAApiException(status);
+            }
+
             return version.Value;
         }
 
         /// <summary>
-        ///     This function returns the virtual size of framebuffer in KB. This includes the physical RAM plus any system RAM
+        ///     This function returns the virtual size of frame buffer in KB. This includes the physical RAM plus any system RAM
         ///     that has been dedicated for use by the GPU.
         /// </summary>
         /// <param name="gpuHandle">Physical GPU handle to get information about</param>
-        /// <returns>Virtual size of framebuffer in KB</returns>
+        /// <returns>Virtual size of frame buffer in KB</returns>
         /// <exception cref="NVIDIAApiException">Status.InvalidArgument: display is not valid</exception>
         /// <exception cref="NVIDIAApiException">Status.NvidiaDeviceNotFound: No NVIDIA GPU driving a display was found</exception>
         /// <exception cref="NVIDIAApiException">Status.ExpectedPhysicalGPUHandle: gpuHandle was not a physical GPU handle.</exception>
         public static int GetVirtualFrameBufferSize(PhysicalGPUHandle gpuHandle)
         {
-            uint bufferSize;
-            var status = DelegateFactory.Get<Delegates.GPU.NvAPI_GPU_GetVirtualFrameBufferSize>()(gpuHandle,
-                out bufferSize);
+            var status = DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_GetVirtualFrameBufferSize>()(gpuHandle,
+                out var bufferSize);
+
             if (status != Status.Ok)
+            {
                 throw new NVIDIAApiException(status);
+            }
+
             return (int) bufferSize;
         }
 
@@ -917,7 +1147,7 @@ namespace NvAPIWrapper.Native
         ///     User can either send (Gpu handle and output id) or only display Id in variable outputId parameter and gpuHandle
         ///     parameter can be default handle.
         ///     Note: The EDID will be cached across the boot session and will be enumerated to the OS in this call. To remove the
-        ///     EDID set sizeofEDID to zero. OS and NVAPI connection status APIs will reflect the newly set or removed EDID
+        ///     EDID set size of EDID to zero. OS and NVAPI connection status APIs will reflect the newly set or removed EDID
         ///     dynamically.
         ///     This feature will NOT be supported on the following boards: GeForce, Quadro VX, Tesla
         /// </summary>
@@ -942,7 +1172,7 @@ namespace NvAPIWrapper.Native
         ///     User can either send (Gpu handle and output id) or only display Id in variable outputId parameter and gpuHandle
         ///     parameter can be default handle.
         ///     Note: The EDID will be cached across the boot session and will be enumerated to the OS in this call. To remove the
-        ///     EDID set sizeofEDID to zero. OS and NVAPI connection status APIs will reflect the newly set or removed EDID
+        ///     EDID set size of EDID to zero. OS and NVAPI connection status APIs will reflect the newly set or removed EDID
         ///     dynamically.
         ///     This feature will NOT be supported on the following boards: GeForce, Quadro VX, Tesla
         /// </summary>
@@ -957,16 +1187,24 @@ namespace NvAPIWrapper.Native
         /// <exception cref="NVIDIAApiException">Status.NvidiaDeviceNotFound: No NVIDIA GPU driving a display was found.</exception>
         /// <exception cref="NVIDIAApiException">Status.ExpectedPhysicalGPUHandle: gpuHandle was not a physical GPU handle.</exception>
         /// <exception cref="NVIDIAApiException">Status.NotSupported: For the above mentioned GPUs</exception>
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
         public static void SetEDID(PhysicalGPUHandle gpuHandle, uint displayId, IEDID edid)
         {
-            var gpuSetEDID = DelegateFactory.Get<Delegates.GPU.NvAPI_GPU_SetEDID>();
+            var gpuSetEDID = DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_SetEDID>();
+
             if (!gpuSetEDID.Accepts().Contains(edid.GetType()))
+            {
                 throw new NVIDIANotSupportedException("This operation is not supported.");
+            }
+
             using (var edidReference = ValueTypeReference.FromValueType(edid, edid.GetType()))
             {
                 var status = gpuSetEDID(gpuHandle, displayId, edidReference);
+
                 if (status != Status.Ok)
+                {
                     throw new NVIDIAApiException(status);
+                }
             }
         }
 
@@ -985,11 +1223,19 @@ namespace NvAPIWrapper.Native
         /// <exception cref="NVIDIAApiException">Status.ExpectedPhysicalGPUHandle: gpuHandle was not a physical GPU handle.</exception>
         public static bool ValidateOutputCombination(PhysicalGPUHandle gpuHandle, OutputId outputIds)
         {
-            var status = DelegateFactory.Get<Delegates.GPU.NvAPI_GPU_ValidateOutputCombination>()(gpuHandle, outputIds);
+            var status =
+                DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_ValidateOutputCombination>()(gpuHandle, outputIds);
+
             if (status == Status.InvalidCombination)
+            {
                 return false;
+            }
+
             if (status != Status.Ok)
+            {
                 throw new NVIDIAApiException(status);
+            }
+
             return true;
         }
     }

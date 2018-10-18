@@ -38,13 +38,13 @@
         ///     Standard definition PAL N signal
         /// </summary>
         // ReSharper disable once InconsistentNaming
-        SD_PALN = 0x00000010,
+        SD_PAL_N = 0x00000010,
 
         /// <summary>
         ///     Standard definition PAL NC signal
         /// </summary>
         // ReSharper disable once InconsistentNaming
-        SD_PALNC = 0x00000020,
+        SD_PAL_NC = 0x00000020,
 
         /// <summary>
         ///     Extended definition with height of 576 pixels interlaced

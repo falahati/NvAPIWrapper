@@ -28,20 +28,29 @@ namespace NvAPIWrapper.Native.Display.Structures
         internal ValueTypeReference<LUID> _OSAdapterLUID;
 
         /// <inheritdoc />
-        public uint SourceId => _SourceId;
+        public uint SourceId
+        {
+            get => _SourceId;
+        }
 
         /// <inheritdoc />
         public bool Equals(PathInfoV2 other)
         {
-            return (_TargetInfoCount == other._TargetInfoCount) && _TargetsInfo.Equals(other._TargetsInfo) &&
-                   _SourceModeInfo.Equals(other._SourceModeInfo) && (_RawReserved == other._RawReserved);
+            return _TargetInfoCount == other._TargetInfoCount &&
+                   _TargetsInfo.Equals(other._TargetsInfo) &&
+                   _SourceModeInfo.Equals(other._SourceModeInfo) &&
+                   _RawReserved == other._RawReserved;
         }
 
         /// <inheritdoc />
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            return obj is PathInfoV2 && Equals((PathInfoV2) obj);
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+
+            return obj is PathInfoV2 v2 && Equals(v2);
         }
 
         /// <inheritdoc />
@@ -50,29 +59,43 @@ namespace NvAPIWrapper.Native.Display.Structures
             unchecked
             {
                 var hashCode = (int) _TargetInfoCount;
-                hashCode = (hashCode*397) ^ _TargetsInfo.GetHashCode();
-                hashCode = (hashCode*397) ^ _SourceModeInfo.GetHashCode();
-                hashCode = (hashCode*397) ^ (int) _RawReserved;
+                // ReSharper disable once NonReadonlyMemberInGetHashCode
+                hashCode = (hashCode * 397) ^ _TargetsInfo.GetHashCode();
+                // ReSharper disable once NonReadonlyMemberInGetHashCode
+                hashCode = (hashCode * 397) ^ _SourceModeInfo.GetHashCode();
+                hashCode = (hashCode * 397) ^ (int) _RawReserved;
+
                 return hashCode;
             }
         }
 
         /// <inheritdoc />
         public IEnumerable<IPathTargetInfo> TargetsInfo
-            => _TargetsInfo.ToArray((int) _TargetInfoCount)?.Cast<IPathTargetInfo>() ?? new IPathTargetInfo[0];
+        {
+            get => _TargetsInfo.ToArray((int) _TargetInfoCount)?.Cast<IPathTargetInfo>() ?? new IPathTargetInfo[0];
+        }
 
         /// <inheritdoc />
-        public SourceModeInfo SourceModeInfo => _SourceModeInfo.ToValueType() ?? default(SourceModeInfo);
+        public SourceModeInfo SourceModeInfo
+        {
+            get => _SourceModeInfo.ToValueType() ?? default(SourceModeInfo);
+        }
 
         /// <summary>
         ///     True for non-NVIDIA adapter.
         /// </summary>
-        public bool IsNonNVIDIAAdapter => _RawReserved.GetBit(0);
+        public bool IsNonNVIDIAAdapter
+        {
+            get => _RawReserved.GetBit(0);
+        }
 
         /// <summary>
         ///     Used by Non-NVIDIA adapter for OS Adapter of LUID
         /// </summary>
-        public LUID? OSAdapterLUID => _OSAdapterLUID.ToValueType();
+        public LUID? OSAdapterLUID
+        {
+            get => _OSAdapterLUID.ToValueType();
+        }
 
         /// <summary>
         ///     Creates a new PathInfoV2
@@ -141,12 +164,13 @@ namespace NvAPIWrapper.Native.Display.Structures
 
         void IAllocatable.Allocate()
         {
-            if ((_TargetInfoCount > 0) && _TargetsInfo.IsNull)
+            if (_TargetInfoCount > 0 && _TargetsInfo.IsNull)
             {
                 var targetInfo = typeof(PathTargetInfoV2).Instantiate<PathTargetInfoV2>();
                 var targetInfoList = targetInfo.Repeat((int) _TargetInfoCount).AllocateAll();
                 _TargetsInfo = ValueTypeArray<PathTargetInfoV2>.FromArray(targetInfoList.ToArray());
             }
+
             if (_SourceModeInfo.IsNull)
             {
                 var sourceModeInfo = typeof(SourceModeInfo).Instantiate<SourceModeInfo>();

@@ -34,9 +34,15 @@ namespace NvAPIWrapper.GPU
             {
                 var outputs = new List<GPUOutput>();
                 var allOutputs = GPUApi.GetActiveOutputs(Handle);
+
                 foreach (OutputId outputId in Enum.GetValues(typeof(OutputId)))
-                    if ((outputId != OutputId.Invalid) && allOutputs.HasFlag(outputId))
+                {
+                    if (outputId != OutputId.Invalid && allOutputs.HasFlag(outputId))
+                    {
                         outputs.Add(new GPUOutput(outputId, this));
+                    }
+                }
+
                 return outputs.ToArray();
             }
         }
@@ -44,19 +50,33 @@ namespace NvAPIWrapper.GPU
         /// <summary>
         ///     Gets accelerated graphics port information
         /// </summary>
-        public AGPInformation AGPInformation => new AGPInformation(
-            GPUApi.GetAGPAperture(Handle),
-            GPUApi.GetCurrentAGPRate(Handle)
-        );
+        public AGPInformation AGPInformation
+        {
+            get => new AGPInformation(
+                GPUApi.GetAGPAperture(Handle),
+                GPUApi.GetCurrentAGPRate(Handle)
+            );
+        }
+
+        /// <summary>
+        ///     Gets GPU base clock frequencies
+        /// </summary>
+        public IClockFrequencies BaseClockFrequencies
+        {
+            get => GPUApi.GetAllClockFrequencies(Handle, new ClockFrequenciesV2(ClockType.BaseClock));
+        }
 
         /// <summary>
         ///     Gets GPU video BIOS information
         /// </summary>
-        public VideoBIOS Bios => new VideoBIOS(
-            GPUApi.GetVBIOSRevision(Handle),
-            (int) GPUApi.GetVBIOSOEMRevision(Handle),
-            GPUApi.GetVBIOSVersionString(Handle)
-        );
+        public VideoBIOS Bios
+        {
+            get => new VideoBIOS(
+                GPUApi.GetVBIOSRevision(Handle),
+                (int) GPUApi.GetVBIOSOEMRevision(Handle),
+                GPUApi.GetVBIOSVersionString(Handle)
+            );
+        }
 
         /// <summary>
         ///     Gets the board information
@@ -72,66 +92,90 @@ namespace NvAPIWrapper.GPU
                 catch (NVIDIAApiException ex)
                 {
                     if (ex.Status == Status.NotSupported)
+                    {
                         return default(BoardInfo);
+                    }
+
                     throw;
                 }
             }
         }
 
         /// <summary>
+        ///     Gets GPU boost clock frequencies
+        /// </summary>
+        public IClockFrequencies BoostClockFrequencies
+        {
+            get => GPUApi.GetAllClockFrequencies(Handle, new ClockFrequenciesV2(ClockType.BoostClock));
+        }
+
+        /// <summary>
         ///     Gets GPU bus information
         /// </summary>
-        public GPUBus BusInfo => new GPUBus(
-            GPUApi.GetBusId(Handle),
-            GPUApi.GetBusSlotId(Handle),
-            GPUApi.GetBusType(Handle)
-        );
+        public GPUBus BusInfo
+        {
+            get => new GPUBus(
+                GPUApi.GetBusId(Handle),
+                GPUApi.GetBusSlotId(Handle),
+                GPUApi.GetBusType(Handle)
+            );
+        }
 
         /// <summary>
         ///     Gets corresponding logical GPU
         /// </summary>
-        public LogicalGPU CorrespondingLogicalGPU => new LogicalGPU(GPUApi.GetLogicalGPUFromPhysicalGPU(Handle));
+        public LogicalGPU CorrespondingLogicalGPU
+        {
+            get => new LogicalGPU(GPUApi.GetLogicalGPUFromPhysicalGPU(Handle));
+        }
 
         /// <summary>
         ///     Gets total number of cores defined for this GPU, or zero for older architectures
         /// </summary>
-        public int CUDACores => GPUApi.GetGPUCoreCount(Handle);
+        public int CUDACores
+        {
+            get => GPUApi.GetGPUCoreCount(Handle);
+        }
+
+        /// <summary>
+        ///     Gets GPU current clock frequencies
+        /// </summary>
+        public IClockFrequencies CurrentClockFrequencies
+        {
+            get => GPUApi.GetAllClockFrequencies(Handle);
+        }
 
         /// <summary>
         ///     Gets number of PCIE lanes being used for the PCIE interface downstream
         /// </summary>
-        public int CurrentPCIEDownStreamWidth => GPUApi.GetCurrentPCIEDownStreamWidth(Handle);
+        public int CurrentPCIEDownStreamWidth
+        {
+            get => GPUApi.GetCurrentPCIEDownStreamWidth(Handle);
+        }
 
         /// <summary>
         ///     Gets GPU dynamic performance states information (utilization domains)
         /// </summary>
         public DynamicPerformanceStatesInfo DynamicPerformanceStatesInfo
-            => GPUApi.GetDynamicPerformanceStatesInfoEx(Handle);
-
-        /// <summary>
-        ///     Gets GPU current clock frequencies
-        /// </summary>
-        public IClockFrequencies CurrentClockFrequencies => GPUApi.GetAllClockFrequencies(Handle);
-
-        /// <summary>
-        ///     Gets GPU base clock frequencies
-        /// </summary>
-        public IClockFrequencies BaseClockFrequencies => GPUApi.GetAllClockFrequencies(Handle, new ClockFrequenciesV2(ClockType.BaseClock));
-
-        /// <summary>
-        ///     Gets GPU boost clock frequencies
-        /// </summary>
-        public IClockFrequencies BoostClockFrequencies => GPUApi.GetAllClockFrequencies(Handle, new ClockFrequenciesV2(ClockType.BoostClock));
+        {
+            get => GPUApi.GetDynamicPerformanceStatesInfoEx(Handle);
+        }
 
         /// <summary>
         ///     Gets GPU full name
         /// </summary>
-        public string FullName => GPUApi.GetFullName(Handle);
+        public string FullName
+        {
+            get => GPUApi.GetFullName(Handle);
+        }
 
         /// <summary>
         ///     Gets GPU type
         /// </summary>
-        public GPUType GPUType => GPUApi.GetGPUType(Handle);
+        public GPUType GPUType
+        {
+            get => GPUApi.GetGPUType(Handle);
+        }
 
         /// <summary>
         ///     Gets the physical GPU handle
@@ -141,17 +185,26 @@ namespace NvAPIWrapper.GPU
         /// <summary>
         ///     Gets GPU interrupt number
         /// </summary>
-        public int IRQ => GPUApi.GetIRQ(Handle);
+        public int IRQ
+        {
+            get => GPUApi.GetIRQ(Handle);
+        }
 
         /// <summary>
         ///     Gets a boolean value indicating the Quadro line of products
         /// </summary>
-        public bool IsQuadro => GPUApi.GetQuadroStatus(Handle);
+        public bool IsQuadro
+        {
+            get => GPUApi.GetQuadroStatus(Handle);
+        }
 
         /// <summary>
         ///     Gets GPU memory information
         /// </summary>
-        public IDisplayDriverMemoryInfo MemoryInfo => GPUApi.GetMemoryInfo(Handle);
+        public IDisplayDriverMemoryInfo MemoryInfo
+        {
+            get => GPUApi.GetMemoryInfo(Handle);
+        }
 
         /// <summary>
         ///     Gets the PCI identifiers
@@ -165,6 +218,7 @@ namespace NvAPIWrapper.GPU
                 uint revisionId;
                 uint extDeviceId;
                 GPUApi.GetPCIIdentifiers(Handle, out deviceId, out subSystemId, out revisionId, out extDeviceId);
+
                 return new PCIIdentifiers(deviceId, subSystemId, revisionId, (int) extDeviceId);
             }
         }
@@ -173,34 +227,57 @@ namespace NvAPIWrapper.GPU
         ///     Gets GPU physical frame buffer size in KB. This does NOT include any system RAM that may be dedicated for use by
         ///     the GPU.
         /// </summary>
-        public int PhysicalFrameBufferSize => GPUApi.GetPhysicalFrameBufferSize(Handle);
+        public int PhysicalFrameBufferSize
+        {
+            get => GPUApi.GetPhysicalFrameBufferSize(Handle);
+        }
 
         /// <summary>
         ///     Gets number of GPU Shader SubPipes or SM units
         /// </summary>
-        public int ShaderSubPipeLines => GPUApi.GetShaderSubPipeCount(Handle);
+        public int ShaderSubPipeLines
+        {
+            get => GPUApi.GetShaderSubPipeCount(Handle);
+        }
 
         /// <summary>
         ///     Gets GPU system type
         /// </summary>
-        public SystemType SystemType => GPUApi.GetSystemType(Handle);
+        public SystemType SystemType
+        {
+            get => GPUApi.GetSystemType(Handle);
+        }
 
         /// <summary>
         ///     Gets GPU thermal sensors information
         /// </summary>
-        public IThermalSensor[] ThermalSensors => GPUApi.GetThermalSettings(Handle);
+        public IThermalSensor[] ThermalSensors
+        {
+            get => GPUApi.GetThermalSettings(Handle);
+        }
 
         /// <summary>
         ///     Gets virtual size of framebuffer in KB for this GPU. This includes the physical RAM plus any system RAM that has
         ///     been dedicated for use by the GPU.
         /// </summary>
-        public int VirtualFrameBufferSize => GPUApi.GetVirtualFrameBufferSize(Handle);
+        public int VirtualFrameBufferSize
+        {
+            get => GPUApi.GetVirtualFrameBufferSize(Handle);
+        }
 
         /// <inheritdoc />
         public bool Equals(PhysicalGPU other)
         {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
+            if (ReferenceEquals(null, other))
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, other))
+            {
+                return true;
+            }
+
             return Handle.Equals(other.Handle);
         }
 
@@ -247,9 +324,21 @@ namespace NvAPIWrapper.GPU
         /// <inheritdoc />
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != GetType()) return false;
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
+            }
+
+            if (obj.GetType() != GetType())
+            {
+                return false;
+            }
+
             return Equals((PhysicalGPU) obj);
         }
 
@@ -306,6 +395,7 @@ namespace NvAPIWrapper.GPU
                 var data = new byte[0];
                 var identification = 0;
                 var totalSize = EDIDV3.MaxDataSize;
+
                 for (var offset = 0; offset < totalSize; offset += EDIDV3.MaxDataSize)
                 {
                     var edid = GPUApi.GetEDID(Handle, output.OutputId, offset, identification);
@@ -316,12 +406,16 @@ namespace NvAPIWrapper.GPU
                     Array.Resize(ref data, data.Length + edidData.Length);
                     Array.Copy(edidData, 0, data, data.Length - edidData.Length, edidData.Length);
                 }
+
                 return data;
             }
             catch (NVIDIAApiException ex)
             {
                 if (ex.Status == Status.IncompatibleStructureVersion)
+                {
                     return GPUApi.GetEDID(Handle, output.OutputId).Data;
+                }
+
                 throw;
             }
         }
@@ -333,7 +427,9 @@ namespace NvAPIWrapper.GPU
         /// <returns>true if all specified outputs can be active simultaneously, otherwise false</returns>
         public bool ValidateOutputCombination(GPUOutput[] outputs)
         {
-            var gpuOutpudIds = outputs.Aggregate(OutputId.Invalid, (current, gpuOutput) => current | gpuOutput.OutputId);
+            var gpuOutpudIds =
+                outputs.Aggregate(OutputId.Invalid, (current, gpuOutput) => current | gpuOutput.OutputId);
+
             return GPUApi.ValidateOutputCombination(Handle, gpuOutpudIds);
         }
 
@@ -368,17 +464,21 @@ namespace NvAPIWrapper.GPU
                     var instance = EDIDV3.CreateWithData(0, (uint) offset, array, edidData.Length);
                     GPUApi.SetEDID(Handle, displayOutputId, instance);
                 }
+
                 return;
             }
             catch (NVIDIAApiException ex)
             {
                 if (ex.Status != Status.IncompatibleStructureVersion)
+                {
                     throw;
+                }
             }
             catch (NVIDIANotSupportedException)
             {
                 // ignore
             }
+
             try
             {
                 for (var offset = 0; offset < edidData.Length; offset += EDIDV2.MaxDataSize)
@@ -387,17 +487,21 @@ namespace NvAPIWrapper.GPU
                     Array.Copy(edidData, offset, array, 0, array.Length);
                     GPUApi.SetEDID(Handle, displayOutputId, EDIDV2.CreateWithData(array, edidData.Length));
                 }
+
                 return;
             }
             catch (NVIDIAApiException ex)
             {
                 if (ex.Status != Status.IncompatibleStructureVersion)
+                {
                     throw;
+                }
             }
             catch (NVIDIANotSupportedException)
             {
                 // ignore
             }
+
             GPUApi.SetEDID(Handle, displayOutputId, EDIDV1.CreateWithData(edidData));
         }
     }

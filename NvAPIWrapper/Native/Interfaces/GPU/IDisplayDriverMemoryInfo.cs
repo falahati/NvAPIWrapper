@@ -6,17 +6,17 @@
     public interface IDisplayDriverMemoryInfo
     {
         /// <summary>
-        ///     Size(in kb) of the available physical framebuffer for allocating video memory surfaces.
+        ///     Size(in kb) of the available physical frame buffer for allocating video memory surfaces.
         /// </summary>
         uint AvailableDedicatedVideoMemory { get; }
 
         /// <summary>
-        ///     Size(in kb) of the current available physical framebuffer for allocating video memory surfaces.
+        ///     Size(in kb) of the current available physical frame buffer for allocating video memory surfaces.
         /// </summary>
         uint CurrentAvailableDedicatedVideoMemory { get; }
 
         /// <summary>
-        ///     Size(in kb) of the physical framebuffer.
+        ///     Size(in kb) of the physical frame buffer.
         /// </summary>
         uint DedicatedVideoMemory { get; }
 

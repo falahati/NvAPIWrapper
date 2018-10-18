@@ -26,41 +26,57 @@ namespace NvAPIWrapper.Native.Display.Structures
         internal ValueTypeReference<SourceModeInfo> _SourceModeInfo;
 
         /// <inheritdoc />
-        public uint SourceId => _ReservedSourceId;
+        public uint SourceId
+        {
+            get => _ReservedSourceId;
+        }
 
         /// <inheritdoc />
         public IEnumerable<IPathTargetInfo> TargetsInfo
-            => _TargetsInfo.ToArray((int) _TargetInfoCount)?.Cast<IPathTargetInfo>() ?? new IPathTargetInfo[0];
+        {
+            get => _TargetsInfo.ToArray((int) _TargetInfoCount)?.Cast<IPathTargetInfo>() ?? new IPathTargetInfo[0];
+        }
 
         /// <inheritdoc />
-        public SourceModeInfo SourceModeInfo => _SourceModeInfo.ToValueType() ?? default(SourceModeInfo);
+        public SourceModeInfo SourceModeInfo
+        {
+            get => _SourceModeInfo.ToValueType() ?? default(SourceModeInfo);
+        }
 
         /// <summary>
         ///     Creates a new PathInfoV1
         /// </summary>
-        /// <param name="targetInformations">Information about path targets</param>
-        /// <param name="sourceModeInfo">Source mode information</param>
+        /// <param name="targetsInformation">Information about path targets</param>
+        /// <param name="sourceModeInformation">Source mode information</param>
         /// <param name="sourceId">Source Id, can be zero</param>
-        public PathInfoV1(PathTargetInfoV1[] targetInformations, SourceModeInfo sourceModeInfo, uint sourceId = 0)
+        public PathInfoV1(
+            PathTargetInfoV1[] targetsInformation,
+            SourceModeInfo sourceModeInformation,
+            uint sourceId = 0)
         {
             this = typeof(PathInfoV1).Instantiate<PathInfoV1>();
-            _TargetInfoCount = (uint) targetInformations.Length;
-            _TargetsInfo = ValueTypeArray<PathTargetInfoV1>.FromArray(targetInformations);
-            _SourceModeInfo = ValueTypeReference<SourceModeInfo>.FromValueType(sourceModeInfo);
+            _TargetInfoCount = (uint) targetsInformation.Length;
+            _TargetsInfo = ValueTypeArray<PathTargetInfoV1>.FromArray(targetsInformation);
+            _SourceModeInfo = ValueTypeReference<SourceModeInfo>.FromValueType(sourceModeInformation);
             _ReservedSourceId = sourceId;
         }
 
         /// <inheritdoc />
         public bool Equals(PathInfoV1 other)
         {
-            return (_TargetInfoCount == other._TargetInfoCount) && _TargetsInfo.Equals(other._TargetsInfo) &&
+            return _TargetInfoCount == other._TargetInfoCount &&
+                   _TargetsInfo.Equals(other._TargetsInfo) &&
                    _SourceModeInfo.Equals(other._SourceModeInfo);
         }
 
         /// <inheritdoc />
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+
             return obj is PathInfoV1 && Equals((PathInfoV1) obj);
         }
 
@@ -70,8 +86,11 @@ namespace NvAPIWrapper.Native.Display.Structures
             unchecked
             {
                 var hashCode = (int) _TargetInfoCount;
-                hashCode = (hashCode*397) ^ _TargetsInfo.GetHashCode();
-                hashCode = (hashCode*397) ^ _SourceModeInfo.GetHashCode();
+                // ReSharper disable once NonReadonlyMemberInGetHashCode
+                hashCode = (hashCode * 397) ^ _TargetsInfo.GetHashCode();
+                // ReSharper disable once NonReadonlyMemberInGetHashCode
+                hashCode = (hashCode * 397) ^ _SourceModeInfo.GetHashCode();
+
                 return hashCode;
             }
         }
@@ -79,13 +98,13 @@ namespace NvAPIWrapper.Native.Display.Structures
         /// <summary>
         ///     Creates a new PathInfoV1
         /// </summary>
-        /// <param name="targetInformations">Information about path targets</param>
+        /// <param name="targetsInformation">Information about path targets</param>
         /// <param name="sourceId">Source Id, can be zero</param>
-        public PathInfoV1(PathTargetInfoV1[] targetInformations, uint sourceId = 0)
+        public PathInfoV1(PathTargetInfoV1[] targetsInformation, uint sourceId = 0)
         {
             this = typeof(PathInfoV1).Instantiate<PathInfoV1>();
-            _TargetInfoCount = (uint) targetInformations.Length;
-            _TargetsInfo = ValueTypeArray<PathTargetInfoV1>.FromArray(targetInformations);
+            _TargetInfoCount = (uint) targetsInformation.Length;
+            _TargetsInfo = ValueTypeArray<PathTargetInfoV1>.FromArray(targetsInformation);
             _SourceModeInfo = ValueTypeReference<SourceModeInfo>.Null;
             _ReservedSourceId = sourceId;
         }
@@ -127,12 +146,13 @@ namespace NvAPIWrapper.Native.Display.Structures
 
         void IAllocatable.Allocate()
         {
-            if ((_TargetInfoCount > 0) && _TargetsInfo.IsNull)
+            if (_TargetInfoCount > 0 && _TargetsInfo.IsNull)
             {
                 var targetInfo = typeof(PathTargetInfoV1).Instantiate<PathTargetInfoV1>();
                 var targetInfoList = targetInfo.Repeat((int) _TargetInfoCount).AllocateAll();
                 _TargetsInfo = ValueTypeArray<PathTargetInfoV1>.FromArray(targetInfoList.ToArray());
             }
+
             if (_SourceModeInfo.IsNull)
             {
                 var sourceModeInfo = typeof(SourceModeInfo).Instantiate<SourceModeInfo>();

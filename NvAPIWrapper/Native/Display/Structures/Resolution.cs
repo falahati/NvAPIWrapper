@@ -29,14 +29,18 @@ namespace NvAPIWrapper.Native.Display.Structures
         /// <inheritdoc />
         public bool Equals(Resolution other)
         {
-            return (_Width == other._Width) && (_Height == other._Height) && (_ColorDepth == other._ColorDepth);
+            return _Width == other._Width && _Height == other._Height && _ColorDepth == other._ColorDepth;
         }
 
         /// <inheritdoc />
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            return obj is Resolution && Equals((Resolution) obj);
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+
+            return obj is Resolution resolution && Equals(resolution);
         }
 
         /// <inheritdoc />
@@ -45,8 +49,9 @@ namespace NvAPIWrapper.Native.Display.Structures
             unchecked
             {
                 var hashCode = (int) _Width;
-                hashCode = (hashCode*397) ^ (int) _Height;
-                hashCode = (hashCode*397) ^ (int) _ColorDepth;
+                hashCode = (hashCode * 397) ^ (int) _Height;
+                hashCode = (hashCode * 397) ^ (int) _ColorDepth;
+
                 return hashCode;
             }
         }
@@ -82,16 +87,25 @@ namespace NvAPIWrapper.Native.Display.Structures
         /// <summary>
         ///     Display resolution width
         /// </summary>
-        public int Width => (int) _Width;
+        public int Width
+        {
+            get => (int) _Width;
+        }
 
         /// <summary>
         ///     Display resolution height
         /// </summary>
-        public int Height => (int) _Height;
+        public int Height
+        {
+            get => (int) _Height;
+        }
 
         /// <summary>
         ///     Display color depth
         /// </summary>
-        public int ColorDepth => (int) _ColorDepth;
+        public int ColorDepth
+        {
+            get => (int) _ColorDepth;
+        }
     }
 }

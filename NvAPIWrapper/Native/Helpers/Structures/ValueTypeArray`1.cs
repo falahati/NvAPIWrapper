@@ -11,10 +11,20 @@ namespace NvAPIWrapper.Native.Helpers.Structures
     {
         private ValueTypeArray underlyingArray;
 
-        public IntPtr MemoryAddress => underlyingArray.MemoryAddress;
+        public IntPtr MemoryAddress
+        {
+            get => underlyingArray.MemoryAddress;
+        }
 
-        public static ValueTypeArray<T> Null => new ValueTypeArray<T>();
-        public bool IsNull => underlyingArray.IsNull;
+        public static ValueTypeArray<T> Null
+        {
+            get => new ValueTypeArray<T>();
+        }
+
+        public bool IsNull
+        {
+            get => underlyingArray.IsNull;
+        }
 
         public ValueTypeArray(IntPtr memoryAddress)
         {
@@ -43,8 +53,12 @@ namespace NvAPIWrapper.Native.Helpers.Structures
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            return obj is ValueTypeArray<T> && Equals((ValueTypeArray<T>) obj);
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+
+            return obj is ValueTypeArray<T> array && Equals(array);
         }
 
         public override int GetHashCode()
@@ -106,7 +120,9 @@ namespace NvAPIWrapper.Native.Helpers.Structures
         public void Dispose()
         {
             if (!IsNull)
+            {
                 underlyingArray.Dispose();
+            }
         }
     }
 }

@@ -23,12 +23,15 @@ namespace NvAPIWrapper.Mosaic
         /// <param name="frequency">Mosaic displays frequency</param>
         /// <param name="topology">Topology arrangement</param>
         /// <param name="overlap">Mosaic overlap</param>
-        public Topology(Resolution resolution, int frequency, Native.Mosaic.Topology topology,
+        public Topology(
+            Resolution resolution,
+            int frequency,
+            Native.Mosaic.Topology topology,
             Overlap overlap)
         {
             Resolution = resolution;
             Frequency = frequency;
-            FrequencyInMillihertz = (uint) (Frequency*1000);
+            FrequencyInMillihertz = (uint) (Frequency * 1000);
             TopologyMode = topology;
             Overlap = overlap;
         }
@@ -41,8 +44,12 @@ namespace NvAPIWrapper.Mosaic
         /// <param name="frequencyInMillihertz">Mosaic frequency x 1000</param>
         /// <param name="topology">Topology arrangement</param>
         /// <param name="overlap">Mosaic overlap</param>
-        public Topology(Resolution resolution, int frequency, uint frequencyInMillihertz,
-            Native.Mosaic.Topology topology, Overlap overlap)
+        public Topology(
+            Resolution resolution,
+            int frequency,
+            uint frequencyInMillihertz,
+            Native.Mosaic.Topology topology,
+            Overlap overlap)
             : this(resolution, frequency, topology, overlap)
         {
             FrequencyInMillihertz = frequencyInMillihertz;
@@ -76,10 +83,20 @@ namespace NvAPIWrapper.Mosaic
         /// <inheritdoc />
         public bool Equals(Topology other)
         {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
-            return Resolution.Equals(other.Resolution) && (Frequency == other.Frequency) &&
-                   (FrequencyInMillihertz == other.FrequencyInMillihertz) && (TopologyMode == other.TopologyMode) &&
+            if (ReferenceEquals(null, other))
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, other))
+            {
+                return true;
+            }
+
+            return Resolution.Equals(other.Resolution) &&
+                   Frequency == other.Frequency &&
+                   FrequencyInMillihertz == other.FrequencyInMillihertz &&
+                   TopologyMode == other.TopologyMode &&
                    Overlap.Equals(other.Overlap);
         }
 
@@ -110,6 +127,7 @@ namespace NvAPIWrapper.Mosaic
             int overlapX;
             int overlapY;
             MosaicApi.GetCurrentTopology(out brief, out displaySettings, out overlapX, out overlapY);
+
             return
                 new Topology(
                     new Resolution(displaySettings.Width, displaySettings.Height, displaySettings.BitsPerPixel),
@@ -153,6 +171,7 @@ namespace NvAPIWrapper.Mosaic
             int overlapX;
             int overlapY;
             MosaicApi.GetCurrentTopology(out brief, out displaySettings, out overlapX, out overlapY);
+
             return brief.IsEnable;
         }
 
@@ -167,6 +186,7 @@ namespace NvAPIWrapper.Mosaic
             int overlapX;
             int overlapY;
             MosaicApi.GetCurrentTopology(out brief, out displaySettings, out overlapX, out overlapY);
+
             return brief.IsPossible;
         }
 
@@ -195,9 +215,21 @@ namespace NvAPIWrapper.Mosaic
         /// <inheritdoc />
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != GetType()) return false;
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
+            }
+
+            if (obj.GetType() != GetType())
+            {
+                return false;
+            }
+
             return Equals((Topology) obj);
         }
 
@@ -207,10 +239,11 @@ namespace NvAPIWrapper.Mosaic
             unchecked
             {
                 var hashCode = Resolution.GetHashCode();
-                hashCode = (hashCode*397) ^ Frequency;
-                hashCode = (hashCode*397) ^ (int) FrequencyInMillihertz;
-                hashCode = (hashCode*397) ^ (int) TopologyMode;
-                hashCode = (hashCode*397) ^ Overlap.GetHashCode();
+                hashCode = (hashCode * 397) ^ Frequency;
+                hashCode = (hashCode * 397) ^ (int) FrequencyInMillihertz;
+                hashCode = (hashCode * 397) ^ (int) TopologyMode;
+                hashCode = (hashCode * 397) ^ Overlap.GetHashCode();
+
                 return hashCode;
             }
         }
@@ -222,6 +255,7 @@ namespace NvAPIWrapper.Mosaic
         public TopologyDetails[] GetDetails()
         {
             var brief = GetTopologyBrief();
+
             return
                 MosaicApi.GetTopologyGroup(brief)
                     .TopologyDetails.Select(detail => new TopologyDetails(detail))
@@ -259,22 +293,28 @@ namespace NvAPIWrapper.Mosaic
             int maxY;
             var brief = GetTopologyBrief();
             var displaySettingsV2 = GetDisplaySettingsV2();
+
             try
             {
                 MosaicApi.GetOverlapLimits(brief, displaySettingsV2, out minX, out maxX, out minY, out maxY);
+
                 return new OverlapLimit(minX, maxX, minY, maxY);
             }
             catch (NVIDIAApiException ex)
             {
                 if (ex.Status != Status.IncompatibleStructureVersion)
+                {
                     throw;
+                }
             }
             catch (NVIDIANotSupportedException)
             {
                 // ignore
             }
+
             var displaySettingsV1 = GetDisplaySettingsV1();
             MosaicApi.GetOverlapLimits(brief, displaySettingsV1, out minX, out maxX, out minY, out maxY);
+
             return new OverlapLimit(minX, maxX, minY, maxY);
         }
 
@@ -295,6 +335,7 @@ namespace NvAPIWrapper.Mosaic
         {
             var brief = GetTopologyBrief();
             var displaySettingsV2 = GetDisplaySettingsV2();
+
             try
             {
                 MosaicApi.SetCurrentTopology(brief, displaySettingsV2, Overlap.HorizontalOverlap,
@@ -303,12 +344,15 @@ namespace NvAPIWrapper.Mosaic
             catch (NVIDIAApiException ex)
             {
                 if (ex.Status != Status.IncompatibleStructureVersion)
+                {
                     throw;
+                }
             }
             catch (NVIDIANotSupportedException)
             {
                 // ignore
             }
+
             var displaySettingsV1 = GetDisplaySettingsV1();
             MosaicApi.SetCurrentTopology(brief, displaySettingsV1, Overlap.HorizontalOverlap, Overlap.VerticalOverlap,
                 apply);

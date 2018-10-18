@@ -6,7 +6,9 @@ namespace NvAPIWrapper.Native.General.Structures
     internal struct ShortString
     {
         public const int ShortStringLength = 64;
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = ShortStringLength)] internal readonly string Value;
+
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = ShortStringLength)]
+        internal readonly string Value;
 
         public override string ToString()
         {

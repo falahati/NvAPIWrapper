@@ -14,7 +14,10 @@ namespace NvAPIWrapper.Native.Exceptions
         }
 
         /// <inheritdoc />
-        public override string Message => GeneralApi.GetErrorMessage(Status) ?? Status.ToString();
+        public override string Message
+        {
+            get => GeneralApi.GetErrorMessage(Status) ?? Status.ToString();
+        }
 
         /// <summary>
         ///     Gets NVIDIA Api exception status code

@@ -37,12 +37,18 @@ namespace NvAPIWrapper.Display
         /// <summary>
         ///     Gets display name
         /// </summary>
-        public string Name => DisplayApi.GetUnAttachedAssociatedDisplayName(Handle);
+        public string Name
+        {
+            get => DisplayApi.GetUnAttachedAssociatedDisplayName(Handle);
+        }
 
         /// <summary>
         ///     Gets corresponding physical GPU
         /// </summary>
-        public PhysicalGPU PhysicalGPU => new PhysicalGPU(GPUApi.GetPhysicalGPUFromUnAttachedDisplay(Handle));
+        public PhysicalGPU PhysicalGPU
+        {
+            get => new PhysicalGPU(GPUApi.GetPhysicalGPUFromUnAttachedDisplay(Handle));
+        }
 
         /// <summary>
         ///     Checks for equality with a UnAttachedDisplay instance
@@ -51,8 +57,16 @@ namespace NvAPIWrapper.Display
         /// <returns>true if both objects are equal, otherwise false</returns>
         public bool Equals(UnAttachedDisplay other)
         {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
+            if (ReferenceEquals(null, other))
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, other))
+            {
+                return true;
+            }
+
             return Handle.Equals(other.Handle);
         }
 
@@ -64,7 +78,8 @@ namespace NvAPIWrapper.Display
         public static UnAttachedDisplay[] GetUnAttachedDisplays()
         {
             return
-                DisplayApi.EnumNvidiaUnAttachedDisplayHandle().Select(handle => new UnAttachedDisplay(handle)).ToArray();
+                DisplayApi.EnumNvidiaUnAttachedDisplayHandle().Select(handle => new UnAttachedDisplay(handle))
+                    .ToArray();
         }
 
         /// <summary>
@@ -92,9 +107,21 @@ namespace NvAPIWrapper.Display
         /// <inheritdoc />
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != GetType()) return false;
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
+            }
+
+            if (obj.GetType() != GetType())
+            {
+                return false;
+            }
+
             return Equals((UnAttachedDisplay) obj);
         }
 

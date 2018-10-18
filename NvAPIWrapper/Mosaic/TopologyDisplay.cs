@@ -33,9 +33,19 @@ namespace NvAPIWrapper.Mosaic
         /// <inheritdoc />
         public bool Equals(TopologyDisplay other)
         {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
-            return PhysicalGPU.Equals(other.PhysicalGPU) && Output.Equals(other.Output) && Overlap.Equals(other.Overlap);
+            if (ReferenceEquals(null, other))
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, other))
+            {
+                return true;
+            }
+
+            return PhysicalGPU.Equals(other.PhysicalGPU) &&
+                   Output.Equals(other.Output) &&
+                   Overlap.Equals(other.Overlap);
         }
 
         /// <summary>
@@ -63,9 +73,21 @@ namespace NvAPIWrapper.Mosaic
         /// <inheritdoc />
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != GetType()) return false;
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
+            }
+
+            if (obj.GetType() != GetType())
+            {
+                return false;
+            }
+
             return Equals((TopologyDisplay) obj);
         }
 
@@ -75,8 +97,9 @@ namespace NvAPIWrapper.Mosaic
             unchecked
             {
                 var hashCode = PhysicalGPU != null ? PhysicalGPU.GetHashCode() : 0;
-                hashCode = (hashCode*397) ^ (Output != null ? Output.GetHashCode() : 0);
-                hashCode = (hashCode*397) ^ Overlap.GetHashCode();
+                hashCode = (hashCode * 397) ^ (Output != null ? Output.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ Overlap.GetHashCode();
+
                 return hashCode;
             }
         }

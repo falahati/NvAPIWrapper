@@ -26,7 +26,7 @@ namespace NvAPIWrapper.Native.GPU
         ///     Processor clock
         /// </summary>
         Processor = 7,
-        
+
         /// <summary>
         ///     Video decoding clock
         /// </summary>

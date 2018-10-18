@@ -15,15 +15,22 @@ namespace NvAPIWrapper.Native.GPU.Structures
         /// <summary>
         ///     Gets a boolean value that indicates if this clock domain is present on this GPU and with the requested clock type.
         /// </summary>
-        public bool IsPresent => _IsPresent.GetBit(0);
+        public bool IsPresent
+        {
+            get => _IsPresent.GetBit(0);
+        }
 
         /// <summary>
         ///     Gets the clock frequency in kHz
         /// </summary>
-        public uint Frequency => _Frequency;
+        public uint Frequency
+        {
+            get => _Frequency;
+        }
 
         /// <inheritdoc />
-        public override string ToString() {
+        public override string ToString()
+        {
             return IsPresent ? $"{_Frequency:N0} kHz" : "N/A";
         }
     }

@@ -48,9 +48,19 @@ namespace NvAPIWrapper.Mosaic
         /// <inheritdoc />
         public bool Equals(TopologyDetails other)
         {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
-            return (Rows == other.Rows) && (Columns == other.Columns) && LogicalGPU.Equals(other.LogicalGPU) &&
+            if (ReferenceEquals(null, other))
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, other))
+            {
+                return true;
+            }
+
+            return Rows == other.Rows &&
+                   Columns == other.Columns &&
+                   LogicalGPU.Equals(other.LogicalGPU) &&
                    Displays.SequenceEqual(other.Displays);
         }
 
@@ -79,9 +89,21 @@ namespace NvAPIWrapper.Mosaic
         /// <inheritdoc />
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != GetType()) return false;
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
+            }
+
+            if (obj.GetType() != GetType())
+            {
+                return false;
+            }
+
             return Equals((TopologyDetails) obj);
         }
 
@@ -91,9 +113,10 @@ namespace NvAPIWrapper.Mosaic
             unchecked
             {
                 var hashCode = Rows;
-                hashCode = (hashCode*397) ^ Columns;
-                hashCode = (hashCode*397) ^ (LogicalGPU != null ? LogicalGPU.GetHashCode() : 0);
-                hashCode = (hashCode*397) ^ (Displays?.GetHashCode() ?? 0);
+                hashCode = (hashCode * 397) ^ Columns;
+                hashCode = (hashCode * 397) ^ (LogicalGPU != null ? LogicalGPU.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (Displays?.GetHashCode() ?? 0);
+
                 return hashCode;
             }
         }

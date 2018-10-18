@@ -38,13 +38,17 @@ namespace NvAPIWrapper.GPU
         /// <inheritdoc />
         public bool Equals(VideoBIOS other)
         {
-            return (Revision == other.Revision) && (OEMRevision == other.OEMRevision);
+            return Revision == other.Revision && OEMRevision == other.OEMRevision;
         }
 
         /// <inheritdoc />
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+
             return obj is VideoBIOS && Equals((VideoBIOS) obj);
         }
 
@@ -53,7 +57,7 @@ namespace NvAPIWrapper.GPU
         {
             unchecked
             {
-                return ((int) Revision*397) ^ OEMRevision;
+                return ((int) Revision * 397) ^ OEMRevision;
             }
         }
 
@@ -86,8 +90,8 @@ namespace NvAPIWrapper.GPU
         public Version AsVersion()
         {
             return new Version(
-                (int) ((Revision >> 28) + ((Revision << 4) >> 28)*16), // 8 bit little endian
-                (int) (((Revision << 8) >> 28) + ((Revision << 12) >> 28)*16), // 8 bit little endian
+                (int) ((Revision >> 28) + ((Revision << 4) >> 28) * 16), // 8 bit little endian
+                (int) (((Revision << 8) >> 28) + ((Revision << 12) >> 28) * 16), // 8 bit little endian
                 (int) ((Revision << 16) >> 16), // 16 bit big endian
                 OEMRevision // 8 bit integer
             );

@@ -21,25 +21,40 @@ namespace NvAPIWrapper.Native.GPU.Structures
         internal readonly uint _CurrentAvailableDedicatedVideoMemory;
 
         /// <inheritdoc />
-        public uint DedicatedVideoMemory => _DedicatedVideoMemory;
+        public uint DedicatedVideoMemory
+        {
+            get => _DedicatedVideoMemory;
+        }
 
         /// <inheritdoc />
-        public uint AvailableDedicatedVideoMemory => _AvailableDedicatedVideoMemory;
+        public uint AvailableDedicatedVideoMemory
+        {
+            get => _AvailableDedicatedVideoMemory;
+        }
 
         /// <inheritdoc />
-        public uint SystemVideoMemory => _SystemVideoMemory;
+        public uint SystemVideoMemory
+        {
+            get => _SystemVideoMemory;
+        }
 
         /// <inheritdoc />
-        public uint SharedSystemMemory => _SharedSystemMemory;
+        public uint SharedSystemMemory
+        {
+            get => _SharedSystemMemory;
+        }
 
         /// <inheritdoc />
-        public uint CurrentAvailableDedicatedVideoMemory => _CurrentAvailableDedicatedVideoMemory;
+        public uint CurrentAvailableDedicatedVideoMemory
+        {
+            get => _CurrentAvailableDedicatedVideoMemory;
+        }
 
         /// <inheritdoc />
         public override string ToString()
         {
             return
-                $"{AvailableDedicatedVideoMemory/1024} MB ({CurrentAvailableDedicatedVideoMemory/1024} MB) / {DedicatedVideoMemory/1024} MB";
+                $"{AvailableDedicatedVideoMemory / 1024} MB ({CurrentAvailableDedicatedVideoMemory / 1024} MB) / {DedicatedVideoMemory / 1024} MB";
         }
     }
 }

@@ -33,7 +33,13 @@ namespace NvAPIWrapper.Native.Mosaic.Structures
         /// <param name="rotation">Rotation of display</param>
         /// <param name="cloneGroup">Clone group identification; Reserved, must be 0</param>
         /// <param name="pixelShiftType">Type of the pixel shift enabled display</param>
-        public GridTopologyDisplayV2(uint displayId, int overlapX, int overlapY, Rotate rotation, uint cloneGroup = 0,
+        // ReSharper disable once TooManyDependencies
+        public GridTopologyDisplayV2(
+            uint displayId,
+            int overlapX,
+            int overlapY,
+            Rotate rotation,
+            uint cloneGroup = 0,
             PixelShiftType pixelShiftType = PixelShiftType.NoPixelShift) : this()
         {
             this = typeof(GridTopologyDisplayV2).Instantiate<GridTopologyDisplayV2>();
@@ -48,16 +54,23 @@ namespace NvAPIWrapper.Native.Mosaic.Structures
         /// <inheritdoc />
         public bool Equals(GridTopologyDisplayV2 other)
         {
-            return (_DisplayId == other._DisplayId) && (_OverlapX == other._OverlapX) && (_OverlapY == other._OverlapY) &&
-                   (_Rotation == other._Rotation) && (_CloneGroup == other._CloneGroup) &&
-                   (_PixelShiftType == other._PixelShiftType);
+            return _DisplayId == other._DisplayId &&
+                   _OverlapX == other._OverlapX &&
+                   _OverlapY == other._OverlapY &&
+                   _Rotation == other._Rotation &&
+                   _CloneGroup == other._CloneGroup &&
+                   _PixelShiftType == other._PixelShiftType;
         }
 
         /// <inheritdoc />
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            return obj is GridTopologyDisplayV2 && Equals((GridTopologyDisplayV2) obj);
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+
+            return obj is GridTopologyDisplayV2 v2 && Equals(v2);
         }
 
         /// <inheritdoc />
@@ -66,11 +79,12 @@ namespace NvAPIWrapper.Native.Mosaic.Structures
             unchecked
             {
                 var hashCode = (int) _DisplayId;
-                hashCode = (hashCode*397) ^ _OverlapX;
-                hashCode = (hashCode*397) ^ _OverlapY;
-                hashCode = (hashCode*397) ^ (int) _Rotation;
-                hashCode = (hashCode*397) ^ (int) _CloneGroup;
-                hashCode = (hashCode*397) ^ (int) _PixelShiftType;
+                hashCode = (hashCode * 397) ^ _OverlapX;
+                hashCode = (hashCode * 397) ^ _OverlapY;
+                hashCode = (hashCode * 397) ^ (int) _Rotation;
+                hashCode = (hashCode * 397) ^ (int) _CloneGroup;
+                hashCode = (hashCode * 397) ^ (int) _PixelShiftType;
+
                 return hashCode;
             }
         }
@@ -98,21 +112,39 @@ namespace NvAPIWrapper.Native.Mosaic.Structures
         }
 
         /// <inheritdoc />
-        public uint DisplayId => _DisplayId;
+        public uint DisplayId
+        {
+            get => _DisplayId;
+        }
 
         /// <inheritdoc />
-        public int OverlapX => _OverlapX;
+        public int OverlapX
+        {
+            get => _OverlapX;
+        }
 
         /// <inheritdoc />
-        public int OverlapY => _OverlapY;
+        public int OverlapY
+        {
+            get => _OverlapY;
+        }
 
         /// <inheritdoc />
-        public Rotate Rotation => _Rotation;
+        public Rotate Rotation
+        {
+            get => _Rotation;
+        }
 
         /// <inheritdoc />
-        public uint CloneGroup => _CloneGroup;
+        public uint CloneGroup
+        {
+            get => _CloneGroup;
+        }
 
         /// <inheritdoc />
-        public PixelShiftType PixelShiftType => _PixelShiftType;
+        public PixelShiftType PixelShiftType
+        {
+            get => _PixelShiftType;
+        }
     }
 }

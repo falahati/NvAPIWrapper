@@ -28,8 +28,12 @@ namespace NvAPIWrapper.Native.GPU.Structures
         /// <inheritdoc />
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            return obj is LogicalGPUHandle && Equals((LogicalGPUHandle) obj);
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+
+            return obj is LogicalGPUHandle handle && Equals(handle);
         }
 
         /// <inheritdoc />
@@ -67,9 +71,15 @@ namespace NvAPIWrapper.Native.GPU.Structures
         }
 
         /// <inheritdoc />
-        public IntPtr MemoryAddress => _MemoryAddress;
+        public IntPtr MemoryAddress
+        {
+            get => _MemoryAddress;
+        }
 
         /// <inheritdoc />
-        public bool IsNull => _MemoryAddress == IntPtr.Zero;
+        public bool IsNull
+        {
+            get => _MemoryAddress == IntPtr.Zero;
+        }
     }
 }

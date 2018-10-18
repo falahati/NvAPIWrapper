@@ -38,16 +38,20 @@ namespace NvAPIWrapper.Mosaic
         /// <inheritdoc />
         public bool Equals(OverlapLimit other)
         {
-            return (MinimumHorizontalOverlap == other.MinimumHorizontalOverlap) &&
-                   (MaximumHorizontalOverlap == other.MaximumHorizontalOverlap) &&
-                   (MinimumVerticalOverlap == other.MinimumVerticalOverlap) &&
-                   (MaximumVerticalOverlap == other.MaximumVerticalOverlap);
+            return MinimumHorizontalOverlap == other.MinimumHorizontalOverlap &&
+                   MaximumHorizontalOverlap == other.MaximumHorizontalOverlap &&
+                   MinimumVerticalOverlap == other.MinimumVerticalOverlap &&
+                   MaximumVerticalOverlap == other.MaximumVerticalOverlap;
         }
 
         /// <inheritdoc />
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+
             return obj is OverlapLimit && Equals((OverlapLimit) obj);
         }
 
@@ -57,9 +61,10 @@ namespace NvAPIWrapper.Mosaic
             unchecked
             {
                 var hashCode = MinimumHorizontalOverlap;
-                hashCode = (hashCode*397) ^ MaximumHorizontalOverlap;
-                hashCode = (hashCode*397) ^ MinimumVerticalOverlap;
-                hashCode = (hashCode*397) ^ MaximumVerticalOverlap;
+                hashCode = (hashCode * 397) ^ MaximumHorizontalOverlap;
+                hashCode = (hashCode * 397) ^ MinimumVerticalOverlap;
+                hashCode = (hashCode * 397) ^ MaximumVerticalOverlap;
+
                 return hashCode;
             }
         }
@@ -100,7 +105,7 @@ namespace NvAPIWrapper.Mosaic
         /// <returns>true if the value falls into the range, otherwise false</returns>
         public bool IsInHorizontalRange(int overlapX)
         {
-            return (overlapX >= MinimumHorizontalOverlap) && (overlapX <= MaximumHorizontalOverlap);
+            return overlapX >= MinimumHorizontalOverlap && overlapX <= MaximumHorizontalOverlap;
         }
 
         /// <summary>
@@ -110,7 +115,7 @@ namespace NvAPIWrapper.Mosaic
         /// <returns>true if the value falls into the range, otherwise false</returns>
         public bool IsInVerticalRange(int overlapY)
         {
-            return (overlapY >= MinimumVerticalOverlap) && (overlapY <= MaximumVerticalOverlap);
+            return overlapY >= MinimumVerticalOverlap && overlapY <= MaximumVerticalOverlap;
         }
 
         /// <summary>

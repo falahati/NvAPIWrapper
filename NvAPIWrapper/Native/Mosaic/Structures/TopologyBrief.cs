@@ -38,8 +38,12 @@ namespace NvAPIWrapper.Native.Mosaic.Structures
         /// <inheritdoc />
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            return obj is TopologyBrief && Equals((TopologyBrief) obj);
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+
+            return obj is TopologyBrief brief && Equals(brief);
         }
 
         /// <inheritdoc />
@@ -73,16 +77,25 @@ namespace NvAPIWrapper.Native.Mosaic.Structures
         /// <summary>
         ///     The topology
         /// </summary>
-        public Topology Topology => _Topology;
+        public Topology Topology
+        {
+            get => _Topology;
+        }
 
         /// <summary>
         ///     Indicates if the topology is enable
         /// </summary>
-        public bool IsEnable => _IsEnable > 0;
+        public bool IsEnable
+        {
+            get => _IsEnable > 0;
+        }
 
         /// <summary>
         ///     Indicates if the topology is possible
         /// </summary>
-        public bool IsPossible => _IsPossible > 0;
+        public bool IsPossible
+        {
+            get => _IsPossible > 0;
+        }
     }
 }

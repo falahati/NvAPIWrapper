@@ -13,7 +13,9 @@ namespace NvAPIWrapper.Native.Mosaic.Structures
     /// </summary>
     [StructLayout(LayoutKind.Sequential, Pack = 8)]
     [StructureVersion(2)]
-    public struct DisplaySettingsV2 : IDisplaySettings, IInitializable, IEquatable<DisplaySettingsV2>,
+    public struct DisplaySettingsV2 : IDisplaySettings,
+        IInitializable,
+        IEquatable<DisplaySettingsV2>,
         IEquatable<DisplaySettingsV1>
     {
         internal StructureVersion _Version;
@@ -31,6 +33,7 @@ namespace NvAPIWrapper.Native.Mosaic.Structures
         /// <param name="bitsPerPixel">Bits per pixel</param>
         /// <param name="frequency">Display frequency</param>
         /// <param name="frequencyInMillihertz">Display frequency in x1k</param>
+        // ReSharper disable once TooManyDependencies
         public DisplaySettingsV2(int width, int height, int bitsPerPixel, int frequency, uint frequencyInMillihertz)
         {
             this = typeof(DisplaySettingsV2).Instantiate<DisplaySettingsV2>();
@@ -44,22 +47,31 @@ namespace NvAPIWrapper.Native.Mosaic.Structures
         /// <inheritdoc />
         public bool Equals(DisplaySettingsV2 other)
         {
-            return (_Width == other._Width) && (_Height == other._Height) && (_BitsPerPixel == other._BitsPerPixel) &&
-                   (_Frequency == other._Frequency) && (_FrequencyInMillihertz == other._FrequencyInMillihertz);
+            return _Width == other._Width &&
+                   _Height == other._Height &&
+                   _BitsPerPixel == other._BitsPerPixel &&
+                   _Frequency == other._Frequency &&
+                   _FrequencyInMillihertz == other._FrequencyInMillihertz;
         }
 
         /// <inheritdoc />
         public bool Equals(DisplaySettingsV1 other)
         {
-            return (_Width == other._Width) && (_Height == other._Height) && (_BitsPerPixel == other._BitsPerPixel) &&
-                   (_Frequency == other._Frequency);
+            return _Width == other._Width &&
+                   _Height == other._Height &&
+                   _BitsPerPixel == other._BitsPerPixel &&
+                   _Frequency == other._Frequency;
         }
 
         /// <inheritdoc />
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            return obj is DisplaySettingsV2 && Equals((DisplaySettingsV2) obj);
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+
+            return obj is DisplaySettingsV2 v2 && Equals(v2);
         }
 
         /// <inheritdoc />
@@ -68,10 +80,11 @@ namespace NvAPIWrapper.Native.Mosaic.Structures
             unchecked
             {
                 var hashCode = (int) _Width;
-                hashCode = (hashCode*397) ^ (int) _Height;
-                hashCode = (hashCode*397) ^ (int) _BitsPerPixel;
-                hashCode = (hashCode*397) ^ (int) _Frequency;
-                hashCode = (hashCode*397) ^ (int) _FrequencyInMillihertz;
+                hashCode = (hashCode * 397) ^ (int) _Height;
+                hashCode = (hashCode * 397) ^ (int) _BitsPerPixel;
+                hashCode = (hashCode * 397) ^ (int) _Frequency;
+                hashCode = (hashCode * 397) ^ (int) _FrequencyInMillihertz;
+
                 return hashCode;
             }
         }
@@ -99,18 +112,33 @@ namespace NvAPIWrapper.Native.Mosaic.Structures
         }
 
         /// <inheritdoc />
-        public int Width => (int) _Width;
+        public int Width
+        {
+            get => (int) _Width;
+        }
 
         /// <inheritdoc />
-        public int Height => (int) _Height;
+        public int Height
+        {
+            get => (int) _Height;
+        }
 
         /// <inheritdoc />
-        public int BitsPerPixel => (int) _BitsPerPixel;
+        public int BitsPerPixel
+        {
+            get => (int) _BitsPerPixel;
+        }
 
         /// <inheritdoc />
-        public int Frequency => (int) _Frequency;
+        public int Frequency
+        {
+            get => (int) _Frequency;
+        }
 
         /// <inheritdoc />
-        public uint FrequencyInMillihertz => _FrequencyInMillihertz;
+        public uint FrequencyInMillihertz
+        {
+            get => _FrequencyInMillihertz;
+        }
     }
 }

@@ -22,27 +22,40 @@ namespace NvAPIWrapper.Native.GPU.Structures
         public const int MaxDataSize = EDIDV1.MaxDataSize;
 
         internal StructureVersion _Version;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxDataSize)] internal byte[] _Data;
+
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxDataSize)]
+        internal byte[] _Data;
+
         internal uint _TotalSize;
 
         internal static EDIDV2 CreateWithData(byte[] data, int totalSize)
         {
             if (data.Length > MaxDataSize)
+            {
                 throw new ArgumentException("Data is too big.", nameof(data));
+            }
+
             var edid = typeof(EDIDV2).Instantiate<EDIDV2>();
             edid._TotalSize = (uint) totalSize;
             edid._Data = data;
+
             return edid;
         }
 
         /// <summary>
         ///     Gets whole size of the EDID data
         /// </summary>
-        public int TotalSize => (int) _TotalSize;
+        public int TotalSize
+        {
+            get => (int) _TotalSize;
+        }
 
         /// <summary>
         ///     Gets whole or a part of the EDID data
         /// </summary>
-        public byte[] Data => _Data.Take((int) Math.Min(_TotalSize, MaxDataSize)).ToArray();
+        public byte[] Data
+        {
+            get => _Data.Take((int) Math.Min(_TotalSize, MaxDataSize)).ToArray();
+        }
     }
 }

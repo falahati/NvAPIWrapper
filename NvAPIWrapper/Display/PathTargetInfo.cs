@@ -22,6 +22,7 @@ namespace NvAPIWrapper.Display
         public PathTargetInfo(IPathTargetInfo info)
         {
             DisplayDevice = new DisplayDevice(info.DisplayId);
+
             if (info.Details.HasValue)
             {
                 Rotation = info.Details.Value.Rotation;
@@ -36,8 +37,11 @@ namespace NvAPIWrapper.Display
                 DisableVirtualModeSupport = info.Details.Value.DisableVirtualModeSupport;
                 IsPreferredUnscaledTarget = info.Details.Value.IsPreferredUnscaledTarget;
             }
+
             if (info is PathTargetInfoV2)
+            {
                 WindowsCCDTargetId = ((PathTargetInfoV2) info).WindowsCCDTargetId;
+            }
         }
 
         /// <summary>
@@ -104,11 +108,14 @@ namespace NvAPIWrapper.Display
         /// </summary>
         public TimingOverride TimingOverride
         {
-            get { return _timingOverride; }
+            get => _timingOverride;
             set
             {
                 if (value == TimingOverride.Custom)
+                {
                     throw new NVIDIANotSupportedException("Custom timing is not supported yet.");
+                }
+
                 _timingOverride = value;
             }
         }
@@ -136,17 +143,28 @@ namespace NvAPIWrapper.Display
         /// <returns>true if both objects are equal, otherwise false</returns>
         public bool Equals(PathTargetInfo other)
         {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
-            return (_timingOverride == other._timingOverride) && (Rotation == other.Rotation) &&
-                   (Scaling == other.Scaling) &&
-                   (RefreshRateInMillihertz == other.RefreshRateInMillihertz) &&
-                   ((TVFormat == TVFormat.None) || (TVConnectorType == other.TVConnectorType)) &&
-                   (TVFormat == other.TVFormat) && DisplayDevice.Equals(other.DisplayDevice) &&
-                   (IsInterlaced == other.IsInterlaced) && (IsClonePrimary == other.IsClonePrimary) &&
-                   (IsClonePanAndScanTarget == other.IsClonePanAndScanTarget) &&
-                   (DisableVirtualModeSupport == other.DisableVirtualModeSupport) &&
-                   (IsPreferredUnscaledTarget == other.IsPreferredUnscaledTarget);
+            if (ReferenceEquals(null, other))
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, other))
+            {
+                return true;
+            }
+
+            return _timingOverride == other._timingOverride &&
+                   Rotation == other.Rotation &&
+                   Scaling == other.Scaling &&
+                   RefreshRateInMillihertz == other.RefreshRateInMillihertz &&
+                   (TVFormat == TVFormat.None || TVConnectorType == other.TVConnectorType) &&
+                   TVFormat == other.TVFormat &&
+                   DisplayDevice.Equals(other.DisplayDevice) &&
+                   IsInterlaced == other.IsInterlaced &&
+                   IsClonePrimary == other.IsClonePrimary &&
+                   IsClonePanAndScanTarget == other.IsClonePanAndScanTarget &&
+                   DisableVirtualModeSupport == other.DisableVirtualModeSupport &&
+                   IsPreferredUnscaledTarget == other.IsPreferredUnscaledTarget;
         }
 
         /// <summary>
@@ -174,9 +192,21 @@ namespace NvAPIWrapper.Display
         /// <inheritdoc />
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != GetType()) return false;
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
+            }
+
+            if (obj.GetType() != GetType())
+            {
+                return false;
+            }
+
             return Equals((PathTargetInfo) obj);
         }
 
@@ -186,17 +216,18 @@ namespace NvAPIWrapper.Display
             unchecked
             {
                 var hashCode = (int) _timingOverride;
-                hashCode = (hashCode*397) ^ (int) Rotation;
-                hashCode = (hashCode*397) ^ (int) Scaling;
-                hashCode = (hashCode*397) ^ (int) RefreshRateInMillihertz;
-                hashCode = (hashCode*397) ^ (int) TVFormat;
-                hashCode = (hashCode*397) ^ (TVFormat != TVFormat.None ? (int) TVConnectorType : 0);
-                hashCode = (hashCode*397) ^ (DisplayDevice?.GetHashCode() ?? 0);
-                hashCode = (hashCode*397) ^ IsInterlaced.GetHashCode();
-                hashCode = (hashCode*397) ^ IsClonePrimary.GetHashCode();
-                hashCode = (hashCode*397) ^ IsClonePanAndScanTarget.GetHashCode();
-                hashCode = (hashCode*397) ^ DisableVirtualModeSupport.GetHashCode();
-                hashCode = (hashCode*397) ^ IsPreferredUnscaledTarget.GetHashCode();
+                hashCode = (hashCode * 397) ^ (int) Rotation;
+                hashCode = (hashCode * 397) ^ (int) Scaling;
+                hashCode = (hashCode * 397) ^ (int) RefreshRateInMillihertz;
+                hashCode = (hashCode * 397) ^ (int) TVFormat;
+                hashCode = (hashCode * 397) ^ (TVFormat != TVFormat.None ? (int) TVConnectorType : 0);
+                hashCode = (hashCode * 397) ^ (DisplayDevice?.GetHashCode() ?? 0);
+                hashCode = (hashCode * 397) ^ IsInterlaced.GetHashCode();
+                hashCode = (hashCode * 397) ^ IsClonePrimary.GetHashCode();
+                hashCode = (hashCode * 397) ^ IsClonePanAndScanTarget.GetHashCode();
+                hashCode = (hashCode * 397) ^ DisableVirtualModeSupport.GetHashCode();
+                hashCode = (hashCode * 397) ^ IsPreferredUnscaledTarget.GetHashCode();
+
                 return hashCode;
             }
         }
@@ -208,13 +239,24 @@ namespace NvAPIWrapper.Display
             {
                 DisplayDevice.ToString()
             };
+
             if (RefreshRateInMillihertz > 0)
-                strs.Add($"@ {RefreshRateInMillihertz/1000}hz");
+            {
+                strs.Add($"@ {RefreshRateInMillihertz / 1000}hz");
+            }
+
             if (TVFormat != TVFormat.None)
+            {
                 strs.Add($"- TV {TVFormat}");
+            }
+
             strs.Add(IsInterlaced ? "Interlaced" : "Progressive");
+
             if (Rotation != Rotate.Degree0)
+            {
                 strs.Add($"- Rotation: {Rotation}");
+            }
+
             return string.Join(" ", strs);
         }
 
@@ -226,9 +268,12 @@ namespace NvAPIWrapper.Display
         public PathAdvancedTargetInfo GetPathAdvancedTargetInfo()
         {
             if (TVFormat == TVFormat.None)
+            {
                 return new PathAdvancedTargetInfo(Rotation, Scaling, RefreshRateInMillihertz, TimingOverride,
                     IsInterlaced, IsClonePrimary, IsClonePanAndScanTarget, DisableVirtualModeSupport,
                     IsPreferredUnscaledTarget);
+            }
+
             return new PathAdvancedTargetInfo(Rotation, Scaling, TVFormat, TVConnectorType, RefreshRateInMillihertz,
                 TimingOverride, IsInterlaced, IsClonePrimary, IsClonePanAndScanTarget, DisableVirtualModeSupport,
                 IsPreferredUnscaledTarget);
@@ -241,6 +286,7 @@ namespace NvAPIWrapper.Display
         public PathTargetInfoV1 GetPathTargetInfoV1()
         {
             var pathAdvancedTargetInfo = GetPathAdvancedTargetInfo();
+
             return new PathTargetInfoV1(DisplayDevice.DisplayId, pathAdvancedTargetInfo);
         }
 
@@ -251,6 +297,7 @@ namespace NvAPIWrapper.Display
         public PathTargetInfoV2 GetPathTargetInfoV2()
         {
             var pathAdvancedTargetInfo = GetPathAdvancedTargetInfo();
+
             return new PathTargetInfoV2(DisplayDevice.DisplayId, WindowsCCDTargetId, pathAdvancedTargetInfo);
         }
     }

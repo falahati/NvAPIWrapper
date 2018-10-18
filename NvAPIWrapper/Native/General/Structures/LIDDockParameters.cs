@@ -23,17 +23,23 @@ namespace NvAPIWrapper.Native.General.Structures
         /// <inheritdoc />
         public bool Equals(LidDockParameters other)
         {
-            return (_CurrentLIDState == other._CurrentLIDState) && (_CurrentDockState == other._CurrentDockState) &&
-                   (_CurrentLIDPolicy == other._CurrentLIDPolicy) && (_CurrentDockPolicy == other._CurrentDockPolicy) &&
-                   (_ForcedLIDMechanismPresent == other._ForcedLIDMechanismPresent) &&
-                   (_ForcedDockMechanismPresent == other._ForcedDockMechanismPresent);
+            return _CurrentLIDState == other._CurrentLIDState &&
+                   _CurrentDockState == other._CurrentDockState &&
+                   _CurrentLIDPolicy == other._CurrentLIDPolicy &&
+                   _CurrentDockPolicy == other._CurrentDockPolicy &&
+                   _ForcedLIDMechanismPresent == other._ForcedLIDMechanismPresent &&
+                   _ForcedDockMechanismPresent == other._ForcedDockMechanismPresent;
         }
 
         /// <inheritdoc />
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            return obj is LidDockParameters && Equals((LidDockParameters) obj);
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+
+            return obj is LidDockParameters parameters && Equals(parameters);
         }
 
         /// <inheritdoc />
@@ -42,11 +48,12 @@ namespace NvAPIWrapper.Native.General.Structures
             unchecked
             {
                 var hashCode = (int) _CurrentLIDState;
-                hashCode = (hashCode*397) ^ (int) _CurrentDockState;
-                hashCode = (hashCode*397) ^ (int) _CurrentLIDPolicy;
-                hashCode = (hashCode*397) ^ (int) _CurrentDockPolicy;
-                hashCode = (hashCode*397) ^ (int) _ForcedLIDMechanismPresent;
-                hashCode = (hashCode*397) ^ (int) _ForcedDockMechanismPresent;
+                hashCode = (hashCode * 397) ^ (int) _CurrentDockState;
+                hashCode = (hashCode * 397) ^ (int) _CurrentLIDPolicy;
+                hashCode = (hashCode * 397) ^ (int) _CurrentDockPolicy;
+                hashCode = (hashCode * 397) ^ (int) _ForcedLIDMechanismPresent;
+                hashCode = (hashCode * 397) ^ (int) _ForcedDockMechanismPresent;
+
                 return hashCode;
             }
         }
@@ -54,31 +61,49 @@ namespace NvAPIWrapper.Native.General.Structures
         /// <summary>
         ///     Gets current lid state
         /// </summary>
-        public uint CurrentLidState => _CurrentLIDState;
+        public uint CurrentLidState
+        {
+            get => _CurrentLIDState;
+        }
 
         /// <summary>
         ///     Gets current dock state
         /// </summary>
-        public uint CurrentDockState => _CurrentDockState;
+        public uint CurrentDockState
+        {
+            get => _CurrentDockState;
+        }
 
         /// <summary>
         ///     Gets current lid policy
         /// </summary>
-        public uint CurrentLidPolicy => _CurrentLIDPolicy;
+        public uint CurrentLidPolicy
+        {
+            get => _CurrentLIDPolicy;
+        }
 
         /// <summary>
         ///     Gets current dock policy
         /// </summary>
-        public uint CurrentDockPolicy => _CurrentDockPolicy;
+        public uint CurrentDockPolicy
+        {
+            get => _CurrentDockPolicy;
+        }
 
         /// <summary>
         ///     Gets forced lid mechanism present
         /// </summary>
-        public uint ForcedLidMechanismPresent => _ForcedLIDMechanismPresent;
+        public uint ForcedLidMechanismPresent
+        {
+            get => _ForcedLIDMechanismPresent;
+        }
 
         /// <summary>
         ///     Gets forced dock mechanism present
         /// </summary>
-        public uint ForcedDockMechanismPresent => _ForcedDockMechanismPresent;
+        public uint ForcedDockMechanismPresent
+        {
+            get => _ForcedDockMechanismPresent;
+        }
     }
 }

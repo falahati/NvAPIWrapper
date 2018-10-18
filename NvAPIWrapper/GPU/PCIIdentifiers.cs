@@ -12,24 +12,35 @@ namespace NvAPIWrapper.GPU
             DeviceId = deviceId;
             SubSystemId = subSystemId;
             RevisionId = revisionId;
+
             if (externalDeviceId > 0)
+            {
                 ExternalDeviceId = (ushort) externalDeviceId;
+            }
             else
+            {
                 ExternalDeviceId = (ushort) (deviceId >> 16);
+            }
+
             VendorId = (ushort) ((DeviceId << 16) >> 16);
         }
 
         /// <inheritdoc />
         public bool Equals(PCIIdentifiers other)
         {
-            return (DeviceId == other.DeviceId) && (SubSystemId == other.SubSystemId) &&
-                   (RevisionId == other.RevisionId);
+            return DeviceId == other.DeviceId &&
+                   SubSystemId == other.SubSystemId &&
+                   RevisionId == other.RevisionId;
         }
 
         /// <inheritdoc />
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+
             return obj is PCIIdentifiers && Equals((PCIIdentifiers) obj);
         }
 
@@ -39,8 +50,9 @@ namespace NvAPIWrapper.GPU
             unchecked
             {
                 var hashCode = (int) DeviceId;
-                hashCode = (hashCode*397) ^ (int) SubSystemId;
-                hashCode = (hashCode*397) ^ (int) RevisionId;
+                hashCode = (hashCode * 397) ^ (int) SubSystemId;
+                hashCode = (hashCode * 397) ^ (int) RevisionId;
+
                 return hashCode;
             }
         }

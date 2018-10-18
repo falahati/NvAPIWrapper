@@ -21,7 +21,11 @@ namespace NvAPIWrapper.Native.Display.Structures
         /// <inheritdoc />
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+
             return obj is UnAttachedDisplayHandle && Equals((UnAttachedDisplayHandle) obj);
         }
 
@@ -60,9 +64,15 @@ namespace NvAPIWrapper.Native.Display.Structures
         }
 
         /// <inheritdoc />
-        public IntPtr MemoryAddress => _MemoryAddress;
+        public IntPtr MemoryAddress
+        {
+            get => _MemoryAddress;
+        }
 
         /// <inheritdoc />
-        public bool IsNull => _MemoryAddress == IntPtr.Zero;
+        public bool IsNull
+        {
+            get => _MemoryAddress == IntPtr.Zero;
+        }
     }
 }

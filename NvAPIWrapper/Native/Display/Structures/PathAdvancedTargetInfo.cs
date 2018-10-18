@@ -24,7 +24,7 @@ namespace NvAPIWrapper.Native.Display.Structures
         internal readonly ConnectorType _ConnectorType;
         internal readonly TVFormat _TVFormat;
         internal readonly TimingOverride _TimingOverride;
-        internal Timing _Timing;
+        internal readonly Timing _Timing;
 
         /// <summary>
         ///     Creates a new PathAdvancedTargetInfo for monitors
@@ -39,13 +39,22 @@ namespace NvAPIWrapper.Native.Display.Structures
         /// <param name="disableVirtualModeSupport"></param>
         /// <param name="isPreferredUnscaledTarget"></param>
         /// <exception cref="NVIDIANotSupportedException"></exception>
-        public PathAdvancedTargetInfo(Rotate rotation, Scaling scale, uint refreshRateInMillihertz = 0,
-            TimingOverride timingOverride = TimingOverride.Current, bool isInterlaced = false,
-            bool isClonePrimary = false, bool isClonePanAndScanTarget = false, bool disableVirtualModeSupport = false,
+        public PathAdvancedTargetInfo(
+            Rotate rotation,
+            Scaling scale,
+            uint refreshRateInMillihertz = 0,
+            TimingOverride timingOverride = TimingOverride.Current,
+            bool isInterlaced = false,
+            bool isClonePrimary = false,
+            bool isClonePanAndScanTarget = false,
+            bool disableVirtualModeSupport = false,
             bool isPreferredUnscaledTarget = false)
         {
             if (timingOverride == TimingOverride.Custom)
+            {
                 throw new NVIDIANotSupportedException("Custom timing is not supported yet.");
+            }
+
             this = typeof(PathAdvancedTargetInfo).Instantiate<PathAdvancedTargetInfo>();
             _Rotation = rotation;
             _Scaling = scale;
@@ -73,10 +82,17 @@ namespace NvAPIWrapper.Native.Display.Structures
         /// <param name="disableVirtualModeSupport"></param>
         /// <param name="isPreferredUnscaledTarget"></param>
         /// <exception cref="NVIDIANotSupportedException"></exception>
-        public PathAdvancedTargetInfo(Rotate rotation, Scaling scale, TVFormat tvFormat,
-            ConnectorType connectorType, uint refreshRateInMillihertz = 0,
-            TimingOverride timingOverride = TimingOverride.Current, bool isInterlaced = false,
-            bool isClonePrimary = false, bool isClonePanAndScanTarget = false, bool disableVirtualModeSupport = false,
+        public PathAdvancedTargetInfo(
+            Rotate rotation,
+            Scaling scale,
+            TVFormat tvFormat,
+            ConnectorType connectorType,
+            uint refreshRateInMillihertz = 0,
+            TimingOverride timingOverride = TimingOverride.Current,
+            bool isInterlaced = false,
+            bool isClonePrimary = false,
+            bool isClonePanAndScanTarget = false,
+            bool disableVirtualModeSupport = false,
             bool isPreferredUnscaledTarget = false)
             : this(
                 rotation, scale, refreshRateInMillihertz, timingOverride, isInterlaced, isClonePrimary,
@@ -84,8 +100,11 @@ namespace NvAPIWrapper.Native.Display.Structures
                 disableVirtualModeSupport, isPreferredUnscaledTarget)
         {
             if (tvFormat == TVFormat.None)
+            {
                 throw new NVIDIANotSupportedException(
                     "This overload is for TV displays, use the other overload(s) if the display is not a TV.");
+            }
+
             this = typeof(PathAdvancedTargetInfo).Instantiate<PathAdvancedTargetInfo>();
             _TVFormat = tvFormat;
             _ConnectorType = connectorType;
@@ -94,18 +113,25 @@ namespace NvAPIWrapper.Native.Display.Structures
         /// <inheritdoc />
         public bool Equals(PathAdvancedTargetInfo other)
         {
-            return (_Rotation == other._Rotation) && (_Scaling == other._Scaling) &&
-                   (_RefreshRateInMillihertz == other._RefreshRateInMillihertz) &&
-                   ((TVFormat == TVFormat.None) || (_ConnectorType == other._ConnectorType)) &&
-                   (_TVFormat == other._TVFormat) && (_TimingOverride == other._TimingOverride) &&
-                   _Timing.Equals(other._Timing) && (_RawReserved == other._RawReserved);
+            return _Rotation == other._Rotation &&
+                   _Scaling == other._Scaling &&
+                   _RefreshRateInMillihertz == other._RefreshRateInMillihertz &&
+                   (TVFormat == TVFormat.None || _ConnectorType == other._ConnectorType) &&
+                   _TVFormat == other._TVFormat &&
+                   _TimingOverride == other._TimingOverride &&
+                   _Timing.Equals(other._Timing) &&
+                   _RawReserved == other._RawReserved;
         }
 
         /// <inheritdoc />
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            return obj is PathAdvancedTargetInfo && Equals((PathAdvancedTargetInfo) obj);
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+
+            return obj is PathAdvancedTargetInfo info && Equals(info);
         }
 
         /// <inheritdoc />
@@ -114,13 +140,15 @@ namespace NvAPIWrapper.Native.Display.Structures
             unchecked
             {
                 var hashCode = (int) _Rotation;
-                hashCode = (hashCode*397) ^ (int) _Scaling;
-                hashCode = (hashCode*397) ^ (int) _RefreshRateInMillihertz;
-                hashCode = (hashCode*397) ^ (int) _RawReserved;
-                hashCode = (hashCode*397) ^ (int) _ConnectorType;
-                hashCode = (hashCode*397) ^ (int) _TVFormat;
-                hashCode = (hashCode*397) ^ (int) _TimingOverride;
-                hashCode = (hashCode*397) ^ _Timing.GetHashCode();
+                hashCode = (hashCode * 397) ^ (int) _Scaling;
+                hashCode = (hashCode * 397) ^ (int) _RefreshRateInMillihertz;
+                // ReSharper disable once NonReadonlyMemberInGetHashCode
+                hashCode = (hashCode * 397) ^ (int) _RawReserved;
+                hashCode = (hashCode * 397) ^ (int) _ConnectorType;
+                hashCode = (hashCode * 397) ^ (int) _TVFormat;
+                hashCode = (hashCode * 397) ^ (int) _TimingOverride;
+                hashCode = (hashCode * 397) ^ _Timing.GetHashCode();
+
                 return hashCode;
             }
         }
@@ -128,23 +156,35 @@ namespace NvAPIWrapper.Native.Display.Structures
         /// <summary>
         ///     Rotation setting
         /// </summary>
-        public Rotate Rotation => _Rotation;
+        public Rotate Rotation
+        {
+            get => _Rotation;
+        }
 
         /// <summary>
         ///     Scaling setting
         /// </summary>
-        public Scaling Scaling => _Scaling;
+        public Scaling Scaling
+        {
+            get => _Scaling;
+        }
 
         /// <summary>
         ///     Non-interlaced Refresh Rate of the mode, multiplied by 1000, 0 = ignored
         ///     This is the value which driver reports to the OS.
         /// </summary>
-        public uint RefreshRateInMillihertz => _RefreshRateInMillihertz;
+        public uint RefreshRateInMillihertz
+        {
+            get => _RefreshRateInMillihertz;
+        }
 
         /// <summary>
         ///     Specify connector type. For TV only, ignored if TVFormat == TVFormat.None.
         /// </summary>
-        public ConnectorType ConnectorType => _ConnectorType;
+        public ConnectorType ConnectorType
+        {
+            get => _ConnectorType;
+        }
 
         /// <summary>
         ///     To choose the last TV format set this value to TVFormat.None
@@ -154,27 +194,36 @@ namespace NvAPIWrapper.Native.Display.Structures
         ///     for other displays this field will be ignored and resolution &amp; refresh rate specified in input will be used to
         ///     apply the TV format.
         /// </summary>
-        public TVFormat TVFormat => _TVFormat;
+        public TVFormat TVFormat
+        {
+            get => _TVFormat;
+        }
 
         /// <summary>
         ///     Ignored if TimingOverride == TimingOverride.Current
         /// </summary>
-        public TimingOverride TimingOverride => _TimingOverride;
+        public TimingOverride TimingOverride
+        {
+            get => _TimingOverride;
+        }
 
         /// <summary>
         ///     Scan out timing, valid only if TimingOverride == TimingOverride.Custom
         ///     The value Timing.PixelClockIn10KHertz is obtained from the EDID. The driver may tweak this value for HDTV, stereo,
         ///     etc., before reporting it to the OS.
         /// </summary>
-        public Timing Timing => _Timing;
+        public Timing Timing
+        {
+            get => _Timing;
+        }
 
         /// <summary>
         ///     Interlaced mode flag, ignored if refreshRate == 0
         /// </summary>
         public bool IsInterlaced
         {
-            get { return _RawReserved.GetBit(0); }
-            private set { _RawReserved = _RawReserved.SetBit(0, value); }
+            get => _RawReserved.GetBit(0);
+            private set => _RawReserved = _RawReserved.SetBit(0, value);
         }
 
         /// <summary>
@@ -184,8 +233,8 @@ namespace NvAPIWrapper.Native.Display.Structures
         /// </summary>
         public bool IsClonePrimary
         {
-            get { return _RawReserved.GetBit(1); }
-            private set { _RawReserved = _RawReserved.SetBit(1, value); }
+            get => _RawReserved.GetBit(1);
+            private set => _RawReserved = _RawReserved.SetBit(1, value);
         }
 
         /// <summary>
@@ -194,8 +243,8 @@ namespace NvAPIWrapper.Native.Display.Structures
         /// </summary>
         public bool IsClonePanAndScanTarget
         {
-            get { return _RawReserved.GetBit(2); }
-            private set { _RawReserved = _RawReserved.SetBit(2, value); }
+            get => _RawReserved.GetBit(2);
+            private set => _RawReserved = _RawReserved.SetBit(2, value);
         }
 
         /// <summary>
@@ -203,8 +252,8 @@ namespace NvAPIWrapper.Native.Display.Structures
         /// </summary>
         public bool DisableVirtualModeSupport
         {
-            get { return _RawReserved.GetBit(3); }
-            private set { _RawReserved = _RawReserved.SetBit(3, value); }
+            get => _RawReserved.GetBit(3);
+            private set => _RawReserved = _RawReserved.SetBit(3, value);
         }
 
         /// <summary>
@@ -212,8 +261,8 @@ namespace NvAPIWrapper.Native.Display.Structures
         /// </summary>
         public bool IsPreferredUnscaledTarget
         {
-            get { return _RawReserved.GetBit(4); }
-            private set { _RawReserved = _RawReserved.SetBit(4, value); }
+            get => _RawReserved.GetBit(4);
+            private set => _RawReserved = _RawReserved.SetBit(4, value);
         }
     }
 }

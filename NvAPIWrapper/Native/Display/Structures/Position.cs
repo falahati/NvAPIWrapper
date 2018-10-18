@@ -21,14 +21,18 @@ namespace NvAPIWrapper.Native.Display.Structures
         /// <inheritdoc />
         public bool Equals(Position other)
         {
-            return (_X == other._X) && (_Y == other._Y);
+            return _X == other._X && _Y == other._Y;
         }
 
         /// <inheritdoc />
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            return obj is Position && Equals((Position) obj);
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+
+            return obj is Position position && Equals(position);
         }
 
         /// <inheritdoc />
@@ -36,7 +40,7 @@ namespace NvAPIWrapper.Native.Display.Structures
         {
             unchecked
             {
-                return (_X*397) ^ _Y;
+                return (_X * 397) ^ _Y;
             }
         }
 
@@ -76,11 +80,17 @@ namespace NvAPIWrapper.Native.Display.Structures
         /// <summary>
         ///     X value
         /// </summary>
-        public int X => _X;
+        public int X
+        {
+            get => _X;
+        }
 
         /// <summary>
         ///     Y value
         /// </summary>
-        public int Y => _Y;
+        public int Y
+        {
+            get => _Y;
+        }
     }
 }

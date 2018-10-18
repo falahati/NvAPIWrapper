@@ -18,14 +18,18 @@ namespace NvAPIWrapper.GPU
         /// <inheritdoc />
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+
             return obj is GPUBus && Equals((GPUBus) obj);
         }
 
         /// <inheritdoc />
         public bool Equals(GPUBus other)
         {
-            return (BusId == other.BusId) && (BusSlot == other.BusSlot) && (BusType == other.BusType);
+            return BusId == other.BusId && BusSlot == other.BusSlot && BusType == other.BusType;
         }
 
         /// <inheritdoc />
@@ -34,8 +38,9 @@ namespace NvAPIWrapper.GPU
             unchecked
             {
                 var hashCode = BusId;
-                hashCode = (hashCode*397) ^ BusSlot;
-                hashCode = (hashCode*397) ^ (int) BusType;
+                hashCode = (hashCode * 397) ^ BusSlot;
+                hashCode = (hashCode * 397) ^ (int) BusType;
+
                 return hashCode;
             }
         }

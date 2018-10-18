@@ -23,36 +23,57 @@ namespace NvAPIWrapper.Native.GPU.Structures
         internal readonly uint _DedicatedVideoMemoryEvictionCount;
 
         /// <inheritdoc />
-        public uint DedicatedVideoMemory => _DedicatedVideoMemory;
+        public uint DedicatedVideoMemory
+        {
+            get => _DedicatedVideoMemory;
+        }
 
         /// <inheritdoc />
-        public uint AvailableDedicatedVideoMemory => _AvailableDedicatedVideoMemory;
+        public uint AvailableDedicatedVideoMemory
+        {
+            get => _AvailableDedicatedVideoMemory;
+        }
 
         /// <inheritdoc />
-        public uint SystemVideoMemory => _SystemVideoMemory;
+        public uint SystemVideoMemory
+        {
+            get => _SystemVideoMemory;
+        }
 
         /// <inheritdoc />
-        public uint SharedSystemMemory => _SharedSystemMemory;
+        public uint SharedSystemMemory
+        {
+            get => _SharedSystemMemory;
+        }
 
         /// <inheritdoc />
-        public uint CurrentAvailableDedicatedVideoMemory => _CurrentAvailableDedicatedVideoMemory;
+        public uint CurrentAvailableDedicatedVideoMemory
+        {
+            get => _CurrentAvailableDedicatedVideoMemory;
+        }
 
         /// <summary>
         ///     Size(in kb) of the total size of memory released as a result of the evictions.
         /// </summary>
-        public uint DedicatedVideoMemoryEvictionsSize => _DedicatedVideoMemoryEvictionsSize;
+        public uint DedicatedVideoMemoryEvictionsSize
+        {
+            get => _DedicatedVideoMemoryEvictionsSize;
+        }
 
         /// <summary>
         ///     Indicates the number of eviction events that caused an allocation to be removed from dedicated video memory to free
         ///     GPU video memory to make room for other allocations.
         /// </summary>
-        public uint DedicatedVideoMemoryEvictionCount => _DedicatedVideoMemoryEvictionCount;
+        public uint DedicatedVideoMemoryEvictionCount
+        {
+            get => _DedicatedVideoMemoryEvictionCount;
+        }
 
         /// <inheritdoc />
         public override string ToString()
         {
             return
-                $"{AvailableDedicatedVideoMemory/1024} MB ({CurrentAvailableDedicatedVideoMemory/1024} MB) / {DedicatedVideoMemory/1024} MB";
+                $"{AvailableDedicatedVideoMemory / 1024} MB ({CurrentAvailableDedicatedVideoMemory / 1024} MB) / {DedicatedVideoMemory / 1024} MB";
         }
     }
 }

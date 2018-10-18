@@ -46,7 +46,7 @@
         VisualComputingOutlet = 11,
 
         /// <summary>
-        ///     Used for retrieving all termal settings
+        ///     Used for retrieving all thermal settings
         /// </summary>
         All = 15,
 

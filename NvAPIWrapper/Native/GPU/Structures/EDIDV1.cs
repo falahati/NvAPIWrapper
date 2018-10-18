@@ -21,20 +21,29 @@ namespace NvAPIWrapper.Native.GPU.Structures
         public const int MaxDataSize = 256;
 
         internal StructureVersion _Version;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxDataSize)] internal byte[] _Data;
+
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxDataSize)]
+        internal byte[] _Data;
 
         internal static EDIDV1 CreateWithData(byte[] data)
         {
             if (data.Length > MaxDataSize)
+            {
                 throw new ArgumentException("Data is too big.", nameof(data));
+            }
+
             var edid = typeof(EDIDV1).Instantiate<EDIDV1>();
             edid._Data = data;
+
             return edid;
         }
 
         /// <summary>
         ///     Gets whole or a part of the EDID data
         /// </summary>
-        public byte[] Data => _Data;
+        public byte[] Data
+        {
+            get => _Data;
+        }
     }
 }

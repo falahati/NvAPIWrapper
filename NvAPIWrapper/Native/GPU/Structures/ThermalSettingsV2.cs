@@ -17,12 +17,15 @@ namespace NvAPIWrapper.Native.GPU.Structures
         internal StructureVersion _Version;
         internal readonly uint _Count;
 
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = ThermalSettingsV1.MaxThermalSensorsPerGPU)] internal readonly
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = ThermalSettingsV1.MaxThermalSensorsPerGPU)]
+        internal readonly
             ThermalSensor[] _Sensors;
 
         /// <inheritdoc />
         public IThermalSensor[] Sensors
-            => _Sensors.Take((int) _Count).Cast<IThermalSensor>().ToArray();
+        {
+            get => _Sensors.Take((int) _Count).Cast<IThermalSensor>().ToArray();
+        }
 
         /// <summary>
         ///     Holds information about a single thermal sensor
@@ -37,19 +40,34 @@ namespace NvAPIWrapper.Native.GPU.Structures
             internal readonly ThermalSettingsTarget _Target;
 
             /// <inheritdoc />
-            public ThermalSettingsController Controller => _Controller;
+            public ThermalSettingsController Controller
+            {
+                get => _Controller;
+            }
 
             /// <inheritdoc />
-            public int DefaultMinimumTemperature => _DefaultMinTemp;
+            public int DefaultMinimumTemperature
+            {
+                get => _DefaultMinTemp;
+            }
 
             /// <inheritdoc />
-            public int DefaultMaximumTemperature => _DefaultMaxTemp;
+            public int DefaultMaximumTemperature
+            {
+                get => _DefaultMaxTemp;
+            }
 
             /// <inheritdoc />
-            public int CurrentTemperature => _CurrentTemp;
+            public int CurrentTemperature
+            {
+                get => _CurrentTemp;
+            }
 
             /// <inheritdoc />
-            public ThermalSettingsTarget Target => _Target;
+            public ThermalSettingsTarget Target
+            {
+                get => _Target;
+            }
 
             /// <inheritdoc />
             public override string ToString()

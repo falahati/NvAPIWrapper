@@ -12,7 +12,10 @@ namespace NvAPIWrapper
         /// <summary>
         ///     Gets information about the system's chipset.
         /// </summary>
-        public static IChipsetInfo ChipsetInfo => GeneralApi.GetChipsetInfo();
+        public static IChipsetInfo ChipsetInfo
+        {
+            get => GeneralApi.GetChipsetInfo();
+        }
 
         /// <summary>
         ///     Gets NVIDIA driver branch version as string
@@ -21,8 +24,8 @@ namespace NvAPIWrapper
         {
             get
             {
-                string branchVersion;
-                GeneralApi.GetDriverAndBranchVersion(out branchVersion);
+                GeneralApi.GetDriverAndBranchVersion(out var branchVersion);
+
                 return branchVersion;
             }
         }
@@ -32,22 +35,24 @@ namespace NvAPIWrapper
         /// </summary>
         public static uint DriverVersion
         {
-            get
-            {
-                string branchVersion;
-                return GeneralApi.GetDriverAndBranchVersion(out branchVersion);
-            }
+            get => GeneralApi.GetDriverAndBranchVersion(out _);
         }
 
         /// <summary>
         ///     Gets NVAPI interface version as string
         /// </summary>
-        public static string InterfaceVersionString => GeneralApi.GetInterfaceVersionString();
+        public static string InterfaceVersionString
+        {
+            get => GeneralApi.GetInterfaceVersionString();
+        }
 
         /// <summary>
         ///     Gets the current lid and dock information.
         /// </summary>
-        public static LidDockParameters LidAndDockParameters => GeneralApi.GetLidAndDockInfo();
+        public static LidDockParameters LidAndDockParameters
+        {
+            get => GeneralApi.GetLidAndDockInfo();
+        }
 
         /// <summary>
         ///     Initializes the NvAPI library (if not already initialized) but always increments the ref-counter.

@@ -15,7 +15,7 @@ namespace NvAPIWrapper.Native.Interfaces.Mosaic
         bool AcceleratePrimaryDisplay { get; }
 
         /// <summary>
-        ///     When enabling and doing the modeset, do we switch to the bezel-corrected resolution
+        ///     When enabling and doing the mode-set, do we switch to the bezel-corrected resolution
         /// </summary>
         bool ApplyWithBezelCorrectedResolution { get; }
 

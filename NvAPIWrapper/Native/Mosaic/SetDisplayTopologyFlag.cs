@@ -26,7 +26,7 @@ namespace NvAPIWrapper.Native.Mosaic
 
         /// <summary>
         ///     When choosing a GPU topology, choose the topology with the best performance.
-        ///     Without this flag, it will choose the topology that uses the smallest number of GPU's.
+        ///     Without this flag, it will choose the topology that uses the smallest number of GPUs.
         /// </summary>
         MaximizePerformance = 4,
 

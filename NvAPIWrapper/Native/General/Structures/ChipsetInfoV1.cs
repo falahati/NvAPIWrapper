@@ -16,21 +16,27 @@ namespace NvAPIWrapper.Native.General.Structures
         internal StructureVersion _Version;
         internal readonly uint _VendorId;
         internal readonly uint _DeviceId;
-        internal ShortString _VendorName;
-        internal ShortString _ChipsetName;
+        internal readonly ShortString _VendorName;
+        internal readonly ShortString _ChipsetName;
 
         /// <inheritdoc />
         public bool Equals(ChipsetInfoV1 other)
         {
-            return (_VendorId == other._VendorId) && (_DeviceId == other._DeviceId) &&
-                   _VendorName.Equals(other._VendorName) && _ChipsetName.Equals(other._ChipsetName);
+            return _VendorId == other._VendorId &&
+                   _DeviceId == other._DeviceId &&
+                   _VendorName.Equals(other._VendorName) &&
+                   _ChipsetName.Equals(other._ChipsetName);
         }
 
         /// <inheritdoc />
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            return obj is ChipsetInfoV1 && Equals((ChipsetInfoV1) obj);
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+
+            return obj is ChipsetInfoV1 v1 && Equals(v1);
         }
 
         /// <inheritdoc />
@@ -39,9 +45,10 @@ namespace NvAPIWrapper.Native.General.Structures
             unchecked
             {
                 var hashCode = (int) _VendorId;
-                hashCode = (hashCode*397) ^ (int) _DeviceId;
-                hashCode = (hashCode*397) ^ _VendorName.GetHashCode();
-                hashCode = (hashCode*397) ^ _ChipsetName.GetHashCode();
+                hashCode = (hashCode * 397) ^ (int) _DeviceId;
+                hashCode = (hashCode * 397) ^ _VendorName.GetHashCode();
+                hashCode = (hashCode * 397) ^ _ChipsetName.GetHashCode();
+
                 return hashCode;
             }
         }
@@ -53,18 +60,33 @@ namespace NvAPIWrapper.Native.General.Structures
         }
 
         /// <inheritdoc />
-        public int VendorId => (int) _VendorId;
+        public int VendorId
+        {
+            get => (int) _VendorId;
+        }
 
         /// <inheritdoc />
-        public int DeviceId => (int) _DeviceId;
+        public int DeviceId
+        {
+            get => (int) _DeviceId;
+        }
 
         /// <inheritdoc />
-        public string VendorName => _VendorName.Value;
+        public string VendorName
+        {
+            get => _VendorName.Value;
+        }
 
         /// <inheritdoc />
-        public string ChipsetName => _ChipsetName.Value;
+        public string ChipsetName
+        {
+            get => _ChipsetName.Value;
+        }
 
         /// <inheritdoc />
-        public ChipsetInfoFlag Flags => ChipsetInfoFlag.None;
+        public ChipsetInfoFlag Flags
+        {
+            get => ChipsetInfoFlag.None;
+        }
     }
 }
