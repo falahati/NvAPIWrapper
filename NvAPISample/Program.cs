@@ -60,6 +60,17 @@ namespace NvAPISample
                             "PhysicalGPU.GetPhysicalGPUs()", "Select a GPU to show thermal sensor values")
                 },
                 {
+                    "GPU Clock Frequencies", () =>
+                        ConsoleNavigation.PrintNavigation(
+                            PhysicalGPU.GetPhysicalGPUs()
+                                .ToDictionary(gpu => (object) gpu.ToString(), gpu => new Action(
+                                    () =>
+                                    {
+                                        ConsoleNavigation.PrintObject(gpu.ClockFrequencies, "gpu.ClockFrequencies");
+                                    })),
+                            "PhysicalGPU.GetPhysicalGPUs()", "Select a GPU to show thermal sensor values")
+                },
+                {
                     "GPU Dynamic Performance States", () =>
                         ConsoleNavigation.PrintNavigation(
                             PhysicalGPU.GetPhysicalGPUs()
