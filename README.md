@@ -1,5 +1,7 @@
 ## <img src="NvAPIWrapper/Icon.png" width="24" alt="NvAPIWrapper"> NvAPIWrapper (for NVAPI R375)
-NvAPIWrapper is a .Net wrapper for NVIDIA public API, capable of managing all aspects of a display setup using NVIDIA GPUs
+NvAPIWrapper is a .Net wrapper for NVIDIA public API, capable of managing all aspects of a display setup using NVIDIA GPUs.
+
+This project is licensed under LGPL and therefore can be used in closed source or commercial projects. However any commit or change to the main code must be public and there should be a read me file along with the DLL clearigying this as part of your project. [Read more about LGPL](https://github.com/falahati/NvAPIWrapper/blob/master/LICENSE).
 
 ## WHERE TO DOWNLOAD
 This library is available for download and use through <a href="https://www.nuget.org/packages/NvAPIWrapper.Net">NuGet Gallery</a>.
