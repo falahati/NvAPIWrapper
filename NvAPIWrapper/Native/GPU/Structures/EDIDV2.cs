@@ -37,7 +37,7 @@ namespace NvAPIWrapper.Native.GPU.Structures
 
             var edid = typeof(EDIDV2).Instantiate<EDIDV2>();
             edid._TotalSize = (uint) totalSize;
-            edid._Data = data;
+            Array.Copy(data, 0, edid._Data, 0, totalSize);
 
             return edid;
         }

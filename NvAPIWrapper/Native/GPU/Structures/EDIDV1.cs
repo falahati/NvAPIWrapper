@@ -33,7 +33,7 @@ namespace NvAPIWrapper.Native.GPU.Structures
             }
 
             var edid = typeof(EDIDV1).Instantiate<EDIDV1>();
-            edid._Data = data;
+            Array.Copy(data, edid._Data, data.Length);
 
             return edid;
         }
