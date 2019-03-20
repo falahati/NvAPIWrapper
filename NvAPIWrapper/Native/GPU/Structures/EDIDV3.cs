@@ -50,7 +50,7 @@ namespace NvAPIWrapper.Native.GPU.Structures
             edid._Identification = id;
             edid._DataOffset = offset;
             edid._TotalSize = (uint) totalSize;
-            edid._Data = data;
+            Array.Copy(data, 0, edid._Data, offset, totalSize);
 
             return edid;
         }
