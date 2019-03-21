@@ -17,6 +17,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <Title>NvAPIWrapper (for NVAPI R375)</Title>
     <PackageId>NvAPIWrapper.Net</PackageId>
+    <AssemblyOriginatorKeyFile>OpenSourceStrongNameSignKey.pfx</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <BumpLabel>dev</BumpLabel>
@@ -29,6 +30,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <OutputPath>..\Release</OutputPath>
     <DocumentationFile>..\Release\NvAPIWrapper.xml</DocumentationFile>
+    <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference PrivateAssets="all" Include="MSBump" Version="2.3.2">
