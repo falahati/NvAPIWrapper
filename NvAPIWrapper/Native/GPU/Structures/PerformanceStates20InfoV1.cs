@@ -39,6 +39,9 @@ namespace NvAPIWrapper.Native.GPU.Structures
             get => _Flags.GetBit(0);
         }
 
+        /// <summary>
+        ///     Gets an array of valid power states for the GPU
+        /// </summary>
         public PerformanceState20[] PerformanceStates
         {
             get => _PerformanceStates.Take((int) _NumberOfPerformanceStates).ToArray();
@@ -50,6 +53,9 @@ namespace NvAPIWrapper.Native.GPU.Structures
             get => PerformanceStates.Cast<IPerformanceState20>().ToArray();
         }
 
+        /// <summary>
+        ///     Gets a dictionary for valid power states and their clock frequencies
+        /// </summary>
         public IReadOnlyDictionary<PerformanceStateId, PerformanceStates20ClockEntryV1[]> Clocks
         {
             get
@@ -75,6 +81,9 @@ namespace NvAPIWrapper.Native.GPU.Structures
             }
         }
 
+        /// <summary>
+        ///     Gets a dictionary for valid power states and their voltage settings
+        /// </summary>
         public IReadOnlyDictionary<PerformanceStateId, PerformanceStates20BaseVoltageEntryV1[]> Voltages
         {
             get

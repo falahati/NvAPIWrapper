@@ -24,7 +24,7 @@ namespace NvAPIWrapper.Native.Interfaces.GPU
         bool IsPerformanceMonitorEnable { get; }
 
         /// <summary>
-        ///     Gets an array of valid and available performance states information for this GPU
+        ///     Gets an array of valid and available performance states information
         /// </summary>
         IPerformanceState[] PerformanceStates { get; }
 

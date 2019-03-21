@@ -54,11 +54,23 @@ namespace NvAPIWrapper.GPU
             return Maximum == other.Maximum && Minimum == other.Minimum;
         }
 
+        /// <summary>
+        ///     Checks two instances of <see cref="GPUPerformanceStateValueRange" /> for equality.
+        /// </summary>
+        /// <param name="left">The left side of the comparison.</param>
+        /// <param name="right">The right side of the comparison.</param>
+        /// <returns>true if instances are equal, otherwise false</returns>
         public static bool operator ==(GPUPerformanceStateValueRange left, GPUPerformanceStateValueRange right)
         {
             return Equals(left, right) || left?.Equals(right) == true;
         }
 
+        /// <summary>
+        ///     Checks two instances of <see cref="GPUPerformanceStateValueRange" /> for inequality.
+        /// </summary>
+        /// <param name="left">The left side of the comparison.</param>
+        /// <param name="right">The right side of the comparison.</param>
+        /// <returns>true if instances are in-equal, otherwise false</returns>
         public static bool operator !=(GPUPerformanceStateValueRange left, GPUPerformanceStateValueRange right)
         {
             return !(left == right);

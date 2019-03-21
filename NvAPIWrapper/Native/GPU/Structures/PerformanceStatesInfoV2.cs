@@ -46,7 +46,7 @@ namespace NvAPIWrapper.Native.GPU.Structures
         }
 
         /// <summary>
-        ///     Gets an array of valid and available performance states information for this GPU
+        ///     Gets an array of valid and available performance states information
         /// </summary>
         public PerformanceState[] PerformanceStates
         {
@@ -59,6 +59,9 @@ namespace NvAPIWrapper.Native.GPU.Structures
             get => PerformanceStates.Cast<IPerformanceState>().ToArray();
         }
 
+        /// <summary>
+        ///     Gets a dictionary of valid and available performance states and their voltage information as an array
+        /// </summary>
         public IReadOnlyDictionary<PerformanceStateId, PerformanceState.PerformanceStatesVoltage[]>
             PerformanceStatesVoltages
         {
@@ -86,7 +89,9 @@ namespace NvAPIWrapper.Native.GPU.Structures
             }
         }
 
-
+        /// <summary>
+        ///     Gets a dictionary of valid and available performance states and their clock information as an array
+        /// </summary>
         public IReadOnlyDictionary<PerformanceStateId, PerformanceState.PerformanceStatesClock[]>
             PerformanceStatesClocks
         {
@@ -114,6 +119,7 @@ namespace NvAPIWrapper.Native.GPU.Structures
             }
         }
 
+        /// <inheritdoc cref="IPerformanceState" />
         [StructLayout(LayoutKind.Sequential, Pack = 8)]
         public struct PerformanceState : IInitializable, IPerformanceState
         {

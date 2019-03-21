@@ -30,6 +30,9 @@ namespace NvAPIWrapper.Native.GPU.Structures
 
         internal PerformanceStates20InfoV2.PerformanceStates20OverVoltingSetting _OverVoltingSettings;
 
+        /// <summary>
+        ///     Gets the list of general over-volting settings
+        /// </summary>
         public PerformanceStates20BaseVoltageEntryV1[] GeneralVoltages
         {
             get => _OverVoltingSettings.Voltages.ToArray();
@@ -47,6 +50,9 @@ namespace NvAPIWrapper.Native.GPU.Structures
             get => _Flags.GetBit(0);
         }
 
+        /// <summary>
+        ///     Gets an array of valid power states for the GPU
+        /// </summary>
         public PerformanceStates20InfoV1.PerformanceState20[] PerformanceStates
         {
             get => _PerformanceStates.Take((int) _NumberOfPerformanceStates).ToArray();
@@ -58,6 +64,9 @@ namespace NvAPIWrapper.Native.GPU.Structures
             get => PerformanceStates.Cast<IPerformanceState20>().ToArray();
         }
 
+        /// <summary>
+        ///     Gets a dictionary for valid power states and their clock frequencies
+        /// </summary>
         public IReadOnlyDictionary<PerformanceStateId, PerformanceStates20ClockEntryV1[]> Clocks
         {
             get
@@ -71,6 +80,9 @@ namespace NvAPIWrapper.Native.GPU.Structures
             }
         }
 
+        /// <summary>
+        ///     Gets a dictionary for valid power states and their voltage settings
+        /// </summary>
         public IReadOnlyDictionary<PerformanceStateId, PerformanceStates20BaseVoltageEntryV1[]> Voltages
         {
             get

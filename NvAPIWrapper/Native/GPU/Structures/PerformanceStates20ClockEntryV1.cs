@@ -51,7 +51,7 @@ namespace NvAPIWrapper.Native.GPU.Structures
         }
 
         [StructLayout(LayoutKind.Explicit, Pack = 8)]
-        public struct PerformanceStates20ClockDependentInfo
+        internal struct PerformanceStates20ClockDependentInfo
         {
             [FieldOffset(0)] internal PerformanceStates20ClockDependentSingleFrequency _Single;
             [FieldOffset(0)] internal PerformanceStates20ClockDependentFrequencyRange _Range;
