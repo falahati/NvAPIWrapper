@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using ConsoleUtilities;
 using NvAPIWrapper;
 using NvAPIWrapper.Display;
 using NvAPIWrapper.GPU;
@@ -16,112 +17,135 @@ namespace NvAPISample
             NVIDIA.Initialize();
             var navigation = new Dictionary<object, Action>
             {
-                {
-                    "Connected Displays",
-                    () =>
-                        ConsoleNavigation.PrintObject(Display.GetDisplays(),
-                            display => ConsoleNavigation.PrintObject(display.DisplayDevice, "Display.DisplayDevice"),
-                            "Display.GetDisplays()", "Select a display to show device information")
-                },
-                {
-                    "Disconnected Displays",
-                    () =>
-                        ConsoleNavigation.PrintObject(UnAttachedDisplay.GetUnAttachedDisplays(),
-                            display =>
-                                ConsoleNavigation.PrintObject(display.PhysicalGPU, "UnAttachedDisplay.PhysicalGPU"),
-                            "UnAttachedDisplay.GetUnAttachedDisplays()", "Select a display to show GPU information")
-                },
-                {
-                    "Display Configurations",
-                    () =>
-                        ConsoleNavigation.PrintObject(PathInfo.GetDisplaysConfig().ToArray(),
-                            pathInfo =>
-                                ConsoleNavigation.PrintObject(pathInfo.TargetsInfo,
-                                    targetInfo =>
-                                        ConsoleNavigation.PrintObject(targetInfo.DisplayDevice,
-                                            "PathTargetInfo.DisplayDevice"), "PathInfo.TargetsInfo[]",
-                                    "Select a path target info to show display device information"),
-                            "PathInfo.GetDisplaysConfig()", "Select a path info to show target information")
-                },
-                {
-                    "Physical GPUs", () =>
-                        ConsoleNavigation.PrintObject(PhysicalGPU.GetPhysicalGPUs(),
-                            gpu => ConsoleNavigation.PrintObject(gpu.ActiveOutputs, "PhysicalGPU.ActiveOutputs"),
-                            "PhysicalGPU.GetPhysicalGPUs()", "Select a GPU to show active outputs")
-                },
-                {
-                    "GPU Temperatures", () =>
-                        ConsoleNavigation.PrintNavigation(
-                            PhysicalGPU.GetPhysicalGPUs()
-                                .ToDictionary(gpu => (object) gpu.ToString(), gpu => new Action(
-                                    () =>
-                                    {
-                                        ConsoleNavigation.PrintObject(gpu.ThermalSensors, "PhysicalGPU.ThermalSensors");
-                                    })),
-                            "PhysicalGPU.GetPhysicalGPUs()", "Select a GPU to show thermal sensor values")
-                },
-                {
-                    "GPU Dynamic Performance States", () =>
-                        ConsoleNavigation.PrintNavigation(
-                            PhysicalGPU.GetPhysicalGPUs()
-                                .ToDictionary(gpu => (object) gpu.ToString(), gpu => new Action(
-                                    () =>
-                                    {
-                                        ConsoleNavigation.PrintObject(gpu.DynamicPerformanceStatesInfo,
-                                            "PhysicalGPU.DynamicPerformanceStatesInfo");
-                                    })),
-                            "PhysicalGPU.GetPhysicalGPUs()", "Select a GPU to show dynamic performance state domains")
-                },
-                {
-                    "GPU Clock Frequencies", () =>
-                        ConsoleNavigation.PrintNavigation(
-                            PhysicalGPU.GetPhysicalGPUs()
-                                .ToDictionary(gpu => (object) gpu.ToString(), gpu => new Action(
-                                    () =>
-                                    {
-                                        ConsoleNavigation.PrintObject(new
-                                            {
-                                                CurrentClock = gpu.CurrentClockFrequencies,
-                                                BaseClock = gpu.BaseClockFrequencies,
-                                                BoostClock = gpu.BoostClockFrequencies
-                                            },
-                                            "PhysicalGPU.CurrentClockFrequencies, PhysicalGPU.BaseClockFrequencies, PhysicalGPU.BoostClockFrequencies");
-                                    })),
-                            "PhysicalGPU.GetPhysicalGPUs()", "Select a GPU to show clock frequencies")
-                },
-                {
-                    "TCC GPUs", () =>
-                        ConsoleNavigation.PrintObject(PhysicalGPU.GetTCCPhysicalGPUs(),
-                            "PhysicalGPU.GetTCCPhysicalGPUs()")
-                },
-                {
-                    "Grid Topologies (Mosaic)",
-                    () =>
-                        ConsoleNavigation.PrintObject(GridTopology.GetGridTopologies(),
-                            grid =>
-                                ConsoleNavigation.PrintObject(grid.Displays,
-                                    display =>
-                                        ConsoleNavigation.PrintObject(display.DisplayDevice,
-                                            "GridTopologyDisplay.DisplayDevice"), "GridTopology.Displays",
-                                    "Select a grid topology display to show display device information"),
-                            "GridTopology.GetGridTopologies()", "Select a grid topology to show display information")
-                },
-                {
-                    "NVIDIA Driver and API version", () => ConsoleNavigation.PrintObject(new object[]
-                    {
-                        "Driver Version: " + NVIDIA.DriverVersion,
-                        "Driver Branch Version: " + NVIDIA.DriverBranchVersion,
-                        "NvAPI Version: " + NVIDIA.InterfaceVersionString
-                    }, "NVIDIA")
-                },
-                {"System Chipset Info", () => ConsoleNavigation.PrintObject(NVIDIA.ChipsetInfo, "NVIDIA.ChipsetInfo")},
-                {
-                    "Lid and Dock Information",
-                    () => ConsoleNavigation.PrintObject(NVIDIA.LidAndDockParameters, "NVIDIA.LidAndDockParameters")
-                }
+                {"Connected Displays", PrintConnectedDisplays},
+                {"Disconnected Displays", PrintDisconnectedDisplays},
+                {"Display Configurations", PrintDisplayPathInformation},
+                {"Physical GPUs", PrintPhysicalGPUs},
+                {"GPU Temperatures", PrintGPUSensors},
+                {"GPU Performance States", PrintGPUPerformanceStates},
+                {"TCC GPUs", PrintTCCGPUs},
+                {"Grid Topologies (Mosaic - NVIDIA Surround)", PrintGridTopologies},
+                {"NVIDIA Driver and API version", PrintDriverVersion},
+                {"System Chipset Information", PrintChipsetInformation},
+                {"Lid and Dock Information", PrintDockInformation}
             };
-            ConsoleNavigation.PrintNavigation(navigation, "Execution Lines",
-                "Select an execution line to browse NvAPIWrapper functionalities.");
+            ConsoleNavigation.Default.PrintNavigation(
+                navigation.Keys.ToArray(),
+                (i, o) => navigation[o](),
+                "Select an execution line to browse NvAPIWrapper functionalities."
+            );
+        }
+
+        private static void PrintChipsetInformation()
+        {
+            ConsoleWriter.Default.PrintCaption("NVIDIA.ChipsetInfo");
+            ConsoleWriter.Default.WriteObject(new
+            {
+                NVIDIA.ChipsetInfo.ChipsetName,
+                NVIDIA.ChipsetInfo.DeviceId,
+                NVIDIA.ChipsetInfo.Flags,
+                NVIDIA.ChipsetInfo.VendorId,
+                NVIDIA.ChipsetInfo.VendorName
+            });
+        }
+
+        private static void PrintConnectedDisplays()
+        {
+            ConsoleWriter.Default.PrintCaption("Display.GetDisplays()");
+            ConsoleNavigation.Default.PrintNavigation(Display.GetDisplays(),
+                (i, display) => ConsoleWriter.Default.WriteObject(display),
+                "Select a display to show device information");
+        }
+
+        private static void PrintDisconnectedDisplays()
+        {
+            ConsoleWriter.Default.PrintCaption("UnAttachedDisplay.GetUnAttachedDisplays()");
+            ConsoleNavigation.Default.PrintNavigation(UnAttachedDisplay.GetUnAttachedDisplays(),
+                (i, unAttachedDisplay) => ConsoleWriter.Default.WriteObject(unAttachedDisplay, 0),
+                "Select a display to show additional information");
+        }
+
+        private static void PrintDisplayPathInformation()
+        {
+            ConsoleWriter.Default.PrintCaption("PathInfo.GetDisplaysConfig()");
+            ConsoleNavigation.Default.PrintNavigation(PathInfo.GetDisplaysConfig().ToArray(), (i, info) =>
+            {
+                ConsoleWriter.Default.WriteObject(info, 2);
+            }, "Select a path info to show additional information");
+        }
+
+        private static void PrintDockInformation()
+        {
+            ConsoleWriter.Default.PrintCaption("NVIDIA.LidAndDockParameters");
+            ConsoleWriter.Default.WriteObject(new
+            {
+                NVIDIA.LidAndDockParameters.CurrentDockPolicy,
+                NVIDIA.LidAndDockParameters.CurrentDockState,
+                NVIDIA.LidAndDockParameters.CurrentLidPolicy,
+                NVIDIA.LidAndDockParameters.CurrentLidState,
+                NVIDIA.LidAndDockParameters.ForcedDockMechanismPresent,
+                NVIDIA.LidAndDockParameters.ForcedLidMechanismPresent
+            });
+        }
+
+        private static void PrintDriverVersion()
+        {
+            ConsoleWriter.Default.PrintCaption("NVIDIA");
+            ConsoleWriter.Default.WriteObject(new
+            {
+                NVIDIA.DriverVersion,
+                NVIDIA.DriverBranchVersion,
+                NVIDIA.InterfaceVersionString
+            });
+        }
+
+        private static void PrintGPUPerformanceStates()
+        {
+            ConsoleWriter.Default.PrintCaption("PhysicalGPU.GetPhysicalGPUs()");
+            ConsoleNavigation.Default.PrintNavigation(PhysicalGPU.GetPhysicalGPUs(), (i, gpu) =>
+            {
+                ConsoleWriter.Default.PrintCaption("PhysicalGPU.PerformanceStatesInfo");
+                ConsoleWriter.Default.WriteObject(gpu.PerformanceStatesInfo, 3);
+            }, "Select a GPU to show performance states configuration");
+        }
+
+        private static void PrintGPUSensors()
+        {
+            ConsoleWriter.Default.PrintCaption("PhysicalGPU.GetPhysicalGPUs()");
+            ConsoleNavigation.Default.PrintNavigation(PhysicalGPU.GetPhysicalGPUs(), (i, gpu) =>
+            {
+                ConsoleWriter.Default.PrintCaption("PhysicalGPU.ThermalSensors");
+                ConsoleWriter.Default.WriteObject(gpu.ThermalSensors);
+            }, "Select a GPU to show thermal sensor values");
+        }
+
+        private static void PrintGridTopologies()
+        {
+            ConsoleWriter.Default.PrintCaption("GridTopology.GetGridTopologies()");
+            ConsoleNavigation.Default.PrintNavigation(GridTopology.GetGridTopologies(), (i, topology) =>
+            {
+                ConsoleWriter.Default.WriteObject(topology, 3);
+            }, "Select a grid topology to show additional information");
+        }
+
+        private static void PrintPhysicalGPUs()
+        {
+            ConsoleWriter.Default.PrintCaption("PhysicalGPU.GetPhysicalGPUs()");
+            ConsoleNavigation.Default.PrintNavigation(PhysicalGPU.GetPhysicalGPUs(), (i, gpu) =>
+            {
+                ConsoleWriter.Default.WriteObject(gpu, 0);
+            }, "Select a GPU to show additional information");
+        }
+
+        // ReSharper disable once InconsistentNaming
+        // ReSharper disable once IdentifierTypo
+        private static void PrintTCCGPUs()
+        {
+            ConsoleWriter.Default.PrintCaption("PhysicalGPU.GetTCCPhysicalGPUs()");
+            ConsoleNavigation.Default.PrintNavigation(PhysicalGPU.GetTCCPhysicalGPUs(), (i, gpu) =>
+            {
+                ConsoleWriter.Default.WriteObject(gpu, 0);
+            }, "Select a GPU to show additional information");
         }
     }
 }
