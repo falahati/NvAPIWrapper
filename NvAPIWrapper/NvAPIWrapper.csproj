@@ -28,6 +28,7 @@
     <BumpResetLabel>dev</BumpResetLabel>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <OutputPath>..\Release</OutputPath>
+    <DocumentationFile>..\Release\NvAPIWrapper.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference PrivateAssets="all" Include="MSBump" Version="2.3.2">
