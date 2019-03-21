@@ -422,6 +422,27 @@ namespace NvAPIWrapper.Native
             return (int) width;
         }
 
+
+        /// <summary>
+        ///     This function returns the current performance state (P-State).
+        /// </summary>
+        /// <param name="gpuHandle">GPU handle to get information about</param>
+        /// <returns>The current performance state.</returns>
+        /// <exception cref="NVIDIAApiException">Status.InvalidArgument: gpuHandle is NULL</exception>
+        public static PerformanceStateId GetCurrentPerformanceState(PhysicalGPUHandle gpuHandle)
+        {
+            var status =
+                DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_GetCurrentPState>()(gpuHandle,
+                    out var performanceState);
+
+            if (status != Status.Ok)
+            {
+                throw new NVIDIAApiException(status);
+            }
+
+            return performanceState;
+        }
+
         /// <summary>
         ///     This API converts a Physical GPU handle and output ID to a display ID.
         /// </summary>
@@ -834,6 +855,83 @@ namespace NvAPIWrapper.Native
             {
                 throw new NVIDIAApiException(status);
             }
+        }
+
+        /// <summary>
+        ///     This function retrieves all available performance states (P-States) information.
+        ///     P-States are GPU active/executing performance capability and power consumption states.
+        /// </summary>
+        /// <param name="physicalGPUHandle">GPU handle to get information about.</param>
+        /// <param name="flags">Flag to get specific information about a performance state.</param>
+        /// <returns>Retrieved performance states information</returns>
+        /// <exception cref="NVIDIAApiException">Status.InvalidArgument: gpuHandle is NULL</exception>
+        /// <exception cref="NVIDIAApiException">Status.ExpectedPhysicalGPUHandle: gpuHandle was not a physical GPU handle</exception>
+        public static IPerformanceStatesInfo GetPerformanceStates(
+            PhysicalGPUHandle physicalGPUHandle,
+            GetPerformanceStatesInfoFlags flags)
+        {
+            var getPerformanceStatesInfo = DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_GetPStatesInfoEx>();
+
+            foreach (var acceptType in getPerformanceStatesInfo.Accepts())
+            {
+                var instance = acceptType.Instantiate<IPerformanceStatesInfo>();
+
+                using (var performanceStateInfo = ValueTypeReference.FromValueType(instance, acceptType))
+                {
+                    var status = getPerformanceStatesInfo(physicalGPUHandle, performanceStateInfo, flags);
+
+                    if (status == Status.IncompatibleStructureVersion)
+                    {
+                        continue;
+                    }
+
+                    if (status != Status.Ok)
+                    {
+                        throw new NVIDIAApiException(status);
+                    }
+
+                    return performanceStateInfo.ToValueType<IPerformanceStatesInfo>(acceptType);
+                }
+            }
+
+            throw new NVIDIANotSupportedException("This operation is not supported.");
+        }
+
+        /// <summary>
+        ///     This function retrieves all available performance states (P-States) 2.0 information.
+        ///     P-States are GPU active/executing performance capability and power consumption states.
+        /// </summary>
+        /// <param name="physicalGPUHandle">GPU handle to get information about.</param>
+        /// <returns>Retrieved performance states 2.0 information</returns>
+        /// <exception cref="NVIDIAApiException">Status.InvalidArgument: gpuHandle is NULL</exception>
+        /// <exception cref="NVIDIAApiException">Status.ExpectedPhysicalGPUHandle: gpuHandle was not a physical GPU handle</exception>
+        public static IPerformanceStates20Info GetPerformanceStates20(PhysicalGPUHandle physicalGPUHandle)
+        {
+            var getPerformanceStates20 = DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_GetPStates20>();
+
+            foreach (var acceptType in getPerformanceStates20.Accepts())
+            {
+                var instance = acceptType.Instantiate<IPerformanceStates20Info>();
+
+                using (var performanceStateInfo = ValueTypeReference.FromValueType(instance, acceptType))
+                {
+                    var status = getPerformanceStates20(physicalGPUHandle, performanceStateInfo);
+
+                    if (status == Status.IncompatibleStructureVersion)
+                    {
+                        continue;
+                    }
+
+                    if (status != Status.Ok)
+                    {
+                        throw new NVIDIAApiException(status);
+                    }
+
+                    return performanceStateInfo.ToValueType<IPerformanceStates20Info>(acceptType);
+                }
+            }
+
+            throw new NVIDIANotSupportedException("This operation is not supported.");
         }
 
         /// <summary>

@@ -22,16 +22,15 @@ namespace NvAPIWrapper.Native.GPU.Structures
         internal readonly uint _Reserved;
 
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxClocksPerGpu)]
-        internal
-            ClockDomainInfo[] _Clocks;
+        internal ClockDomainInfo[] _Clocks;
 
         /// <inheritdoc />
-        public Dictionary<PublicClock, ClockDomainInfo> Clocks
+        public IReadOnlyDictionary<PublicClockDomain, ClockDomainInfo> Clocks
         {
             get => _Clocks
                 .Select((value, index) => new {index, value})
-                .Where(arg => Enum.IsDefined(typeof(PublicClock), arg.index))
-                .ToDictionary(arg => (PublicClock) arg.index, arg => arg.value);
+                .Where(arg => Enum.IsDefined(typeof(PublicClockDomain), arg.index))
+                .ToDictionary(arg => (PublicClockDomain) arg.index, arg => arg.value);
         }
 
         /// <inheritdoc />
@@ -43,25 +42,25 @@ namespace NvAPIWrapper.Native.GPU.Structures
         /// <inheritdoc />
         public ClockDomainInfo GraphicsClock
         {
-            get => _Clocks[(int) PublicClock.Graphics];
+            get => _Clocks[(int) PublicClockDomain.Graphics];
         }
 
         /// <inheritdoc />
         public ClockDomainInfo MemoryClock
         {
-            get => _Clocks[(int) PublicClock.Memory];
+            get => _Clocks[(int) PublicClockDomain.Memory];
         }
 
         /// <inheritdoc />
         public ClockDomainInfo VideoDecodingClock
         {
-            get => _Clocks[(int) PublicClock.Video];
+            get => _Clocks[(int) PublicClockDomain.Video];
         }
 
         /// <inheritdoc />
         public ClockDomainInfo ProcessorClock
         {
-            get => _Clocks[(int) PublicClock.Processor];
+            get => _Clocks[(int) PublicClockDomain.Processor];
         }
 
         /// <inheritdoc />

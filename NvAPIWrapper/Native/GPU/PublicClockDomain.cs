@@ -3,9 +3,9 @@
 namespace NvAPIWrapper.Native.GPU
 {
     /// <summary>
-    ///     Clocks available to public
+    ///     Contains the list of clocks available to public
     /// </summary>
-    public enum PublicClock
+    public enum PublicClockDomain
     {
         /// <summary>
         ///     Undefined

@@ -154,7 +154,7 @@ namespace NvAPIWrapper.GPU
         }
 
         /// <summary>
-        ///     Gets GPU dynamic performance states information (utilization domains)
+        ///     Gets the GPU dynamic performance states information (utilization domains)
         /// </summary>
         public DynamicPerformanceStatesInfo DynamicPerformanceStatesInfo
         {
@@ -213,13 +213,24 @@ namespace NvAPIWrapper.GPU
         {
             get
             {
-                uint deviceId;
-                uint subSystemId;
-                uint revisionId;
-                uint extDeviceId;
-                GPUApi.GetPCIIdentifiers(Handle, out deviceId, out subSystemId, out revisionId, out extDeviceId);
+                GPUApi.GetPCIIdentifiers(Handle, out var deviceId, out var subSystemId, out var revisionId,
+                    out var extDeviceId);
 
                 return new PCIIdentifiers(deviceId, subSystemId, revisionId, (int) extDeviceId);
+            }
+        }
+
+        /// <summary>
+        ///     Gets the GPU performance states information and configurations
+        /// </summary>
+        public GPUPerformanceStatesInfo PerformanceStatesInfo
+        {
+            get
+            {
+                var performanceStates20Info = GPUApi.GetPerformanceStates20(Handle);
+                var currentPerformanceState = GPUApi.GetCurrentPerformanceState(Handle);
+
+                return new GPUPerformanceStatesInfo(performanceStates20Info, currentPerformanceState);
             }
         }
 
@@ -257,7 +268,7 @@ namespace NvAPIWrapper.GPU
         }
 
         /// <summary>
-        ///     Gets virtual size of framebuffer in KB for this GPU. This includes the physical RAM plus any system RAM that has
+        ///     Gets virtual size of frame-buffer in KB for this GPU. This includes the physical RAM plus any system RAM that has
         ///     been dedicated for use by the GPU.
         /// </summary>
         public int VirtualFrameBufferSize
@@ -268,7 +279,7 @@ namespace NvAPIWrapper.GPU
         /// <inheritdoc />
         public bool Equals(PhysicalGPU other)
         {
-            if (ReferenceEquals(null, other))
+            if (other == null)
             {
                 return false;
             }
@@ -307,7 +318,7 @@ namespace NvAPIWrapper.GPU
         /// <returns>true, if both objects are equal, otherwise false</returns>
         public static bool operator ==(PhysicalGPU left, PhysicalGPU right)
         {
-            return right?.Equals(left) ?? ReferenceEquals(left, null);
+            return Equals(left, right) || left?.Equals(right) == true;
         }
 
         /// <summary>
@@ -324,7 +335,7 @@ namespace NvAPIWrapper.GPU
         /// <inheritdoc />
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj))
+            if (obj == null)
             {
                 return false;
             }
@@ -334,12 +345,7 @@ namespace NvAPIWrapper.GPU
                 return true;
             }
 
-            if (obj.GetType() != GetType())
-            {
-                return false;
-            }
-
-            return Equals((PhysicalGPU) obj);
+            return Equals(obj as PhysicalGPU);
         }
 
         /// <inheritdoc />

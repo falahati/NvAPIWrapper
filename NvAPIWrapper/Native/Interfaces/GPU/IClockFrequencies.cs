@@ -12,7 +12,7 @@ namespace NvAPIWrapper.Native.Interfaces.GPU
         /// <summary>
         ///     Gets all valid clocks
         /// </summary>
-        Dictionary<PublicClock, ClockDomainInfo> Clocks { get; }
+        IReadOnlyDictionary<PublicClockDomain, ClockDomainInfo> Clocks { get; }
 
         /// <summary>
         ///     Gets the type of clock frequencies provided with this object
