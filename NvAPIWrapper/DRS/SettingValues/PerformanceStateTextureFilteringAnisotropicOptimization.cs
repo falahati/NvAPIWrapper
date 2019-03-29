@@ -1,8 +1,6 @@
-using System;
-
 namespace NvAPIWrapper.DRS.SettingValues
 {
-    public enum PerformanceStateTextureFilteringAnisotropicOptimization : UInt32
+    public enum PerformanceStateTextureFilteringAnisotropicOptimization : uint
     {
         Off = 0x0,
 

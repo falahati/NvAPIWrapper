@@ -1,8 +1,6 @@
-using System;
-
 namespace NvAPIWrapper.DRS.SettingValues
 {
-    public enum VRRApplicationOverride : UInt32
+    public enum VRRApplicationOverride : uint
     {
         Allow = 0x0,
 

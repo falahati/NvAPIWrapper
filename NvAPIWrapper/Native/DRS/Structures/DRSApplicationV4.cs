@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Runtime.InteropServices;
 using NvAPIWrapper.Native.Attributes;
 using NvAPIWrapper.Native.General.Structures;
@@ -55,6 +54,7 @@ namespace NvAPIWrapper.Native.DRS.Structures
             get => _Flags.GetBit(0);
             private set => _Flags = _Flags.SetBit(0, value);
         }
+
         public bool HasCommandLine
         {
             get => _Flags.GetBit(1);
@@ -106,6 +106,7 @@ namespace NvAPIWrapper.Native.DRS.Structures
             get => _FriendlyName.Value;
             private set => _FriendlyName = new UnicodeString(value);
         }
+
         public string LauncherName
         {
             get => _LauncherName.Value;
@@ -114,7 +115,8 @@ namespace NvAPIWrapper.Native.DRS.Structures
 
         public string[] FilesInFolder
         {
-            get => _FileInFolder.Value?.Split(new[] { FileInFolderSeparator }, StringSplitOptions.RemoveEmptyEntries) ?? new string[0];
+            get => _FileInFolder.Value?.Split(new[] {FileInFolderSeparator}, StringSplitOptions.RemoveEmptyEntries) ??
+                   new string[0];
             private set => _FileInFolder = new UnicodeString(string.Join(FileInFolderSeparator.ToString(), value));
         }
     }

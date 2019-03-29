@@ -1,8 +1,6 @@
-using System;
-
 namespace NvAPIWrapper.DRS.SettingValues
 {
-    public enum WKSMemoryAllocationPolicy : UInt32
+    public enum WKSMemoryAllocationPolicy : uint
     {
         AsNeeded = 0x0,
 

@@ -1,8 +1,6 @@
-using System;
-
 namespace NvAPIWrapper.DRS.SettingValues
 {
-    public enum AnselWhiteListed : UInt32
+    public enum AnselWhiteListed : uint
     {
         Disallowed = 0x0,
 

@@ -1,8 +1,6 @@
-using System;
-
 namespace NvAPIWrapper.DRS.SettingValues
 {
-    public enum BatteryBoost : UInt32
+    public enum BatteryBoost : uint
     {
         Minimum = 0x1,
 

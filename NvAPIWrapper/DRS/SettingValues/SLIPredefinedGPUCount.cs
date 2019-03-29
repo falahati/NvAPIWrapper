@@ -1,8 +1,6 @@
-using System;
-
 namespace NvAPIWrapper.DRS.SettingValues
 {
-    public enum SLIPredefinedGPUCount : UInt32
+    public enum SLIPredefinedGPUCount : uint
     {
         AutoSelect = 0x0,
 

@@ -1,8 +1,6 @@
-using System;
-
 namespace NvAPIWrapper.DRS.SettingValues
 {
-    public enum RefreshRateOverride : UInt32
+    public enum RefreshRateOverride : uint
     {
         ApplicationControlled = 0x0,
 

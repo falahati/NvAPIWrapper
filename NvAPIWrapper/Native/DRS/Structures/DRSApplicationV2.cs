@@ -69,7 +69,8 @@ namespace NvAPIWrapper.Native.DRS.Structures
 
         public string[] FilesInFolder
         {
-            get => _FileInFolder.Value?.Split(new[] {FileInFolderSeparator}, StringSplitOptions.RemoveEmptyEntries) ?? new string[0];
+            get => _FileInFolder.Value?.Split(new[] {FileInFolderSeparator}, StringSplitOptions.RemoveEmptyEntries) ??
+                   new string[0];
             private set => _FileInFolder = new UnicodeString(string.Join(FileInFolderSeparator.ToString(), value));
         }
     }

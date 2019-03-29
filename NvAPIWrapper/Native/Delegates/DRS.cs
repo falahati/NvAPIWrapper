@@ -83,11 +83,10 @@ namespace NvAPIWrapper.Native.Delegates
             )]
             ValueTypeArray applications
         );
-        
+
         [FunctionId(FunctionId.NvAPI_DRS_EnumAvailableSettingIds)]
         public delegate Status NvAPI_DRS_EnumAvailableSettingIds(
-            [In] [Accepts(typeof(uint))]
-            ValueTypeArray settingIds,
+            [In] [Accepts(typeof(uint))] ValueTypeArray settingIds,
             [In] [Out] ref uint count
         );
 

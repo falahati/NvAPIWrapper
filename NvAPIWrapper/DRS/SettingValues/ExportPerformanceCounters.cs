@@ -1,8 +1,6 @@
-using System;
-
 namespace NvAPIWrapper.DRS.SettingValues
 {
-    public enum ExportPerformanceCounters : UInt32
+    public enum ExportPerformanceCounters : uint
     {
         Off = 0x0,
 

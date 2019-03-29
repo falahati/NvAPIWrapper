@@ -1,8 +1,6 @@
-using System;
-
 namespace NvAPIWrapper.DRS.SettingValues
 {
-    public enum VRRRequestState : UInt32
+    public enum VRRRequestState : uint
     {
         Disabled = 0x0,
 

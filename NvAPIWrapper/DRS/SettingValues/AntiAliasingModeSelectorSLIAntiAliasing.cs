@@ -1,8 +1,6 @@
-using System;
-
 namespace NvAPIWrapper.DRS.SettingValues
 {
-    public enum AntiAliasingModeSelectorSLIAntiAliasing : UInt32
+    public enum AntiAliasingModeSelectorSLIAntiAliasing : uint
     {
         Disabled = 0x0,
 

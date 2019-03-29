@@ -16,22 +16,6 @@ namespace NvAPIWrapper.DRS
             _application = application;
         }
 
-        /// <inheritdoc />
-        public override string ToString()
-        {
-            if (!IsValid)
-            {
-                return "[Invalid]";
-            }
-
-            if (IsPredefined)
-            {
-                return $"{ApplicationName} (Predefined)";
-            }
-            
-            return ApplicationName;
-        }
-
         public string ApplicationName
         {
             get
@@ -355,6 +339,22 @@ namespace NvAPIWrapper.DRS
                 isMetro,
                 commandLine
             );
+        }
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            if (!IsValid)
+            {
+                return "[Invalid]";
+            }
+
+            if (IsPredefined)
+            {
+                return $"{ApplicationName} (Predefined)";
+            }
+
+            return ApplicationName;
         }
 
         public void Delete()

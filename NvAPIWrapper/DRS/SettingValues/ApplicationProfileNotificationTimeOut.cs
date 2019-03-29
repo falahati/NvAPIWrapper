@@ -1,8 +1,6 @@
-using System;
-
 namespace NvAPIWrapper.DRS.SettingValues
 {
-    public enum ApplicationProfileNotificationTimeOut : UInt32
+    public enum ApplicationProfileNotificationTimeOut : uint
     {
         Disabled = 0x0,
 

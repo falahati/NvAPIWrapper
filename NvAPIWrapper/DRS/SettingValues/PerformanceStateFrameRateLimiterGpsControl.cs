@@ -1,8 +1,6 @@
-using System;
-
 namespace NvAPIWrapper.DRS.SettingValues
 {
-    public enum PerformanceStateFrameRateLimiterGpsControl : UInt32
+    public enum PerformanceStateFrameRateLimiterGpsControl : uint
     {
         Disabled = 0x0,
 

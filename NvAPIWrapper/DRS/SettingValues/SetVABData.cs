@@ -1,8 +1,6 @@
-using System;
-
 namespace NvAPIWrapper.DRS.SettingValues
 {
-    public enum SetVABData : UInt32
+    public enum SetVABData : uint
     {
         Zero = 0x0,
 

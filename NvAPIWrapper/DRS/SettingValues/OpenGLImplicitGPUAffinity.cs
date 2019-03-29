@@ -1,14 +1,10 @@
-using System;
-
 namespace NvAPIWrapper.DRS.SettingValues
 {
     public static class OpenGLImplicitGPUAffinity
     {
-        public const System.String EnvironmentVariable = "OGL_DEFAULT_RENDERING_GPU";
+        public const string AutoSelect = "autoselect";
 
-        public const System.String AutoSelect = "autoselect";
-
-        public const System.String Default = "autoselect";
-
+        public const string Default = "autoselect";
+        public const string EnvironmentVariable = "OGL_DEFAULT_RENDERING_GPU";
     }
 }

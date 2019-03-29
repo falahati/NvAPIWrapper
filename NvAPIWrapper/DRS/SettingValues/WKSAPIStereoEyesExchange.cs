@@ -1,8 +1,6 @@
-using System;
-
 namespace NvAPIWrapper.DRS.SettingValues
 {
-    public enum WKSAPIStereoEyesExchange : UInt32
+    public enum WKSAPIStereoEyesExchange : uint
     {
         Off = 0x0,
 

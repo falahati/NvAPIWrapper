@@ -17,54 +17,6 @@ namespace NvAPIWrapper.DRS
         {
         }
 
-        /// <inheritdoc />
-        public override string ToString()
-        {
-            return $"{Handle} ({NumberOfProfiles} Profiles)";
-        }
-
-        public DRSSessionHandle Handle { get; }
-
-        public IEnumerable<DriverSettingsProfile> Profiles
-        {
-            get { return DRSApi.EnumProfiles(Handle).Select(handle => new DriverSettingsProfile(handle, this)); }
-        }
-
-        public void RestoreDefaults()
-        {
-            DRSApi.RestoreDefaults(Handle);
-        }
-
-        public int NumberOfProfiles
-        {
-            get => DRSApi.GetNumberOfProfiles(Handle);
-        }
-
-        public DriverSettingsProfile FindApplicationProfile(string applicationName)
-        {
-            var application = DRSApi.FindApplicationByName(Handle, applicationName, out var profileHandle);
-
-            if (application == null || !profileHandle.HasValue || profileHandle.Value.IsNull)
-            {
-                return null;
-            }
-
-            return new DriverSettingsProfile(profileHandle.Value, this);
-        }
-
-        public ProfileApplication FindApplication(string applicationName)
-        {
-            var application = DRSApi.FindApplicationByName(Handle, applicationName, out var profileHandle);
-
-            if (application == null || !profileHandle.HasValue || profileHandle.Value.IsNull)
-            {
-                return null;
-            }
-
-            var profile = new DriverSettingsProfile(profileHandle.Value, this);
-            return new ProfileApplication(application, profile);
-        }
-
         public DriverSettingsProfile BaseProfile
         {
             get
@@ -109,16 +61,16 @@ namespace NvAPIWrapper.DRS
             }
         }
 
-        public DriverSettingsProfile FindProfileByName(string profileName)
+        public DRSSessionHandle Handle { get; }
+
+        public int NumberOfProfiles
         {
-            var profileHandle = DRSApi.FindProfileByName(Handle, profileName);
+            get => DRSApi.GetNumberOfProfiles(Handle);
+        }
 
-            if (profileHandle.IsNull)
-            {
-                return null;
-            }
-
-            return new DriverSettingsProfile(profileHandle, this);
+        public IEnumerable<DriverSettingsProfile> Profiles
+        {
+            get { return DRSApi.EnumProfiles(Handle).Select(handle => new DriverSettingsProfile(handle, this)); }
         }
 
         /// <inheritdoc />
@@ -142,6 +94,55 @@ namespace NvAPIWrapper.DRS
             session.Load(fileName);
 
             return session;
+        }
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            return $"{Handle} ({NumberOfProfiles} Profiles)";
+        }
+
+        public ProfileApplication FindApplication(string applicationName)
+        {
+            var application = DRSApi.FindApplicationByName(Handle, applicationName, out var profileHandle);
+
+            if (application == null || !profileHandle.HasValue || profileHandle.Value.IsNull)
+            {
+                return null;
+            }
+
+            var profile = new DriverSettingsProfile(profileHandle.Value, this);
+
+            return new ProfileApplication(application, profile);
+        }
+
+        public DriverSettingsProfile FindApplicationProfile(string applicationName)
+        {
+            var application = DRSApi.FindApplicationByName(Handle, applicationName, out var profileHandle);
+
+            if (application == null || !profileHandle.HasValue || profileHandle.Value.IsNull)
+            {
+                return null;
+            }
+
+            return new DriverSettingsProfile(profileHandle.Value, this);
+        }
+
+        public DriverSettingsProfile FindProfileByName(string profileName)
+        {
+            var profileHandle = DRSApi.FindProfileByName(Handle, profileName);
+
+            if (profileHandle.IsNull)
+            {
+                return null;
+            }
+
+            return new DriverSettingsProfile(profileHandle, this);
+        }
+
+        public void RestoreDefaults()
+        {
+            DRSApi.RestoreDefaults(Handle);
         }
 
         public void Save()

@@ -1,8 +1,6 @@
-using System;
-
 namespace NvAPIWrapper.DRS.SettingValues
 {
-    public enum OpenGLOverlayPixelType : UInt32
+    public enum OpenGLOverlayPixelType : uint
     {
         None = 0x0,
 

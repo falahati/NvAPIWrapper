@@ -75,7 +75,7 @@ namespace NvAPIWrapper.Native.Helpers.Structures
                         }
                         else if (type == typeof(uint))
                         {
-                            Marshal.WriteInt32(memoryAddress, (int)(uint)item);
+                            Marshal.WriteInt32(memoryAddress, (int) (uint) item);
                         }
                         else if (type == typeof(short))
                         {
@@ -83,7 +83,7 @@ namespace NvAPIWrapper.Native.Helpers.Structures
                         }
                         else if (type == typeof(ushort))
                         {
-                            Marshal.WriteInt16(memoryAddress, (short)(ushort)item);
+                            Marshal.WriteInt16(memoryAddress, (short) (ushort) item);
                         }
                         else if (type == typeof(long))
                         {
@@ -91,7 +91,7 @@ namespace NvAPIWrapper.Native.Helpers.Structures
                         }
                         else if (type == typeof(ulong))
                         {
-                            Marshal.WriteInt64(memoryAddress, (long)(ulong)item);
+                            Marshal.WriteInt64(memoryAddress, (long) (ulong) item);
                         }
                         else if (type == typeof(byte))
                         {

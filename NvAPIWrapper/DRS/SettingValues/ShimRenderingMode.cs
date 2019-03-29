@@ -1,8 +1,6 @@
-using System;
-
 namespace NvAPIWrapper.DRS.SettingValues
 {
-    public enum ShimRenderingMode : UInt32
+    public enum ShimRenderingMode : uint
     {
         Integrated = 0x0,
 

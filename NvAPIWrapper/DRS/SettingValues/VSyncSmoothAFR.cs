@@ -1,8 +1,6 @@
-using System;
-
 namespace NvAPIWrapper.DRS.SettingValues
 {
-    public enum VSyncSmoothAFR : UInt32
+    public enum VSyncSmoothAFR : uint
     {
         Off = 0x0,
 

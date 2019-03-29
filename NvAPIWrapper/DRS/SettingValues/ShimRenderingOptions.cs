@@ -1,8 +1,6 @@
-using System;
-
 namespace NvAPIWrapper.DRS.SettingValues
 {
-    public enum ShimRenderingOptions : UInt32
+    public enum ShimRenderingOptions : uint
     {
         DefaultRenderingMode = 0x0,
 

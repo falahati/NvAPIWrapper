@@ -1,8 +1,6 @@
-using System;
-
 namespace NvAPIWrapper.DRS.SettingValues
 {
-    public enum VSyncVRRControl : UInt32
+    public enum VSyncVRRControl : uint
     {
         Disable = 0x0,
 

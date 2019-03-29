@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
+﻿using System.Collections.Generic;
 using NvAPIWrapper.Native.DRS.Structures;
 using NvAPIWrapper.Native.Exceptions;
 using NvAPIWrapper.Native.General;
@@ -249,8 +246,9 @@ namespace NvAPIWrapper.Native
         {
             var enumAvailableSettingValues =
                 DelegateFactory.GetDelegate<Delegates.DRS.NvAPI_DRS_EnumAvailableSettingValues>();
-            var settingValuesCount = (uint)DRSSettingValues.MaxValues;
+            var settingValuesCount = (uint) DRSSettingValues.MaxValues;
             var settingValues = typeof(DRSSettingValues).Instantiate<DRSSettingValues>();
+
             using (var settingValuesReference = ValueTypeReference.FromValueType(settingValues))
             {
                 var status = enumAvailableSettingValues(settingId, ref settingValuesCount, settingValuesReference);
@@ -352,7 +350,7 @@ namespace NvAPIWrapper.Native
                 }
             }
         }
-        
+
         public static IDRSApplication FindApplicationByName(
             DRSSessionHandle sessionHandle,
             string applicationName,
@@ -381,6 +379,7 @@ namespace NvAPIWrapper.Native
                     if (status == Status.ExecutableNotFound)
                     {
                         profileHandle = null;
+
                         return null;
                     }
 
@@ -390,6 +389,7 @@ namespace NvAPIWrapper.Native
                     }
 
                     profileHandle = applicationProfileHandle;
+
                     return applicationReference.ToValueType<IDRSApplication>(acceptType);
                 }
             }

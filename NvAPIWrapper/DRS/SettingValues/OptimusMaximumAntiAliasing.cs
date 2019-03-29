@@ -1,8 +1,6 @@
-using System;
-
 namespace NvAPIWrapper.DRS.SettingValues
 {
-    public enum OptimusMaximumAntiAliasing : UInt32
+    public enum OptimusMaximumAntiAliasing : uint
     {
         Minimum = 0x0,
 

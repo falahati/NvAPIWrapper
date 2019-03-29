@@ -1,8 +1,6 @@
-using System;
-
 namespace NvAPIWrapper.DRS.SettingValues
 {
-    public enum WKSAPIStereoMode : UInt32
+    public enum WKSAPIStereoMode : uint
     {
         ShutterGlasses = 0x0,
 

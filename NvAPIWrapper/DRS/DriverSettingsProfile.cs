@@ -15,22 +15,6 @@ namespace NvAPIWrapper.DRS
             Session = parentSession;
         }
 
-        /// <inheritdoc />
-        public override string ToString()
-        {
-            if (!IsValid)
-            {
-                return "[Invalid]";
-            }
-
-            if (IsPredefined)
-            {
-                return $"{Name} (Predefined)";
-            }
-
-            return Name;
-        }
-
         public IEnumerable<ProfileApplication> Applications
         {
             get
@@ -179,6 +163,22 @@ namespace NvAPIWrapper.DRS
             var profileHandle = DRSApi.CreateProfile(session.Handle, profileInfo);
 
             return new DriverSettingsProfile(profileHandle, session);
+        }
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            if (!IsValid)
+            {
+                return "[Invalid]";
+            }
+
+            if (IsPredefined)
+            {
+                return $"{Name} (Predefined)";
+            }
+
+            return Name;
         }
 
         public void Delete()

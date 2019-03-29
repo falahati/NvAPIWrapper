@@ -1,8 +1,6 @@
-using System;
-
 namespace NvAPIWrapper.DRS.SettingValues
 {
-    public enum OpenGLThreadControl : UInt32
+    public enum OpenGLThreadControl : uint
     {
         Enable = 0x1,
 

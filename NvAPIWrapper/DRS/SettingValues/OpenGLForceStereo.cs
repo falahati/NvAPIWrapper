@@ -1,8 +1,6 @@
-using System;
-
 namespace NvAPIWrapper.DRS.SettingValues
 {
-    public enum OpenGLForceStereo : UInt32
+    public enum OpenGLForceStereo : uint
     {
         Off = 0x0,
 

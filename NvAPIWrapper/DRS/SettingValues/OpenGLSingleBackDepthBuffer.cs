@@ -1,8 +1,6 @@
-using System;
-
 namespace NvAPIWrapper.DRS.SettingValues
 {
-    public enum OpenGLSingleBackDepthBuffer : UInt32
+    public enum OpenGLSingleBackDepthBuffer : uint
     {
         Disable = 0x0,
 

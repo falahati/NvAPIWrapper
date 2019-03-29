@@ -1,8 +1,6 @@
-using System;
-
 namespace NvAPIWrapper.DRS.SettingValues
 {
-    public enum SLIPredefinedMode : UInt32
+    public enum SLIPredefinedMode : uint
     {
         AutoSelect = 0x0,
 

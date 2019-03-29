@@ -1,8 +1,6 @@
-using System;
-
 namespace NvAPIWrapper.DRS.SettingValues
 {
-    public enum PerformanceStateFrameRateLimiter2Control : UInt32
+    public enum PerformanceStateFrameRateLimiter2Control : uint
     {
         DelayCE = 0x0,
 

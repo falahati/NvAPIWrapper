@@ -1,8 +1,6 @@
-using System;
-
 namespace NvAPIWrapper.DRS.SettingValues
 {
-    public enum OpenGLDefaultSwapIntervalFractional : UInt32
+    public enum OpenGLDefaultSwapIntervalFractional : uint
     {
         ZeroScanLines = 0x0,
 

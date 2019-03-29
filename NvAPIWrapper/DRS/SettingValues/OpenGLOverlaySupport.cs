@@ -1,8 +1,6 @@
-using System;
-
 namespace NvAPIWrapper.DRS.SettingValues
 {
-    public enum OpenGLOverlaySupport : UInt32
+    public enum OpenGLOverlaySupport : uint
     {
         Off = 0x0,
 

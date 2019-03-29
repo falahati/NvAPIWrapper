@@ -1,8 +1,6 @@
-using System;
-
 namespace NvAPIWrapper.DRS.SettingValues
 {
-    public enum LODBiasAdjust : UInt32
+    public enum LODBiasAdjust : uint
     {
         Minimum = 0xFFFFFF80,
 

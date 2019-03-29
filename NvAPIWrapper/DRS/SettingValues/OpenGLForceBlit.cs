@@ -1,8 +1,6 @@
-using System;
-
 namespace NvAPIWrapper.DRS.SettingValues
 {
-    public enum OpenGLForceBlit : UInt32
+    public enum OpenGLForceBlit : uint
     {
         On = 0x1,
 

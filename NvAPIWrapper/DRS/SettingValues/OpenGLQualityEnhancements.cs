@@ -1,8 +1,6 @@
-using System;
-
 namespace NvAPIWrapper.DRS.SettingValues
 {
-    public enum OpenGLQualityEnhancements : UInt32
+    public enum OpenGLQualityEnhancements : uint
     {
         HighQuality = 0xFFFFFFF6,
 

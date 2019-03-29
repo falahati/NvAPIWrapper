@@ -1,8 +1,6 @@
-using System;
-
 namespace NvAPIWrapper.DRS.SettingValues
 {
-    public enum NvidiaQualityUpScaling : UInt32
+    public enum NvidiaQualityUpScaling : uint
     {
         Off = 0x0,
 

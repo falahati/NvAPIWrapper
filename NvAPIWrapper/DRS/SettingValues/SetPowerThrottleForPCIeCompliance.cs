@@ -1,8 +1,6 @@
-using System;
-
 namespace NvAPIWrapper.DRS.SettingValues
 {
-    public enum SetPowerThrottleForPCIeCompliance : UInt32
+    public enum SetPowerThrottleForPCIeCompliance : uint
     {
         Off = 0x0,
 

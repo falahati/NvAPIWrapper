@@ -1,8 +1,6 @@
-using System;
-
 namespace NvAPIWrapper.DRS.SettingValues
 {
-    public enum AntiAliasingBehaviorFlags : UInt32
+    public enum AntiAliasingBehaviorFlags : uint
     {
         None = 0x0,
 

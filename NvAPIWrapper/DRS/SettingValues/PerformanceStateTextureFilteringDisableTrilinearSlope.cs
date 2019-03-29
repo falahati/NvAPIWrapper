@@ -1,8 +1,6 @@
-using System;
-
 namespace NvAPIWrapper.DRS.SettingValues
 {
-    public enum PerformanceStateTextureFilteringDisableTrilinearSlope : UInt32
+    public enum PerformanceStateTextureFilteringDisableTrilinearSlope : uint
     {
         Off = 0x0,
 

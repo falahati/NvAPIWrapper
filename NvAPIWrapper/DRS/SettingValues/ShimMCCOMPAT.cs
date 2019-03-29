@@ -1,8 +1,6 @@
-using System;
-
 namespace NvAPIWrapper.DRS.SettingValues
 {
-    public enum ShimMCCOMPAT : UInt32
+    public enum ShimMCCOMPAT : uint
     {
         Integrated = 0x0,
 

@@ -1,8 +1,6 @@
-using System;
-
 namespace NvAPIWrapper.DRS.SettingValues
 {
-    public enum VSyncMode : UInt32
+    public enum VSyncMode : uint
     {
         Passive = 0x60925292,
 

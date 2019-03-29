@@ -1,11 +1,10 @@
-﻿
-namespace NvAPIWrapper.Native.Interfaces.DRS
+﻿namespace NvAPIWrapper.Native.Interfaces.DRS
 {
     public interface IDRSApplication
     {
-        bool IsPredefined { get; }
         string ApplicationName { get; }
         string FriendlyName { get; }
+        bool IsPredefined { get; }
         string LauncherName { get; }
     }
 }

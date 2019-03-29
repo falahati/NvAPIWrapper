@@ -24,7 +24,7 @@ namespace NvAPIWrapper.Native.DRS.Structures
         {
             get => _SettingType;
         }
-        
+
         public object[] Values
         {
             get
@@ -32,11 +32,14 @@ namespace NvAPIWrapper.Native.DRS.Structures
                 switch (_SettingType)
                 {
                     case DRSSettingType.Integer:
+
                         return ValuesAsInteger().Cast<object>().ToArray();
                     case DRSSettingType.Binary:
+
                         return ValuesAsBinary().Cast<object>().ToArray();
                     case DRSSettingType.String:
                     case DRSSettingType.UnicodeString:
+
                         return ValuesAsUnicodeString().Cast<object>().ToArray();
                     default:
 
@@ -52,11 +55,14 @@ namespace NvAPIWrapper.Native.DRS.Structures
                 switch (_SettingType)
                 {
                     case DRSSettingType.Integer:
+
                         return DefaultValueAsInteger();
                     case DRSSettingType.Binary:
+
                         return DefaultValueAsBinary();
                     case DRSSettingType.String:
                     case DRSSettingType.UnicodeString:
+
                         return DefaultValueAsUnicodeString();
                     default:
 
@@ -82,17 +88,17 @@ namespace NvAPIWrapper.Native.DRS.Structures
 
         public uint[] ValuesAsInteger()
         {
-            return _Values.Take((int)_NumberOfValues).Select(value => value.AsInteger()).ToArray();
+            return _Values.Take((int) _NumberOfValues).Select(value => value.AsInteger()).ToArray();
         }
 
         public byte[][] ValuesAsBinary()
         {
-            return _Values.Take((int)_NumberOfValues).Select(value => value.AsBinary()).ToArray();
+            return _Values.Take((int) _NumberOfValues).Select(value => value.AsBinary()).ToArray();
         }
 
         public string[] ValuesAsUnicodeString()
         {
-            return _Values.Take((int)_NumberOfValues).Select(value => value.AsUnicodeString()).ToArray();
+            return _Values.Take((int) _NumberOfValues).Select(value => value.AsUnicodeString()).ToArray();
         }
     }
 }

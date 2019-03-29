@@ -1,8 +1,6 @@
-using System;
-
 namespace NvAPIWrapper.DRS.SettingValues
 {
-    public enum PerformanceStateFrameRateLimiter : UInt32
+    public enum PerformanceStateFrameRateLimiter : uint
     {
         Disabled = 0x0,
 

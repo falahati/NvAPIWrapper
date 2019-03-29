@@ -1,8 +1,6 @@
-using System;
-
 namespace NvAPIWrapper.DRS.SettingValues
 {
-    public enum OpenGLAntiAliasingLineGamma : UInt32
+    public enum OpenGLAntiAliasingLineGamma : uint
     {
         Disabled = 0x10,
 

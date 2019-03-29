@@ -13,32 +13,6 @@ namespace NvAPIWrapper.DRS
             _setting = setting;
         }
 
-        /// <inheritdoc />
-        public override string ToString()
-        {
-            string settingName = null;
-            try
-            {
-                settingName = SettingInfo.Name;
-            }
-            catch
-            {
-                // ignore;
-            }
-
-            if (string.IsNullOrWhiteSpace(settingName))
-            {
-                settingName = $"#{SettingId:X}";
-            }
-
-            if (IsCurrentValuePredefined)
-            {
-                return $"{settingName} = {CurrentValue ?? "[NULL]"} (Predefined)";
-            }
-
-            return $"{settingName} = {CurrentValue ?? "[NULL]"}";
-        }
-
         public object CurrentValue
         {
             get
@@ -93,6 +67,33 @@ namespace NvAPIWrapper.DRS
         public DRSSettingType SettingType
         {
             get => _setting.SettingType;
+        }
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            string settingName = null;
+
+            try
+            {
+                settingName = SettingInfo.Name;
+            }
+            catch
+            {
+                // ignore;
+            }
+
+            if (string.IsNullOrWhiteSpace(settingName))
+            {
+                settingName = $"#{SettingId:X}";
+            }
+
+            if (IsCurrentValuePredefined)
+            {
+                return $"{settingName} = {CurrentValue ?? "[NULL]"} (Predefined)";
+            }
+
+            return $"{settingName} = {CurrentValue ?? "[NULL]"}";
         }
     }
 }

@@ -1,8 +1,6 @@
-using System;
-
 namespace NvAPIWrapper.DRS.SettingValues
 {
-    public enum SLIGPUCount : UInt32
+    public enum SLIGPUCount : uint
     {
         AutoSelect = 0x0,
 

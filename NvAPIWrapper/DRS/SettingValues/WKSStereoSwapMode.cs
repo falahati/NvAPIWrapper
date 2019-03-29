@@ -1,8 +1,6 @@
-using System;
-
 namespace NvAPIWrapper.DRS.SettingValues
 {
-    public enum WKSStereoSwapMode : UInt32
+    public enum WKSStereoSwapMode : uint
     {
         ApplicationControl = 0x0,
 

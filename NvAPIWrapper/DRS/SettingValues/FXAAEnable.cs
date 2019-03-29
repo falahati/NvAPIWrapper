@@ -1,8 +1,6 @@
-using System;
-
 namespace NvAPIWrapper.DRS.SettingValues
 {
-    public enum FXAAEnable : UInt32
+    public enum FXAAEnable : uint
     {
         Off = 0x0,
 

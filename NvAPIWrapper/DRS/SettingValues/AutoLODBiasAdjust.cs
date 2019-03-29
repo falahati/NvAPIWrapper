@@ -1,8 +1,6 @@
-using System;
-
 namespace NvAPIWrapper.DRS.SettingValues
 {
-    public enum AutoLODBiasAdjust : UInt32
+    public enum AutoLODBiasAdjust : uint
     {
         Off = 0x0,
 

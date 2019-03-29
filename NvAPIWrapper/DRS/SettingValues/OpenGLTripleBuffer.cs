@@ -1,8 +1,6 @@
-using System;
-
 namespace NvAPIWrapper.DRS.SettingValues
 {
-    public enum OpenGLTripleBuffer : UInt32
+    public enum OpenGLTripleBuffer : uint
     {
         Disabled = 0x0,
 

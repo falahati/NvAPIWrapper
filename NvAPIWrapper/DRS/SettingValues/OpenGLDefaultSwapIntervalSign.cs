@@ -1,8 +1,6 @@
-using System;
-
 namespace NvAPIWrapper.DRS.SettingValues
 {
-    public enum OpenGLDefaultSwapIntervalSign : UInt32
+    public enum OpenGLDefaultSwapIntervalSign : uint
     {
         Positive = 0x0,
 

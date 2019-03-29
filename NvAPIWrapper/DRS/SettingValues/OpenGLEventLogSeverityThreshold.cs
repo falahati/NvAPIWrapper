@@ -1,8 +1,6 @@
-using System;
-
 namespace NvAPIWrapper.DRS.SettingValues
 {
-    public enum OpenGLEventLogSeverityThreshold : UInt32
+    public enum OpenGLEventLogSeverityThreshold : uint
     {
         Disable = 0x0,
 

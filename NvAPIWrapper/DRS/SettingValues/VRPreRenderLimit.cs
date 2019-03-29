@@ -1,8 +1,6 @@
-using System;
-
 namespace NvAPIWrapper.DRS.SettingValues
 {
-    public enum VRPreRenderLimit : UInt32
+    public enum VRPreRenderLimit : uint
     {
         Minimum = 0x0,
 

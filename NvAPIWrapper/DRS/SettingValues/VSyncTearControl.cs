@@ -1,8 +1,6 @@
-using System;
-
 namespace NvAPIWrapper.DRS.SettingValues
 {
-    public enum VSyncTearControl : UInt32
+    public enum VSyncTearControl : uint
     {
         Disable = 0x96861077,
 

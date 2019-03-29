@@ -1,8 +1,6 @@
-using System;
-
 namespace NvAPIWrapper.DRS.SettingValues
 {
-    public enum MCSFRShowSplit : UInt32
+    public enum MCSFRShowSplit : uint
     {
         Disabled = 0x34534064,
 

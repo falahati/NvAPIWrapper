@@ -1,8 +1,6 @@
-using System;
-
 namespace NvAPIWrapper.DRS.SettingValues
 {
-    public enum SLIRenderingMode : UInt32
+    public enum SLIRenderingMode : uint
     {
         AutoSelect = 0x0,
 

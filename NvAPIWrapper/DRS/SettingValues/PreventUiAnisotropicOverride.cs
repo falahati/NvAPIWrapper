@@ -1,8 +1,6 @@
-using System;
-
 namespace NvAPIWrapper.DRS.SettingValues
 {
-    public enum PreventUiAnisotropicOverride : UInt32
+    public enum PreventUiAnisotropicOverride : uint
     {
         Off = 0x0,
 

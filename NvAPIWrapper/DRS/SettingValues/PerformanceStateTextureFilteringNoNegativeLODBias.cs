@@ -1,8 +1,6 @@
-using System;
-
 namespace NvAPIWrapper.DRS.SettingValues
 {
-    public enum PerformanceStateTextureFilteringNoNegativeLODBias : UInt32
+    public enum PerformanceStateTextureFilteringNoNegativeLODBias : uint
     {
         Off = 0x0,
 

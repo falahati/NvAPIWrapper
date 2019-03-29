@@ -1,8 +1,6 @@
-using System;
-
 namespace NvAPIWrapper.DRS.SettingValues
 {
-    public enum OpenGLTMONLevel : UInt32
+    public enum OpenGLTMONLevel : uint
     {
         Disable = 0x0,
 

@@ -1,8 +1,6 @@
-using System;
-
 namespace NvAPIWrapper.DRS.SettingValues
 {
-    public enum OpenGLDefaultSwapInterval : UInt32
+    public enum OpenGLDefaultSwapInterval : uint
     {
         Tear = 0x0,
 

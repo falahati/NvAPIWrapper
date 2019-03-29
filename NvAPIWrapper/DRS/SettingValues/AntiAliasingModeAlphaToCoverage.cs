@@ -1,8 +1,6 @@
-using System;
-
 namespace NvAPIWrapper.DRS.SettingValues
 {
-    public enum AntiAliasingModeAlphaToCoverage : UInt32
+    public enum AntiAliasingModeAlphaToCoverage : uint
     {
         ModeMask = 0x4,
 

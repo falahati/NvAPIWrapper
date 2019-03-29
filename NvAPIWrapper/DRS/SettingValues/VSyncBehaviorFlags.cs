@@ -1,8 +1,6 @@
-using System;
-
 namespace NvAPIWrapper.DRS.SettingValues
 {
-    public enum VSyncBehaviorFlags : UInt32
+    public enum VSyncBehaviorFlags : uint
     {
         None = 0x0,
 

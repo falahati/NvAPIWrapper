@@ -1,8 +1,6 @@
-using System;
-
 namespace NvAPIWrapper.DRS.SettingValues
 {
-    public enum PhysxIndicator : UInt32
+    public enum PhysxIndicator : uint
     {
         Disabled = 0x34534064,
 

@@ -1,8 +1,6 @@
-using System;
-
 namespace NvAPIWrapper.DRS.SettingValues
 {
-    public enum PreferredPerformanceState : UInt32
+    public enum PreferredPerformanceState : uint
     {
         Adaptive = 0x0,
 

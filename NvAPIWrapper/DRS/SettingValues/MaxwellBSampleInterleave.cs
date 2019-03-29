@@ -1,8 +1,6 @@
-using System;
-
 namespace NvAPIWrapper.DRS.SettingValues
 {
-    public enum MaxwellBSampleInterleave : UInt32
+    public enum MaxwellBSampleInterleave : uint
     {
         Off = 0x0,
 

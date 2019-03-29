@@ -1,8 +1,6 @@
-using System;
-
 namespace NvAPIWrapper.DRS.SettingValues
 {
-    public enum AnisotropicModeLevel : UInt32
+    public enum AnisotropicModeLevel : uint
     {
         Mask = 0xFFFF,
 

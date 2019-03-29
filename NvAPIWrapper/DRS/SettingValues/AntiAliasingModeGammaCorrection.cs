@@ -1,8 +1,6 @@
-using System;
-
 namespace NvAPIWrapper.DRS.SettingValues
 {
-    public enum AntiAliasingModeGammaCorrection : UInt32
+    public enum AntiAliasingModeGammaCorrection : uint
     {
         Mask = 0x3,
 

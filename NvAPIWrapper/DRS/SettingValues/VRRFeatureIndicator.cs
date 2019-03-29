@@ -1,8 +1,6 @@
-using System;
-
 namespace NvAPIWrapper.DRS.SettingValues
 {
-    public enum VRRFeatureIndicator : UInt32
+    public enum VRRFeatureIndicator : uint
     {
         Disabled = 0x0,
 

@@ -1,8 +1,6 @@
-using System;
-
 namespace NvAPIWrapper.DRS.SettingValues
 {
-    public enum ControlPanelHiddenProfile : UInt32
+    public enum ControlPanelHiddenProfile : uint
     {
         Disabled = 0x0,
 

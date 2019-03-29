@@ -1,8 +1,6 @@
-using System;
-
 namespace NvAPIWrapper.DRS.SettingValues
 {
-    public enum AntiAliasingModeReplay : UInt32
+    public enum AntiAliasingModeReplay : uint
     {
         SamplesMask = 0x70,
 

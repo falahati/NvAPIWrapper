@@ -1,8 +1,6 @@
-using System;
-
 namespace NvAPIWrapper.DRS.SettingValues
 {
-    public enum PerformanceStateShaderDiskCache : UInt32
+    public enum PerformanceStateShaderDiskCache : uint
     {
         Off = 0x0,
 

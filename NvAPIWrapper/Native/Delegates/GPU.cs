@@ -127,6 +127,11 @@ namespace NvAPIWrapper.Native.Delegates
             [In] PhysicalGPUHandle physicalGpu,
             [Out] out uint width);
 
+        [FunctionId(FunctionId.NvAPI_GPU_GetCurrentPState)]
+        public delegate Status NvAPI_GPU_GetCurrentPState(
+            [In] PhysicalGPUHandle physicalGpu,
+            [Out] out PerformanceStateId performanceStateId);
+
         [FunctionId(FunctionId.NvAPI_GPU_GetDynamicPStatesInfoEx)]
         public delegate Status NvAPI_GPU_GetDynamicPStatesInfoEx(
             [In] PhysicalGPUHandle physicalGpu,
@@ -186,6 +191,22 @@ namespace NvAPIWrapper.Native.Delegates
         public delegate Status NvAPI_GPU_GetPhysicalFrameBufferSize(
             [In] PhysicalGPUHandle physicalGpu,
             [Out] out uint size);
+
+        [FunctionId(FunctionId.NvAPI_GPU_GetPStates20)]
+        public delegate Status NvAPI_GPU_GetPStates20(
+            [In] PhysicalGPUHandle physicalGpu,
+            [Accepts(typeof(PerformanceStates20InfoV3), typeof(PerformanceStates20InfoV2),
+                typeof(PerformanceStates20InfoV1))]
+            [In]
+            ValueTypeReference performanceStatesInfo);
+
+        [FunctionId(FunctionId.NvAPI_GPU_GetPStatesInfoEx)]
+        public delegate Status NvAPI_GPU_GetPStatesInfoEx(
+            [In] PhysicalGPUHandle physicalGpu,
+            [Accepts(typeof(PerformanceStatesInfoV3), typeof(PerformanceStatesInfoV2), typeof(PerformanceStatesInfoV1))]
+            [In]
+            ValueTypeReference performanceStatesInfo,
+            [In] GetPerformanceStatesInfoFlags flags);
 
         [FunctionId(FunctionId.NvAPI_GPU_GetQuadroStatus)]
         public delegate Status NvAPI_GPU_GetQuadroStatus(
@@ -257,23 +278,5 @@ namespace NvAPIWrapper.Native.Delegates
         public delegate Status NvAPI_SYS_GetPhysicalGpuFromDisplayId(
             [In] uint displayId,
             [Out] out PhysicalGPUHandle gpu);
-
-        [FunctionId(FunctionId.NvAPI_GPU_GetPStatesInfoEx)]
-        public delegate Status NvAPI_GPU_GetPStatesInfoEx(
-            [In] PhysicalGPUHandle physicalGpu,
-            [Accepts(typeof(PerformanceStatesInfoV3), typeof(PerformanceStatesInfoV2), typeof(PerformanceStatesInfoV1))] [In]
-            ValueTypeReference performanceStatesInfo,
-            [In] GetPerformanceStatesInfoFlags flags);
-        
-        [FunctionId(FunctionId.NvAPI_GPU_GetPStates20)]
-        public delegate Status NvAPI_GPU_GetPStates20(
-            [In] PhysicalGPUHandle physicalGpu,
-            [Accepts(typeof(PerformanceStates20InfoV3), typeof(PerformanceStates20InfoV2), typeof(PerformanceStates20InfoV1))] [In]
-            ValueTypeReference performanceStatesInfo);
-
-        [FunctionId(FunctionId.NvAPI_GPU_GetCurrentPState)]
-        public delegate Status NvAPI_GPU_GetCurrentPState(
-            [In] PhysicalGPUHandle physicalGpu,
-            [Out] out PerformanceStateId performanceStateId);
     }
 }

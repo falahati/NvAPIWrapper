@@ -167,6 +167,7 @@ namespace NvAPIWrapper.DRS
             {
                 _availableSettingIds = DRSApi.EnumAvailableSettingIds();
             }
+
             return _availableSettingIds.Select(FromId).ToArray();
         }
 

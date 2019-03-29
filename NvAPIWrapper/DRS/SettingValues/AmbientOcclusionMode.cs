@@ -1,8 +1,6 @@
-using System;
-
 namespace NvAPIWrapper.DRS.SettingValues
 {
-    public enum AmbientOcclusionMode : UInt32
+    public enum AmbientOcclusionMode : uint
     {
         Off = 0x0,
 

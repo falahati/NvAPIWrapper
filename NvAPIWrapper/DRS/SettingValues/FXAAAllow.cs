@@ -1,8 +1,6 @@
-using System;
-
 namespace NvAPIWrapper.DRS.SettingValues
 {
-    public enum FXAAAllow : UInt32
+    public enum FXAAAllow : uint
     {
         Disallowed = 0x0,
 

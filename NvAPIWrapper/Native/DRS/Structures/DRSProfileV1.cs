@@ -42,12 +42,12 @@ namespace NvAPIWrapper.Native.DRS.Structures
 
         public int NumberOfApplications
         {
-            get => (int)_NumberOfApplications;
+            get => (int) _NumberOfApplications;
         }
 
         public int NumberOfSettings
         {
-            get => (int)_NumberOfSettings;
+            get => (int) _NumberOfSettings;
         }
     }
 }

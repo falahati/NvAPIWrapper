@@ -1,8 +1,6 @@
-using System;
-
 namespace NvAPIWrapper.DRS.SettingValues
 {
-    public enum WKSStereoDongleSupport : UInt32
+    public enum WKSStereoDongleSupport : uint
     {
         Off = 0x0,
 

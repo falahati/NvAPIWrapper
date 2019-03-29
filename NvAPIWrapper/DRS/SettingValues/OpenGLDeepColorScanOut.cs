@@ -1,8 +1,6 @@
-using System;
-
 namespace NvAPIWrapper.DRS.SettingValues
 {
-    public enum OpenGLDeepColorScanOut : UInt32
+    public enum OpenGLDeepColorScanOut : uint
     {
         Disable = 0x0,
 

@@ -1,8 +1,6 @@
-using System;
-
 namespace NvAPIWrapper.DRS.SettingValues
 {
-    public enum OpenGLSLIMulticast : UInt32
+    public enum OpenGLSLIMulticast : uint
     {
         Disable = 0x0,
 
