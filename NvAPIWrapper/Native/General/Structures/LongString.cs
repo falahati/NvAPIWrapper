@@ -1,14 +1,14 @@
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using NvAPIWrapper.Native.Interfaces;
 
 namespace NvAPIWrapper.Native.General.Structures
 {
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
-    internal struct ShortString : IInitializable
+    internal struct LongString : IInitializable
     {
-        public const int ShortStringLength = 64;
+        public const int LongStringLength = 256;
 
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = ShortStringLength)]
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = LongStringLength)]
         private readonly string _Value;
 
         public string Value
@@ -16,7 +16,7 @@ namespace NvAPIWrapper.Native.General.Structures
             get => _Value;
         }
 
-        public ShortString(string value)
+        public LongString(string value)
         {
             _Value = value ?? string.Empty;
         }

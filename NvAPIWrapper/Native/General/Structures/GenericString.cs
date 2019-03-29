@@ -4,11 +4,11 @@ using NvAPIWrapper.Native.Interfaces;
 namespace NvAPIWrapper.Native.General.Structures
 {
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
-    internal struct ShortString : IInitializable
+    internal struct GenericString : IInitializable
     {
-        public const int ShortStringLength = 64;
+        public const int GenericStringLength = 4096;
 
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = ShortStringLength)]
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = GenericStringLength)]
         private readonly string _Value;
 
         public string Value
@@ -16,7 +16,7 @@ namespace NvAPIWrapper.Native.General.Structures
             get => _Value;
         }
 
-        public ShortString(string value)
+        public GenericString(string value)
         {
             _Value = value ?? string.Empty;
         }

@@ -184,6 +184,16 @@ namespace NvAPIWrapper.Native.Helpers
                             }
 
                             field.SetValue(instance, array);
+                        } else if (field.FieldType == typeof(string))
+                        {
+                            var isByVal = field.GetCustomAttributes(typeof(MarshalAsAttribute), false)
+                                .Cast<MarshalAsAttribute>()
+                                .Any(attribute => attribute.Value == UnmanagedType.ByValTStr);
+
+                            if (isByVal)
+                            {
+                                field.SetValue(instance, string.Empty);
+                            }
                         }
                         else if (field.FieldType.IsValueType)
                         {

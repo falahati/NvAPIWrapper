@@ -3,12 +3,12 @@ using NvAPIWrapper.Native.Interfaces;
 
 namespace NvAPIWrapper.Native.General.Structures
 {
-    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
-    internal struct ShortString : IInitializable
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+    internal struct UnicodeString : IInitializable
     {
-        public const int ShortStringLength = 64;
+        public const int UnicodeStringLength = 2048;
 
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = ShortStringLength)]
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = UnicodeStringLength)]
         private readonly string _Value;
 
         public string Value
@@ -16,7 +16,7 @@ namespace NvAPIWrapper.Native.General.Structures
             get => _Value;
         }
 
-        public ShortString(string value)
+        public UnicodeString(string value)
         {
             _Value = value ?? string.Empty;
         }
