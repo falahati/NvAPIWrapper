@@ -223,6 +223,11 @@ namespace NvAPIWrapper.Native.Delegates
             [In] PhysicalGPUHandle physicalGpu,
             [Out] out SystemType systemType);
 
+        [FunctionId(FunctionId.NvAPI_GPU_GetTachReading)]
+        public delegate Status NvAPI_GPU_GetTachReading(
+            [In] PhysicalGPUHandle gpuHandle,
+            [Out] out uint value);
+
         [FunctionId(FunctionId.NvAPI_GPU_GetThermalSettings)]
         public delegate Status NvAPI_GPU_GetThermalSettings(
             [In] PhysicalGPUHandle physicalGpu,

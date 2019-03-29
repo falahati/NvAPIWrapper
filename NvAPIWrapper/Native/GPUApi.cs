@@ -1114,6 +1114,27 @@ namespace NvAPIWrapper.Native
         }
 
         /// <summary>
+        ///     This function returns the fan speed tachometer reading for the specified physical GPU.
+        /// </summary>
+        /// <param name="gpuHandle">Physical GPU handle to get tachometer reading from</param>
+        /// <returns>The GPU fan speed in revolutions per minute.</returns>
+        /// <exception cref="NVIDIAApiException">Status.NvidiaDeviceNotFound: No NVIDIA GPU driving a display was found</exception>
+        /// <exception cref="NVIDIAApiException">Status.ExpectedPhysicalGPUHandle: gpuHandle was not a physical GPU handle.</exception>
+        public static uint GetTachReading(PhysicalGPUHandle gpuHandle)
+        {
+            var status = DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_GetTachReading>()(
+                gpuHandle, out var value
+            );
+
+            if (status != Status.Ok)
+            {
+                throw new NVIDIAApiException(status);
+            }
+
+            return value;
+        }
+
+        /// <summary>
         ///     This function retrieves the thermal information of all thermal sensors or specific thermal sensor associated with
         ///     the selected GPU. To retrieve info for all sensors, set sensorTarget to ThermalSettingsTarget.All.
         /// </summary>

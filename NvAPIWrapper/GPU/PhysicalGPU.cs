@@ -162,6 +162,14 @@ namespace NvAPIWrapper.GPU
         }
 
         /// <summary>
+        ///     Gets the GPU fan speed in revolutions per minute
+        /// </summary>
+        public int FanSpeed
+        {
+            get => (int) GPUApi.GetTachReading(Handle);
+        }
+
+        /// <summary>
         ///     Gets GPU full name
         /// </summary>
         public string FullName
