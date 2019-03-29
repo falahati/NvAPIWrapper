@@ -127,12 +127,12 @@ namespace NvAPIWrapper.Native.Delegates
             [In] PhysicalGPUHandle physicalGpu,
             [Out] out uint width);
 
-        [FunctionId(FunctionId.NvAPI_GPU_GetCurrentPState)]
+        [FunctionId(FunctionId.NvAPI_GPU_GetCurrentPstate)]
         public delegate Status NvAPI_GPU_GetCurrentPState(
             [In] PhysicalGPUHandle physicalGpu,
             [Out] out PerformanceStateId performanceStateId);
 
-        [FunctionId(FunctionId.NvAPI_GPU_GetDynamicPStatesInfoEx)]
+        [FunctionId(FunctionId.NvAPI_GPU_GetDynamicPstatesInfoEx)]
         public delegate Status NvAPI_GPU_GetDynamicPStatesInfoEx(
             [In] PhysicalGPUHandle physicalGpu,
             [In] [Accepts(typeof(DynamicPerformanceStatesInfo))]
@@ -192,7 +192,7 @@ namespace NvAPIWrapper.Native.Delegates
             [In] PhysicalGPUHandle physicalGpu,
             [Out] out uint size);
 
-        [FunctionId(FunctionId.NvAPI_GPU_GetPStates20)]
+        [FunctionId(FunctionId.NvAPI_GPU_GetPstates20)]
         public delegate Status NvAPI_GPU_GetPStates20(
             [In] PhysicalGPUHandle physicalGpu,
             [Accepts(typeof(PerformanceStates20InfoV3), typeof(PerformanceStates20InfoV2),
@@ -200,7 +200,7 @@ namespace NvAPIWrapper.Native.Delegates
             [In]
             ValueTypeReference performanceStatesInfo);
 
-        [FunctionId(FunctionId.NvAPI_GPU_GetPStatesInfoEx)]
+        [FunctionId(FunctionId.NvAPI_GPU_GetPstatesInfoEx)]
         public delegate Status NvAPI_GPU_GetPStatesInfoEx(
             [In] PhysicalGPUHandle physicalGpu,
             [Accepts(typeof(PerformanceStatesInfoV3), typeof(PerformanceStatesInfoV2), typeof(PerformanceStatesInfoV1))]

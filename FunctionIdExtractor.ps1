@@ -1,4 +1,4 @@
-$filename = "R375-developer\amd64\nvapi64.lib"
+$filename = "R410-developer\amd64\nvapi64.lib"
 $dumpbinAddress = "$Env:VS140COMNTOOLS..\..\VC\bin\dumpbin.exe"
 $dumpbinParameter = "/DISASM $filename"
 Start-Process $dumpbinAddress $dumpbinParameter -Wait -WindowStyle Hidden -RedirectStandardOutput "$filename.asm"
@@ -8,16 +8,15 @@ foreach ($line in $content)
 {
 	if (!$line)
 	{
+		if ($functionName -ne "") {			
+			#Write-Host "$functionName = FAILED,"
+		}
 		$functionName = ""
 		continue;
 	}
-	if ($functionName -eq "" -and $line.EndsWith(":") -and ($line.StartsWith("NvAPI_") -or $line.StartsWith("?Module_InitializeHelper")))
+	if ($functionName -eq "" -and $line.EndsWith(":") -and ($line.StartsWith("NvAPI_")))
 	{
 		$functionName = $line.TrimEnd(':')
-		if ($functionName.StartsWith("?Module_InitializeHelper"))
-		{
-			$functionName = "NvAPI_Initialize"
-		}
 		continue;
 	}
 	$leadingPattern = "ecx,"
