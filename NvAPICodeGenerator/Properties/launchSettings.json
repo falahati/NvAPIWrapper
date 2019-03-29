@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "NvAPICodeGenerator": {
+      "commandName": "Project",
+      "commandLineArgs": "\"../../../../R410-developer\" \"../../../../NvAPIWrapper\""
+    }
+  }
+}
