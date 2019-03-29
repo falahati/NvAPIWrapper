@@ -69,17 +69,29 @@ namespace NvAPIWrapper.Native.Helpers.Structures
 
                     foreach (var item in array)
                     {
-                        if (type == typeof(int) || type == typeof(uint))
+                        if (type == typeof(int))
                         {
                             Marshal.WriteInt32(memoryAddress, (int) item);
                         }
-                        else if (type == typeof(short) || type == typeof(ushort))
+                        else if (type == typeof(uint))
+                        {
+                            Marshal.WriteInt32(memoryAddress, (int)(uint)item);
+                        }
+                        else if (type == typeof(short))
                         {
                             Marshal.WriteInt16(memoryAddress, (short) item);
                         }
-                        else if (type == typeof(long) || type == typeof(ulong))
+                        else if (type == typeof(ushort))
+                        {
+                            Marshal.WriteInt16(memoryAddress, (short)(ushort)item);
+                        }
+                        else if (type == typeof(long))
                         {
                             Marshal.WriteInt64(memoryAddress, (long) item);
+                        }
+                        else if (type == typeof(ulong))
+                        {
+                            Marshal.WriteInt64(memoryAddress, (long)(ulong)item);
                         }
                         else if (type == typeof(byte))
                         {
