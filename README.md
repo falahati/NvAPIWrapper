@@ -1,4 +1,4 @@
-## <img src="NvAPIWrapper/Icon.png" width="24" alt="NvAPIWrapper"> NvAPIWrapper (for NVAPI R375)
+## <img src="NvAPIWrapper/Icon.png" width="24" alt="NvAPIWrapper"> NvAPIWrapper (for NVAPI R410)
 [![](https://img.shields.io/github/license/falahati/NvAPIWrapper.svg?style=flat-square)](https://github.com/falahati/NvAPIWrapper/blob/master/LICENSE)
 [![](https://img.shields.io/github/commit-activity/y/falahati/NvAPIWrapper.svg?style=flat-square)](https://github.com/falahati/NvAPIWrapper/commits/master)
 [![](https://img.shields.io/github/issues/falahati/NvAPIWrapper.svg?style=flat-square)](https://github.com/falahati/NvAPIWrapper/issues)
@@ -31,7 +31,7 @@ NvAPIWrapper is not a complete wrapper of NVAPI; at least, not yet. Following is
 * Mosaic (Surround): Full Support
 * Display: Full Support
 * Display Control: Partial Support (no color control, HUE control, etc)
-* GPU: Partial Support (incomplete Sensor, incomplete PStates, incomplete clock frequency, etc)
+* GPU: Partial Support (Complete retrieval of Sensor, Performance States and Clock frequency; but missing other features)
 * D3D: No Support
 * DRS: No Support
 * GSync: No Support
