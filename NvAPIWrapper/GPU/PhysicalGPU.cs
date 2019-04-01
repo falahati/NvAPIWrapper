@@ -156,7 +156,7 @@ namespace NvAPIWrapper.GPU
         /// <summary>
         ///     Gets the GPU dynamic performance states information (utilization domains)
         /// </summary>
-        public DynamicPerformanceStatesInfo DynamicPerformanceStatesInfo
+        public DynamicPerformanceStatesInfoV1 DynamicPerformanceStatesInfo
         {
             get => GPUApi.GetDynamicPerformanceStatesInfoEx(Handle);
         }
