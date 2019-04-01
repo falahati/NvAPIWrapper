@@ -20,6 +20,10 @@ namespace NvAPIWrapper.Native.Delegates
         [FunctionId(FunctionId.NvAPI_Initialize)]
         public delegate Status NvAPI_Initialize();
 
+
+        [FunctionId(FunctionId.NvAPI_RestartDisplayDriver)]
+        public delegate Status NvAPI_RestartDisplayDriver();
+
         [FunctionId(FunctionId.NvAPI_SYS_GetChipSetInfo)]
         public delegate Status NvAPI_SYS_GetChipSetInfo(
             [In] [Accepts(typeof(ChipsetInfoV4), typeof(ChipsetInfoV3), typeof(ChipsetInfoV2), typeof(ChipsetInfoV1))]

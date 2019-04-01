@@ -148,6 +148,19 @@ namespace NvAPIWrapper.Native
         }
 
         /// <summary>
+        ///     PRIVATE - Requests to restart the display driver
+        /// </summary>
+        public static void RestartDisplayDriver()
+        {
+            var status = DelegateFactory.GetDelegate<Delegates.General.NvAPI_RestartDisplayDriver>()();
+
+            if (status != Status.Ok)
+            {
+                throw new NVIDIAApiException(status);
+            }
+        }
+
+        /// <summary>
         ///     Decrements the ref-counter and when it reaches ZERO, unloads NVAPI library.
         ///     This must be called in pairs with NvAPI_Initialize.
         ///     Note: By design, it is not mandatory to call NvAPI_Initialize before calling any NvAPI.
