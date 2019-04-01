@@ -10,13 +10,13 @@ namespace NvAPIWrapper.GPU
     public class GPUPerformanceState
     {
         internal GPUPerformanceState(
-            IPerformanceState20 state20,
-            IPerformanceStates20ClockEntry[] states20ClockEntries,
+            IPerformanceState20 performanceState,
+            IPerformanceStates20ClockEntry[] statesClockEntries,
             IPerformanceStates20VoltageEntry[] baseVoltageEntries)
         {
-            StateId = state20.StateId;
-            IsReadOnly = !state20.IsEditable;
-            Clocks = states20ClockEntries.Select(entry => new GPUPerformanceStateClock(entry)).ToArray();
+            StateId = performanceState.StateId;
+            IsReadOnly = !performanceState.IsEditable;
+            Clocks = statesClockEntries.Select(entry => new GPUPerformanceStateClock(entry)).ToArray();
             Voltages = baseVoltageEntries.Select(entry => new GPUPerformanceStateVoltage(entry)).ToArray();
         }
 

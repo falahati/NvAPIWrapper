@@ -1327,6 +1327,34 @@ namespace NvAPIWrapper.Native
             }
         }
 
+        /// <summary>
+        ///     [PRIVATE]
+        ///     This function sets the performance states (P-States) 2.0 information.
+        ///     P-States are GPU active/executing performance capability and power consumption states.
+        /// </summary>
+        /// <param name="physicalGPUHandle">GPU handle to get information about.</param>
+        /// <param name="performanceStates20Info">Performance status 2.0 information to set</param>
+        /// <exception cref="NVIDIAApiException">Status.InvalidArgument: gpuHandle is NULL</exception>
+        /// <exception cref="NVIDIAApiException">Status.ExpectedPhysicalGPUHandle: gpuHandle was not a physical GPU handle</exception>
+        public static void SetPerformanceStates20(
+            PhysicalGPUHandle physicalGPUHandle,
+            IPerformanceStates20Info performanceStates20Info)
+        {
+            using (var performanceStateInfo =
+                ValueTypeReference.FromValueType(performanceStates20Info, performanceStates20Info.GetType()))
+            {
+                var status = DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_SetPStates20>()(
+                    physicalGPUHandle,
+                    performanceStateInfo
+                );
+
+                if (status != Status.Ok)
+                {
+                    throw new NVIDIAApiException(status);
+                }
+            }
+        }
+
 
         /// <summary>
         ///     This function determines if a set of GPU outputs can be active simultaneously.  While a GPU may have 'n' outputs,

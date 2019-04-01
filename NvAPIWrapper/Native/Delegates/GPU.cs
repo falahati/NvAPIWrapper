@@ -262,6 +262,14 @@ namespace NvAPIWrapper.Native.Delegates
             [Accepts(typeof(EDIDV3), typeof(EDIDV2), typeof(EDIDV1))] [In]
             ValueTypeReference edid);
 
+        [FunctionId(FunctionId.NvAPI_GPU_SetPstates20)]
+        public delegate Status NvAPI_GPU_SetPStates20(
+            [In] PhysicalGPUHandle physicalGpu,
+            [Accepts(typeof(PerformanceStates20InfoV3), typeof(PerformanceStates20InfoV2),
+                typeof(PerformanceStates20InfoV1))]
+            [In]
+            ValueTypeReference performanceStatesInfo);
+
         [FunctionId(FunctionId.NvAPI_GPU_ValidateOutputCombination)]
         public delegate Status NvAPI_GPU_ValidateOutputCombination(
             [In] PhysicalGPUHandle physicalGpu,

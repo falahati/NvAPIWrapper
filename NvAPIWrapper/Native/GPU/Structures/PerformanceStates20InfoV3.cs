@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using NvAPIWrapper.Native.Attributes;
@@ -14,10 +15,10 @@ namespace NvAPIWrapper.Native.GPU.Structures
     [StructureVersion(3)]
     public struct PerformanceStates20InfoV3 : IInitializable, IPerformanceStates20Info
     {
-        internal const int MaxPerformanceStates20 = PerformanceStates20InfoV2.MaxPerformanceStates20;
+        internal const int MaxPerformanceStates = PerformanceStates20InfoV2.MaxPerformanceStates;
 
         internal const int MaxPerformanceStates20BaseVoltages =
-            PerformanceStates20InfoV2.MaxPerformanceStates20BaseVoltages;
+            PerformanceStates20InfoV2.MaxPerformanceStatesBaseVoltages;
 
         internal StructureVersion _Version;
         internal uint _Flags;
@@ -25,10 +26,46 @@ namespace NvAPIWrapper.Native.GPU.Structures
         internal uint _NumberOfClocks;
         internal uint _NumberOfBaseVoltages;
 
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxPerformanceStates20)]
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxPerformanceStates)]
         internal PerformanceStates20InfoV1.PerformanceState20[] _PerformanceStates;
 
         internal PerformanceStates20InfoV2.PerformanceStates20OverVoltingSetting _OverVoltingSettings;
+
+        public PerformanceStates20InfoV3(
+            PerformanceStates20InfoV1.PerformanceState20[] performanceStates,
+            uint clocksCount,
+            uint baseVoltagesCount)
+        {
+            if (performanceStates?.Length > PerformanceStates20InfoV1.MaxPerformanceStatesClocks)
+            {
+                throw new ArgumentException(
+                    $"Maximum of {MaxPerformanceStates} performance states are configurable.",
+                    nameof(performanceStates)
+                );
+            }
+
+            if (performanceStates == null)
+            {
+                throw new ArgumentNullException(nameof(performanceStates));
+            }
+
+            this = typeof(PerformanceStates20InfoV3).Instantiate<PerformanceStates20InfoV3>();
+            _NumberOfClocks = clocksCount;
+            _NumberOfBaseVoltages = baseVoltagesCount;
+            _NumberOfPerformanceStates = (uint) performanceStates.Length;
+            Array.Copy(performanceStates, 0, _PerformanceStates, 0, performanceStates.Length);
+        }
+
+        // ReSharper disable once TooManyDependencies
+        public PerformanceStates20InfoV3(
+            PerformanceStates20InfoV1.PerformanceState20[] performanceStates,
+            uint clocksCount,
+            uint baseVoltagesCount,
+            PerformanceStates20BaseVoltageEntryV1[] generalVoltages) :
+            this(performanceStates, clocksCount, baseVoltagesCount)
+        {
+            _OverVoltingSettings = new PerformanceStates20InfoV2.PerformanceStates20OverVoltingSetting(generalVoltages);
+        }
 
         /// <summary>
         ///     Gets the list of general over-volting settings

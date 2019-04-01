@@ -13,6 +13,24 @@ namespace NvAPIWrapper.Native.GPU.Structures
         internal uint _Value;
         internal PerformanceStates20ParameterDelta _ValueDelta;
 
+        public PerformanceStates20BaseVoltageEntryV1(
+            PerformanceVoltageDomain domain,
+            uint value,
+            PerformanceStates20ParameterDelta valueDelta) : this()
+        {
+            _DomainId = domain;
+            _Value = value;
+            _ValueDelta = valueDelta;
+        }
+
+        public PerformanceStates20BaseVoltageEntryV1(
+            PerformanceVoltageDomain domain,
+            PerformanceStates20ParameterDelta valueDelta) : this()
+        {
+            _DomainId = domain;
+            _ValueDelta = valueDelta;
+        }
+
         /// <inheritdoc />
         public PerformanceVoltageDomain DomainId
         {

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using NvAPIWrapper.Native.Attributes;
@@ -14,9 +15,9 @@ namespace NvAPIWrapper.Native.GPU.Structures
     [StructureVersion(1)]
     public struct PerformanceStates20InfoV1 : IInitializable, IPerformanceStates20Info
     {
-        internal const int MaxPerformanceStates20 = 16;
-        internal const int MaxPerformanceStates20Clocks = 8;
-        internal const int MaxPerformanceStates20BaseVoltages = 4;
+        internal const int MaxPerformanceStates = 16;
+        internal const int MaxPerformanceStatesClocks = 8;
+        internal const int MaxPerformanceStatesBaseVoltages = 4;
 
         internal StructureVersion _Version;
         internal uint _Flags;
@@ -24,8 +25,33 @@ namespace NvAPIWrapper.Native.GPU.Structures
         internal uint _NumberOfClocks;
         internal uint _NumberOfBaseVoltages;
 
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxPerformanceStates20)]
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxPerformanceStates)]
         internal PerformanceState20[] _PerformanceStates;
+
+        public PerformanceStates20InfoV1(
+            PerformanceState20[] performanceStates,
+            uint clocksCount,
+            uint baseVoltagesCount)
+        {
+            if (performanceStates?.Length > MaxPerformanceStatesClocks)
+            {
+                throw new ArgumentException(
+                    $"Maximum of {MaxPerformanceStates} performance states are configurable.",
+                    nameof(performanceStates)
+                );
+            }
+
+            if (performanceStates == null)
+            {
+                throw new ArgumentNullException(nameof(performanceStates));
+            }
+
+            this = typeof(PerformanceStates20InfoV1).Instantiate<PerformanceStates20InfoV1>();
+            _NumberOfClocks = clocksCount;
+            _NumberOfBaseVoltages = baseVoltagesCount;
+            _NumberOfPerformanceStates = (uint) performanceStates.Length;
+            Array.Copy(performanceStates, 0, _PerformanceStates, 0, performanceStates.Length);
+        }
 
         /// <inheritdoc />
         public IPerformanceStates20VoltageEntry[] GeneralVoltages
@@ -116,11 +142,45 @@ namespace NvAPIWrapper.Native.GPU.Structures
             internal PerformanceStateId _Id;
             internal uint _Flags;
 
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxPerformanceStates20Clocks)]
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxPerformanceStatesClocks)]
             internal PerformanceStates20ClockEntryV1[] _Clocks;
 
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxPerformanceStates20BaseVoltages)]
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxPerformanceStatesBaseVoltages)]
             internal PerformanceStates20BaseVoltageEntryV1[] _BaseVoltages;
+
+            public PerformanceState20(PerformanceStateId stateId, PerformanceStates20ClockEntryV1[] clocks, PerformanceStates20BaseVoltageEntryV1[] baseVoltages)
+            {
+                if (clocks?.Length > MaxPerformanceStatesClocks)
+                {
+                    throw new ArgumentException(
+                        $"Maximum of {MaxPerformanceStatesClocks} clocks are configurable.",
+                        nameof(clocks)
+                    );
+                }
+
+                if (clocks == null)
+                {
+                    throw new ArgumentNullException(nameof(clocks));
+                }
+
+                if (baseVoltages?.Length > MaxPerformanceStatesBaseVoltages)
+                {
+                    throw new ArgumentException(
+                        $"Maximum of {MaxPerformanceStatesBaseVoltages} base voltages are configurable.",
+                        nameof(baseVoltages)
+                    );
+                }
+
+                if (baseVoltages == null)
+                {
+                    throw new ArgumentNullException(nameof(baseVoltages));
+                }
+
+                this = typeof(PerformanceState20).Instantiate<PerformanceState20>();
+                _Id = stateId;
+                Array.Copy(clocks, 0, _Clocks, 0, clocks.Length);
+                Array.Copy(baseVoltages, 0, _BaseVoltages, 0, baseVoltages.Length);
+            }
 
             /// <inheritdoc />
             public PerformanceStateId StateId
