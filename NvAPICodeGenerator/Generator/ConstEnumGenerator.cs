@@ -87,7 +87,7 @@ namespace NvAPICodeGenerator.Generator
                             .Replace("\n", "\\n");
 
                         writer.WriteLine($"{extraSpaces}    /// <summary>");
-                        writer.WriteLine($"{extraSpaces}    ///    {description}");
+                        writer.WriteLine($"{extraSpaces}    ///      {description}");
                         writer.WriteLine($"{extraSpaces}    /// </summary>");
                         writer.WriteLine($"{extraSpaces}    [Description(\"{description}\")]");
                     }
