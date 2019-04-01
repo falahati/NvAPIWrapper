@@ -9,6 +9,7 @@ using NvAPIWrapper.Native.GPU;
 using NvAPIWrapper.Native.Helpers;
 using NvAPIWrapper.Native.Helpers.Structures;
 using NvAPIWrapper.Native.Interfaces.Display;
+using NvAPIWrapper.Native.Interfaces.GPU;
 
 namespace NvAPIWrapper.Native
 {
@@ -270,6 +271,62 @@ namespace NvAPIWrapper.Native
                     }
 
                     return pathInfos.ToArray<IPathInfo>((int) count, acceptType);
+                }
+            }
+
+            throw new NVIDIANotSupportedException("This operation is not supported.");
+        }
+
+        /// <summary>
+        ///     Gets the build title of the Driver Settings Database for a display
+        /// </summary>
+        /// <param name="displayHandle">The display handle to get DRS build title.</param>
+        /// <returns>The DRS build title.</returns>
+        public static string GetDisplayDriverBuildTitle(DisplayHandle displayHandle)
+        {
+            var status =
+                DelegateFactory.GetDelegate<Delegates.Display.NvAPI_GetDisplayDriverBuildTitle>()(displayHandle,
+                    out var name);
+
+            if (status != Status.Ok)
+            {
+                throw new NVIDIAApiException(status);
+            }
+
+            return name.Value;
+        }
+
+        /// <summary>
+        ///     This function retrieves the available driver memory footprint for the GPU associated with a display.
+        /// </summary>
+        /// <param name="displayHandle">Handle of the display for which the memory information of its GPU is to be extracted.</param>
+        /// <returns>The memory footprint available in the driver.</returns>
+        /// <exception cref="NVIDIANotSupportedException">This operation is not supported.</exception>
+        /// <exception cref="NVIDIAApiException">Status.NvidiaDeviceNotFound: No NVIDIA GPU driving a display was found.</exception>
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        public static IDisplayDriverMemoryInfo GetDisplayDriverMemoryInfo(DisplayHandle displayHandle)
+        {
+            var getMemoryInfo = DelegateFactory.GetDelegate<Delegates.Display.NvAPI_GetDisplayDriverMemoryInfo>();
+
+            foreach (var acceptType in getMemoryInfo.Accepts())
+            {
+                var instance = acceptType.Instantiate<IDisplayDriverMemoryInfo>();
+
+                using (var displayDriverMemoryInfo = ValueTypeReference.FromValueType(instance, acceptType))
+                {
+                    var status = getMemoryInfo(displayHandle, displayDriverMemoryInfo);
+
+                    if (status == Status.IncompatibleStructureVersion)
+                    {
+                        continue;
+                    }
+
+                    if (status != Status.Ok)
+                    {
+                        throw new NVIDIAApiException(status);
+                    }
+
+                    return displayDriverMemoryInfo.ToValueType<IDisplayDriverMemoryInfo>(acceptType);
                 }
             }
 

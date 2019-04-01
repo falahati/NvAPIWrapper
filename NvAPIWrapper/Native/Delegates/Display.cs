@@ -5,6 +5,7 @@ using NvAPIWrapper.Native.Display.Structures;
 using NvAPIWrapper.Native.General;
 using NvAPIWrapper.Native.General.Structures;
 using NvAPIWrapper.Native.GPU;
+using NvAPIWrapper.Native.GPU.Structures;
 using NvAPIWrapper.Native.Helpers;
 using NvAPIWrapper.Native.Helpers.Structures;
 
@@ -75,5 +76,20 @@ namespace NvAPIWrapper.Native.Delegates
         public delegate Status NvAPI_GetUnAttachedAssociatedDisplayName(
             [In] UnAttachedDisplayHandle display,
             [Out] out ShortString displayName);
+
+
+        [FunctionId(FunctionId.NvAPI_GetDisplayDriverBuildTitle)]
+        public delegate Status NvAPI_GetDisplayDriverBuildTitle(
+            [In] DisplayHandle displayHandle,
+            [Out] out ShortString name);
+
+
+        [FunctionId(FunctionId.NvAPI_GetDisplayDriverMemoryInfo)]
+        public delegate Status NvAPI_GetDisplayDriverMemoryInfo(
+            [In] DisplayHandle displayHandle,
+            [In]
+            [Accepts(typeof(DisplayDriverMemoryInfoV3), typeof(DisplayDriverMemoryInfoV2),
+                typeof(DisplayDriverMemoryInfoV1))]
+            ValueTypeReference memoryInfo);
     }
 }
