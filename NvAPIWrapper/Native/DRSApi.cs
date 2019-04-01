@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using NvAPIWrapper.Native.DRS.Structures;
 using NvAPIWrapper.Native.Exceptions;
 using NvAPIWrapper.Native.General;
@@ -12,6 +13,13 @@ namespace NvAPIWrapper.Native
     // ReSharper disable once ClassTooBig
     public static class DRSApi
     {
+        /// <summary>
+        ///     This API adds an executable name to a profile.
+        /// </summary>
+        /// <param name="sessionHandle">Input to the session handle.</param>
+        /// <param name="profileHandle">Input profile handle.</param>
+        /// <param name="application">Input <see cref="IDRSApplication" /> instance containing the executable name.</param>
+        /// <returns>The newly created instance of <see cref="IDRSApplication" />.</returns>
         public static IDRSApplication CreateApplication(
             DRSSessionHandle sessionHandle,
             DRSProfileHandle profileHandle,
@@ -39,7 +47,12 @@ namespace NvAPIWrapper.Native
             }
         }
 
-
+        /// <summary>
+        ///     This API creates an empty profile.
+        /// </summary>
+        /// <param name="sessionHandle">Input to the session handle.</param>
+        /// <param name="profile">Input to the <see cref="DRSProfileV1" /> instance.</param>
+        /// <returns>The newly created profile handle.</returns>
         public static DRSProfileHandle CreateProfile(DRSSessionHandle sessionHandle, DRSProfileV1 profile)
         {
             using (var profileReference = ValueTypeReference.FromValueType(profile))
@@ -59,6 +72,10 @@ namespace NvAPIWrapper.Native
             }
         }
 
+        /// <summary>
+        ///     This API allocates memory and initializes the session.
+        /// </summary>
+        /// <returns>The newly created session handle.</returns>
         public static DRSSessionHandle CreateSession()
         {
             var status = DelegateFactory.GetDelegate<Delegates.DRS.NvAPI_DRS_CreateSession>()(out var sessionHandle);
@@ -71,8 +88,13 @@ namespace NvAPIWrapper.Native
             return sessionHandle;
         }
 
-
-        public static IDRSApplication DeleteApplication(
+        /// <summary>
+        ///     This API removes an executable from a profile.
+        /// </summary>
+        /// <param name="sessionHandle">Input to the session handle.</param>
+        /// <param name="profileHandle">Input profile handle.</param>
+        /// <param name="application">Input all the information about the application to be removed.</param>
+        public static void DeleteApplication(
             DRSSessionHandle sessionHandle,
             DRSProfileHandle profileHandle,
             IDRSApplication application)
@@ -94,11 +116,15 @@ namespace NvAPIWrapper.Native
                 {
                     throw new NVIDIAApiException(status);
                 }
-
-                return applicationReference.ToValueType<IDRSApplication>(application.GetType());
             }
         }
 
+        /// <summary>
+        ///     This API removes an executable name from a profile.
+        /// </summary>
+        /// <param name="sessionHandle">Input to the session handle.</param>
+        /// <param name="profileHandle">Input profile handle.</param>
+        /// <param name="applicationName">Input the executable name to be removed.</param>
         public static void DeleteApplication(
             DRSSessionHandle sessionHandle,
             DRSProfileHandle profileHandle,
@@ -121,6 +147,11 @@ namespace NvAPIWrapper.Native
             }
         }
 
+        /// <summary>
+        ///     This API deletes a profile or sets it back to a predefined value.
+        /// </summary>
+        /// <param name="sessionHandle">Input to the session handle.</param>
+        /// <param name="profileHandle">Input profile handle.</param>
         public static void DeleteProfile(DRSSessionHandle sessionHandle, DRSProfileHandle profileHandle)
         {
             var status = DelegateFactory.GetDelegate<Delegates.DRS.NvAPI_DRS_DeleteProfile>()(
@@ -134,6 +165,12 @@ namespace NvAPIWrapper.Native
             }
         }
 
+        /// <summary>
+        ///     This API deletes a setting or sets it back to predefined value.
+        /// </summary>
+        /// <param name="sessionHandle">Input to the session handle.</param>
+        /// <param name="profileHandle">Input profile handle.</param>
+        /// <param name="settingId">Input settingId to be deleted.</param>
         public static void DeleteProfileSetting(
             DRSSessionHandle sessionHandle,
             DRSProfileHandle profileHandle,
@@ -151,6 +188,10 @@ namespace NvAPIWrapper.Native
             }
         }
 
+        /// <summary>
+        ///     This API frees the allocated resources for the session handle.
+        /// </summary>
+        /// <param name="sessionHandle">Input to the session handle.</param>
         public static void DestroySession(DRSSessionHandle sessionHandle)
         {
             var status = DelegateFactory.GetDelegate<Delegates.DRS.NvAPI_DRS_DestroySession>()(sessionHandle);
@@ -161,6 +202,13 @@ namespace NvAPIWrapper.Native
             }
         }
 
+        /// <summary>
+        ///     This API enumerates all the applications in a given profile.
+        /// </summary>
+        /// <param name="sessionHandle">Input to the session handle.</param>
+        /// <param name="profileHandle">Input profile handle.</param>
+        /// <returns>Instances of <see cref="IDRSApplication" /> with all the attributes filled.</returns>
+        [SuppressMessage("ReSharper", "EventExceptionNotDocumented")]
         public static IEnumerable<IDRSApplication> EnumApplications(
             DRSSessionHandle sessionHandle,
             DRSProfileHandle profileHandle)
@@ -221,16 +269,21 @@ namespace NvAPIWrapper.Native
             throw new NVIDIANotSupportedException("This operation is not supported.");
         }
 
+        /// <summary>
+        ///     This API enumerates all the Ids of all the settings recognized by NVAPI.
+        /// </summary>
+        /// <returns>An array of <see cref="uint" />s filled with the settings identification numbers of available settings.</returns>
         public static uint[] EnumAvailableSettingIds()
         {
-            var enumAvailableSettingIds =
-                DelegateFactory.GetDelegate<Delegates.DRS.NvAPI_DRS_EnumAvailableSettingIds>();
             var settingIdsCount = (uint) ushort.MaxValue;
             var settingIds = 0u.Repeat((int) settingIdsCount);
 
             using (var settingIdsArray = ValueTypeArray.FromArray(settingIds))
             {
-                var status = enumAvailableSettingIds(settingIdsArray, ref settingIdsCount);
+                var status = DelegateFactory.GetDelegate<Delegates.DRS.NvAPI_DRS_EnumAvailableSettingIds>()(
+                    settingIdsArray,
+                    ref settingIdsCount
+                );
 
                 if (status != Status.Ok)
                 {
@@ -241,17 +294,23 @@ namespace NvAPIWrapper.Native
             }
         }
 
-
+        /// <summary>
+        ///     This API enumerates all available setting values for a given setting.
+        /// </summary>
+        /// <param name="settingId">Input settingId.</param>
+        /// <returns>All available setting values.</returns>
         public static DRSSettingValues EnumAvailableSettingValues(uint settingId)
         {
-            var enumAvailableSettingValues =
-                DelegateFactory.GetDelegate<Delegates.DRS.NvAPI_DRS_EnumAvailableSettingValues>();
             var settingValuesCount = (uint) DRSSettingValues.MaxValues;
             var settingValues = typeof(DRSSettingValues).Instantiate<DRSSettingValues>();
 
             using (var settingValuesReference = ValueTypeReference.FromValueType(settingValues))
             {
-                var status = enumAvailableSettingValues(settingId, ref settingValuesCount, settingValuesReference);
+                var status = DelegateFactory.GetDelegate<Delegates.DRS.NvAPI_DRS_EnumAvailableSettingValues>()(
+                    settingId,
+                    ref settingValuesCount,
+                    settingValuesReference
+                );
 
                 if (status == Status.IncompatibleStructureVersion)
                 {
@@ -267,7 +326,11 @@ namespace NvAPIWrapper.Native
             }
         }
 
-
+        /// <summary>
+        ///     This API enumerates through all the profiles in the session.
+        /// </summary>
+        /// <param name="sessionHandle">Input to the session handle.</param>
+        /// <returns>Instances of <see cref="DRSProfileHandle" /> each representing a profile.</returns>
         public static IEnumerable<DRSProfileHandle> EnumProfiles(DRSSessionHandle sessionHandle)
         {
             var i = 0u;
@@ -295,6 +358,13 @@ namespace NvAPIWrapper.Native
             }
         }
 
+        /// <summary>
+        ///     This API enumerates all the settings of a given profile.
+        /// </summary>
+        /// <param name="sessionHandle">Input to the session handle.</param>
+        /// <param name="profileHandle">Input profile handle.</param>
+        /// <returns>Instances of <see cref="DRSSettingV1" />.</returns>
+        [SuppressMessage("ReSharper", "EventExceptionNotDocumented")]
         public static IEnumerable<DRSSettingV1> EnumSettings(
             DRSSessionHandle sessionHandle,
             DRSProfileHandle profileHandle)
@@ -351,6 +421,16 @@ namespace NvAPIWrapper.Native
             }
         }
 
+        /// <summary>
+        ///     This API searches the application and the associated profile for the given application name.
+        ///     If a fully qualified path is provided, this function will always return the profile
+        ///     the driver will apply upon running the application (on the path provided).
+        /// </summary>
+        /// <param name="sessionHandle">Input to the hSession handle</param>
+        /// <param name="applicationName">Input appName. For best results, provide a fully qualified path of the type</param>
+        /// <param name="profileHandle">The profile handle of the profile that the found application belongs to.</param>
+        /// <returns>An instance of <see cref="IDRSApplication" />.</returns>
+        [SuppressMessage("ReSharper", "EventExceptionNotDocumented")]
         public static IDRSApplication FindApplicationByName(
             DRSSessionHandle sessionHandle,
             string applicationName,
@@ -397,6 +477,12 @@ namespace NvAPIWrapper.Native
             throw new NVIDIANotSupportedException("This operation is not supported.");
         }
 
+        /// <summary>
+        ///     This API finds a profile in the current session.
+        /// </summary>
+        /// <param name="sessionHandle">Input to the session handle.</param>
+        /// <param name="profileName">Input profileName.</param>
+        /// <returns>The profile handle.</returns>
         public static DRSProfileHandle FindProfileByName(DRSSessionHandle sessionHandle, string profileName)
         {
             var status = DelegateFactory.GetDelegate<Delegates.DRS.NvAPI_DRS_FindProfileByName>()(
@@ -413,6 +499,20 @@ namespace NvAPIWrapper.Native
             return profileHandle;
         }
 
+        /// <summary>
+        ///     This API gets information about the given application.  The input application name
+        ///     must match exactly what the Profile has stored for the application.
+        ///     This function is better used to retrieve application information from a previous
+        ///     enumeration.
+        /// </summary>
+        /// <param name="sessionHandle">Input to the session handle.</param>
+        /// <param name="profileHandle">Input profile handle.</param>
+        /// <param name="applicationName">Input application name.</param>
+        /// <returns>
+        ///     An instance of <see cref="IDRSApplication" /> with all attributes filled if found; otherwise
+        ///     <see langword="null" />.
+        /// </returns>
+        [SuppressMessage("ReSharper", "EventExceptionNotDocumented")]
         public static IDRSApplication GetApplicationInfo(
             DRSSessionHandle sessionHandle,
             DRSProfileHandle profileHandle,
@@ -455,7 +555,11 @@ namespace NvAPIWrapper.Native
             throw new NVIDIANotSupportedException("This operation is not supported.");
         }
 
-
+        /// <summary>
+        ///     Returns the handle to the current global profile.
+        /// </summary>
+        /// <param name="sessionHandle">Input to the session handle.</param>
+        /// <returns>Base profile handle.</returns>
         public static DRSProfileHandle GetBaseProfile(DRSSessionHandle sessionHandle)
         {
             var status = DelegateFactory.GetDelegate<Delegates.DRS.NvAPI_DRS_GetBaseProfile>()(
@@ -471,7 +575,11 @@ namespace NvAPIWrapper.Native
             return profileHandle;
         }
 
-
+        /// <summary>
+        ///     This API returns the handle to the current global profile.
+        /// </summary>
+        /// <param name="sessionHandle">Input to the session handle.</param>
+        /// <returns>Current global profile handle.</returns>
         public static DRSProfileHandle GetCurrentGlobalProfile(DRSSessionHandle sessionHandle)
         {
             var status = DelegateFactory.GetDelegate<Delegates.DRS.NvAPI_DRS_GetCurrentGlobalProfile>()(
@@ -487,6 +595,11 @@ namespace NvAPIWrapper.Native
             return profileHandle;
         }
 
+        /// <summary>
+        ///     This API obtains the number of profiles in the current session object.
+        /// </summary>
+        /// <param name="sessionHandle">Input to the session handle.</param>
+        /// <returns>Number of profiles in the current session.</returns>
         public static int GetNumberOfProfiles(DRSSessionHandle sessionHandle)
         {
             var status = DelegateFactory.GetDelegate<Delegates.DRS.NvAPI_DRS_GetNumProfiles>()(
@@ -502,6 +615,12 @@ namespace NvAPIWrapper.Native
             return (int) profileCount;
         }
 
+        /// <summary>
+        ///     This API gets information about the given profile.
+        /// </summary>
+        /// <param name="sessionHandle">Input to the session handle.</param>
+        /// <param name="profileHandle">Input profile handle.</param>
+        /// <returns>An instance of <see cref="DRSProfileV1" /> with all attributes filled.</returns>
         public static DRSProfileV1 GetProfileInfo(DRSSessionHandle sessionHandle, DRSProfileHandle profileHandle)
         {
             var profile = typeof(DRSProfileV1).Instantiate<DRSProfileV1>();
@@ -523,19 +642,23 @@ namespace NvAPIWrapper.Native
             }
         }
 
-
+        /// <summary>
+        ///     This API gets information about the given setting.
+        /// </summary>
+        /// <param name="sessionHandle">Input to the session handle.</param>
+        /// <param name="profileHandle">Input profile handle.</param>
+        /// <param name="settingId">Input settingId.</param>
+        /// <returns>An instance of <see cref="DRSSettingV1" /> describing the setting if found; otherwise <see langword="null" />.</returns>
         public static DRSSettingV1? GetSetting(
             DRSSessionHandle sessionHandle,
             DRSProfileHandle profileHandle,
             uint settingId)
         {
-            var getSetting = DelegateFactory.GetDelegate<Delegates.DRS.NvAPI_DRS_GetSetting>();
-
             var instance = typeof(DRSSettingV1).Instantiate<DRSSettingV1>();
 
             using (var settingReference = ValueTypeReference.FromValueType(instance, typeof(DRSSettingV1)))
             {
-                var status = getSetting(
+                var status = DelegateFactory.GetDelegate<Delegates.DRS.NvAPI_DRS_GetSetting>()(
                     sessionHandle,
                     profileHandle,
                     settingId,
@@ -561,6 +684,11 @@ namespace NvAPIWrapper.Native
             }
         }
 
+        /// <summary>
+        ///     This API gets the binary identification number of a setting given the setting name.
+        /// </summary>
+        /// <param name="settingName">Input Unicode settingName.</param>
+        /// <returns>The corresponding settingId.</returns>
         public static uint GetSettingIdFromName(string settingName)
         {
             var status = DelegateFactory.GetDelegate<Delegates.DRS.NvAPI_DRS_GetSettingIdFromName>()(
@@ -576,7 +704,11 @@ namespace NvAPIWrapper.Native
             return settingId;
         }
 
-
+        /// <summary>
+        ///     This API gets the setting name given the binary identification number.
+        /// </summary>
+        /// <param name="settingId">Input settingId.</param>
+        /// <returns>Corresponding settingName.</returns>
         public static string GetSettingNameFromId(uint settingId)
         {
             var status = DelegateFactory.GetDelegate<Delegates.DRS.NvAPI_DRS_GetSettingNameFromId>()(
@@ -592,6 +724,10 @@ namespace NvAPIWrapper.Native
             return settingName.Value;
         }
 
+        /// <summary>
+        ///     This API loads and parses the settings data.
+        /// </summary>
+        /// <param name="sessionHandle">Input to the session handle.</param>
         public static void LoadSettings(DRSSessionHandle sessionHandle)
         {
             var status = DelegateFactory.GetDelegate<Delegates.DRS.NvAPI_DRS_LoadSettings>()(sessionHandle);
@@ -602,12 +738,18 @@ namespace NvAPIWrapper.Native
             }
         }
 
+        /// <summary>
+        ///     This API loads settings from the given file path.
+        /// </summary>
+        /// <param name="sessionHandle">Input to the session handle</param>
+        /// <param name="fileName">Binary full file path.</param>
         public static void LoadSettings(DRSSessionHandle sessionHandle, string fileName)
         {
             var unicodeFileName = new UnicodeString(fileName);
-            var status =
-                DelegateFactory.GetDelegate<Delegates.DRS.NvAPI_DRS_LoadSettingsFromFile>()(sessionHandle,
-                    unicodeFileName);
+            var status = DelegateFactory.GetDelegate<Delegates.DRS.NvAPI_DRS_LoadSettingsFromFile>()(
+                sessionHandle,
+                unicodeFileName
+            );
 
             if (status != Status.Ok)
             {
@@ -615,6 +757,10 @@ namespace NvAPIWrapper.Native
             }
         }
 
+        /// <summary>
+        ///     This API restores the whole system to predefined(default) values.
+        /// </summary>
+        /// <param name="sessionHandle">Input to the session handle.</param>
         public static void RestoreDefaults(DRSSessionHandle sessionHandle)
         {
             var status = DelegateFactory.GetDelegate<Delegates.DRS.NvAPI_DRS_RestoreAllDefaults>()(
@@ -627,6 +773,13 @@ namespace NvAPIWrapper.Native
             }
         }
 
+        /// <summary>
+        ///     This API restores the given profile to predefined(default) values.
+        ///     Any and all user specified modifications will be removed.
+        ///     If the whole profile was set by the user, the profile will be removed.
+        /// </summary>
+        /// <param name="sessionHandle">Input to the session handle.</param>
+        /// <param name="profileHandle">Input profile handle.</param>
         public static void RestoreDefaults(
             DRSSessionHandle sessionHandle,
             DRSProfileHandle profileHandle)
@@ -642,6 +795,12 @@ namespace NvAPIWrapper.Native
             }
         }
 
+        /// <summary>
+        ///     This API restores the given profile setting to predefined(default) values.
+        /// </summary>
+        /// <param name="sessionHandle">Input to the session handle.</param>
+        /// <param name="profileHandle">Input profile handle.</param>
+        /// <param name="settingId">Input settingId.</param>
         public static void RestoreDefaults(
             DRSSessionHandle sessionHandle,
             DRSProfileHandle profileHandle,
@@ -659,7 +818,10 @@ namespace NvAPIWrapper.Native
             }
         }
 
-
+        /// <summary>
+        ///     This API saves the settings data to the system.
+        /// </summary>
+        /// <param name="sessionHandle">Input to the session handle.</param>
         public static void SaveSettings(DRSSessionHandle sessionHandle)
         {
             var status = DelegateFactory.GetDelegate<Delegates.DRS.NvAPI_DRS_SaveSettings>()(sessionHandle);
@@ -670,6 +832,11 @@ namespace NvAPIWrapper.Native
             }
         }
 
+        /// <summary>
+        ///     This API saves settings to the given file path.
+        /// </summary>
+        /// <param name="sessionHandle">Input to the session handle.</param>
+        /// <param name="fileName">Binary full file path.</param>
         public static void SaveSettings(DRSSessionHandle sessionHandle, string fileName)
         {
             var status = DelegateFactory.GetDelegate<Delegates.DRS.NvAPI_DRS_SaveSettingsToFile>()(
@@ -683,6 +850,11 @@ namespace NvAPIWrapper.Native
             }
         }
 
+        /// <summary>
+        ///     This API sets the current global profile in the driver.
+        /// </summary>
+        /// <param name="sessionHandle">Input to the session handle.</param>
+        /// <param name="profileName">Input the new current global profile name.</param>
         public static void SetCurrentGlobalProfile(DRSSessionHandle sessionHandle, string profileName)
         {
             var status = DelegateFactory.GetDelegate<Delegates.DRS.NvAPI_DRS_SetCurrentGlobalProfile>()(
@@ -696,6 +868,14 @@ namespace NvAPIWrapper.Native
             }
         }
 
+        /// <summary>
+        ///     Specifies flags for a given profile. Currently only the GPUSupport is
+        ///     used to update the profile. Neither the name, number of settings or applications
+        ///     or other profile information can be changed with this function.
+        /// </summary>
+        /// <param name="sessionHandle">Input to the session handle.</param>
+        /// <param name="profileHandle">Input profile handle.</param>
+        /// <param name="profile">Input the new profile info.</param>
         public static void SetProfileInfo(
             DRSSessionHandle sessionHandle,
             DRSProfileHandle profileHandle,
@@ -716,17 +896,23 @@ namespace NvAPIWrapper.Native
             }
         }
 
-
+        /// <summary>
+        ///     This API adds/modifies a setting to a profile.
+        /// </summary>
+        /// <param name="sessionHandle">Input to the session handle.</param>
+        /// <param name="profileHandle">Input profile handle.</param>
+        /// <param name="setting">
+        ///     An instance of <see cref="DRSSettingV1" /> containing the setting identification number and new
+        ///     value for the setting.
+        /// </param>
         public static void SetSetting(
             DRSSessionHandle sessionHandle,
             DRSProfileHandle profileHandle,
             DRSSettingV1 setting)
         {
-            var setSetting = DelegateFactory.GetDelegate<Delegates.DRS.NvAPI_DRS_SetSetting>();
-
             using (var settingReference = ValueTypeReference.FromValueType(setting, setting.GetType()))
             {
-                var status = setSetting(
+                var status = DelegateFactory.GetDelegate<Delegates.DRS.NvAPI_DRS_SetSetting>()(
                     sessionHandle,
                     profileHandle,
                     settingReference
