@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using NvAPIWrapper.Native.Display.Structures;
 using NvAPIWrapper.Native.Exceptions;
@@ -17,6 +18,145 @@ namespace NvAPIWrapper.Native
     // ReSharper disable once ClassTooBig
     public static class GPUApi
     {
+        /// <summary>
+        ///     [PRIVATE]
+        ///     Gets the current power policies information for the passed GPU handle.
+        /// </summary>
+        /// <param name="gpuHandle">The handle of the GPU to perform the operation on.</param>
+        /// <returns>The current power policies information.</returns>
+        public static PrivatePowerPoliciesInfoV1 ClientPowerPoliciesGetInfo(PhysicalGPUHandle gpuHandle)
+        {
+            var instance = typeof(PrivatePowerPoliciesInfoV1).Instantiate<PrivatePowerPoliciesInfoV1>();
+
+            using (var policiesInfoReference = ValueTypeReference.FromValueType(instance))
+            {
+                var status =
+                    DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_ClientPowerPoliciesGetInfo>()(gpuHandle,
+                        policiesInfoReference);
+
+                if (status != Status.Ok)
+                {
+                    throw new NVIDIAApiException(status);
+                }
+
+                return policiesInfoReference.ToValueType<PrivatePowerPoliciesInfoV1>(
+                    typeof(PrivatePowerPoliciesInfoV1));
+            }
+        }
+
+        /// <summary>
+        ///     [PRIVATE]
+        ///     Gets the power policies status for the passed GPU handle.
+        /// </summary>
+        /// <param name="gpuHandle">The handle of the GPU to perform the operation on.</param>
+        /// <returns>The power policies status.</returns>
+        public static PrivatePowerPoliciesStatusV1 ClientPowerPoliciesGetStatus(PhysicalGPUHandle gpuHandle)
+        {
+            var instance = typeof(PrivatePowerPoliciesStatusV1).Instantiate<PrivatePowerPoliciesStatusV1>();
+
+            using (var policiesStatusReference = ValueTypeReference.FromValueType(instance))
+            {
+                var status = DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_ClientPowerPoliciesGetStatus>()(
+                    gpuHandle,
+                    policiesStatusReference
+                );
+
+                if (status != Status.Ok)
+                {
+                    throw new NVIDIAApiException(status);
+                }
+
+                return policiesStatusReference.ToValueType<PrivatePowerPoliciesStatusV1>(
+                    typeof(PrivatePowerPoliciesStatusV1));
+            }
+        }
+
+        /// <summary>
+        ///     [PRIVATE]
+        ///     Sets the power policies status for the passed GPU handle.
+        /// </summary>
+        /// <param name="gpuHandle">The handle of the GPU to perform the operation on.</param>
+        /// <param name="policiesStatus">The new power limiter policy.</param>
+        public static void ClientPowerPoliciesSetStatus(
+            PhysicalGPUHandle gpuHandle,
+            PrivatePowerPoliciesStatusV1 policiesStatus)
+        {
+            using (var policiesStatusReference = ValueTypeReference.FromValueType(policiesStatus))
+            {
+                var status = DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_ClientPowerPoliciesSetStatus>()(
+                    gpuHandle,
+                    policiesStatusReference
+                );
+
+                if (status != Status.Ok)
+                {
+                    throw new NVIDIAApiException(status);
+                }
+            }
+        }
+
+        /// <summary>
+        ///     [PRIVATE]
+        ///     Gets the power topology status for the passed GPU handle.
+        /// </summary>
+        /// <param name="gpuHandle">The handle of the GPU to perform the operation on.</param>
+        /// <returns>The power topology status.</returns>
+        public static PrivatePowerTopologiesStatusV1 ClientPowerTopologyGetStatus(PhysicalGPUHandle gpuHandle)
+        {
+            var instance = typeof(PrivatePowerTopologiesStatusV1).Instantiate<PrivatePowerTopologiesStatusV1>();
+
+            using (var topologiesStatusReference = ValueTypeReference.FromValueType(instance))
+            {
+                var status = DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_ClientPowerTopologyGetStatus>()(
+                    gpuHandle,
+                    topologiesStatusReference
+                );
+
+                if (status != Status.Ok)
+                {
+                    throw new NVIDIAApiException(status);
+                }
+
+                return topologiesStatusReference.ToValueType<PrivatePowerTopologiesStatusV1>(
+                    typeof(PrivatePowerTopologiesStatusV1));
+            }
+        }
+
+        /// <summary>
+        ///     [PRIVATE]
+        ///     Enables the dynamic performance states
+        /// </summary>
+        /// <param name="gpuHandle">The handle of the GPU to perform the operation on.</param>
+        public static void EnableDynamicPStates(PhysicalGPUHandle gpuHandle)
+        {
+            var status = DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_EnableDynamicPStates>()(
+                gpuHandle
+            );
+
+            if (status != Status.Ok)
+            {
+                throw new NVIDIAApiException(status);
+            }
+        }
+
+
+        /// <summary>
+        ///     [PRIVATE]
+        ///     Enables the overclocked performance states
+        /// </summary>
+        /// <param name="gpuHandle">The handle of the GPU to perform the operation on.</param>
+        public static void EnableOverclockedPStates(PhysicalGPUHandle gpuHandle)
+        {
+            var status = DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_EnableOverclockedPStates>()(
+                gpuHandle
+            );
+
+            if (status != Status.Ok)
+            {
+                throw new NVIDIAApiException(status);
+            }
+        }
+
         /// <summary>
         ///     This function returns an array of logical GPU handles.
         ///     Each handle represents one or more GPUs acting in concert as a single graphics device.
@@ -326,6 +466,110 @@ namespace NvAPIWrapper.Native
             return busType;
         }
 
+        /// <summary>
+        ///     [PRIVATE] - [Pascal Only]
+        ///     Gets the clock boost lock for the passed GPU handle.
+        /// </summary>
+        /// <param name="gpuHandle">The handle of the GPU to perform the operation on.</param>
+        /// <returns>The GPU clock boost lock.</returns>
+        public static PrivateClockBoostLockV2 GetClockBoostLock(PhysicalGPUHandle gpuHandle)
+        {
+            var instance = typeof(PrivateClockBoostLockV2).Instantiate<PrivateClockBoostLockV2>();
+
+            using (var clockLockReference = ValueTypeReference.FromValueType(instance))
+            {
+                var status = DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_GetClockBoostLock>()(
+                    gpuHandle,
+                    clockLockReference
+                );
+
+                if (status != Status.Ok)
+                {
+                    throw new NVIDIAApiException(status);
+                }
+
+                return clockLockReference.ToValueType<PrivateClockBoostLockV2>(typeof(PrivateClockBoostLockV2));
+            }
+        }
+
+        /// <summary>
+        ///     [PRIVATE] - [Pascal Only]
+        ///     Gets the clock boost mask for passed GPU handle.
+        /// </summary>
+        /// <param name="gpuHandle">The handle of the GPU to perform the operation on.</param>
+        /// <returns>The GPI clock boost mask.</returns>
+        public static PrivateClockBoostMasksV1 GetClockBoostMask(PhysicalGPUHandle gpuHandle)
+        {
+            var instance = typeof(PrivateClockBoostMasksV1).Instantiate<PrivateClockBoostMasksV1>();
+
+            using (var clockBoostReference = ValueTypeReference.FromValueType(instance))
+            {
+                var status = DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_GetClockBoostMask>()(
+                    gpuHandle,
+                    clockBoostReference
+                );
+
+                if (status != Status.Ok)
+                {
+                    throw new NVIDIAApiException(status);
+                }
+
+                return clockBoostReference.ToValueType<PrivateClockBoostMasksV1>(typeof(PrivateClockBoostMasksV1));
+            }
+        }
+
+        /// <summary>
+        ///     [PRIVATE] - [Pascal Only]
+        ///     Gets the clock boost ranges for the passed GPU handle.
+        /// </summary>
+        /// <param name="gpuHandle">The handle of the GPU to perform the operation on.</param>
+        /// <returns>The GPU clock boost ranges.</returns>
+        public static PrivateClockBoostRangesV1 GetClockBoostRanges(PhysicalGPUHandle gpuHandle)
+        {
+            var instance = typeof(PrivateClockBoostRangesV1).Instantiate<PrivateClockBoostRangesV1>();
+
+            using (var clockRangesReference = ValueTypeReference.FromValueType(instance))
+            {
+                var status = DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_GetClockBoostRanges>()(
+                    gpuHandle,
+                    clockRangesReference
+                );
+
+                if (status != Status.Ok)
+                {
+                    throw new NVIDIAApiException(status);
+                }
+
+                return clockRangesReference.ToValueType<PrivateClockBoostRangesV1>(typeof(PrivateClockBoostRangesV1));
+            }
+        }
+
+        /// <summary>
+        ///     [PRIVATE] - [Pascal Only]
+        ///     Gets the clock boost table for the passed GPU handle.
+        /// </summary>
+        /// <param name="gpuHandle">The handle of the GPU to perform the operation on.</param>
+        /// <returns>The GPU clock boost table.</returns>
+        public static PrivateClockBoostTableV1 GetClockBoostTable(PhysicalGPUHandle gpuHandle)
+        {
+            var instance = typeof(PrivateClockBoostTableV1).Instantiate<PrivateClockBoostTableV1>();
+
+            using (var clockTableReference = ValueTypeReference.FromValueType(instance))
+            {
+                var status = DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_GetClockBoostTable>()(
+                    gpuHandle,
+                    clockTableReference
+                );
+
+                if (status != Status.Ok)
+                {
+                    throw new NVIDIAApiException(status);
+                }
+
+                return clockTableReference.ToValueType<PrivateClockBoostTableV1>(typeof(PrivateClockBoostTableV1));
+            }
+        }
+
 
         /// <summary>
         ///     Due to space limitation GetConnectedOutputs() can return maximum 32 devices, but this is no longer true for DPMST.
@@ -380,6 +624,101 @@ namespace NvAPIWrapper.Native
             }
         }
 
+
+        /// <summary>
+        ///     [PRIVATE]
+        ///     Gets the cooler policy table for the passed GPU handle.
+        /// </summary>
+        /// <param name="gpuHandle">The handle of the GPU to perform the operation on.</param>
+        /// <param name="policy">The cooler policy to get the table for.</param>
+        /// <param name="index">The cooler index.</param>
+        /// <param name="count">Number of policy table entries retrieved.</param>
+        /// <returns>The cooler policy table for the GPU.</returns>
+        // ReSharper disable once TooManyArguments
+        public static PrivateCoolerPolicyTableV1 GetCoolerPolicyTable(
+            PhysicalGPUHandle gpuHandle,
+            CoolerPolicy policy,
+            uint index,
+            out uint count)
+        {
+            var instance = typeof(PrivateCoolerPolicyTableV1).Instantiate<PrivateCoolerPolicyTableV1>();
+            instance._Policy = policy;
+
+            using (var policyTableReference = ValueTypeReference.FromValueType(instance))
+            {
+                var status = DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_GetCoolerPolicyTable>()(
+                    gpuHandle,
+                    index,
+                    policyTableReference,
+                    out count
+                );
+
+                if (status != Status.Ok)
+                {
+                    throw new NVIDIAApiException(status);
+                }
+
+                return policyTableReference.ToValueType<PrivateCoolerPolicyTableV1>(typeof(PrivateCoolerPolicyTableV1));
+            }
+        }
+
+        /// <summary>
+        ///     [PRIVATE]
+        ///     Gets the cooler settings for the passed GPU handle.
+        /// </summary>
+        /// <param name="gpuHandle">The handle of the GPU to perform the operation on.</param>
+        /// <param name="coolerTarget">The cooler targets to get settings.</param>
+        /// <returns>The cooler settings.</returns>
+        public static PrivateCoolerSettingsV1 GetCoolerSettings(
+            PhysicalGPUHandle gpuHandle,
+            CoolerTarget coolerTarget = CoolerTarget.All)
+        {
+            var instance = typeof(PrivateCoolerSettingsV1).Instantiate<PrivateCoolerSettingsV1>();
+
+            using (var coolerSettingsReference = ValueTypeReference.FromValueType(instance))
+            {
+                var status = DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_GetCoolerSettings>()(
+                    gpuHandle,
+                    coolerTarget,
+                    coolerSettingsReference
+                );
+
+                if (status != Status.Ok)
+                {
+                    throw new NVIDIAApiException(status);
+                }
+
+                return coolerSettingsReference.ToValueType<PrivateCoolerSettingsV1>(typeof(PrivateCoolerSettingsV1));
+            }
+        }
+
+        /// <summary>
+        ///     [PRIVATE] - [Pascal Only]
+        ///     Gets the core voltage boost percentage for the passed GPU handle.
+        /// </summary>
+        /// <param name="gpuHandle">The handle of the GPU to perform the operation on.</param>
+        /// <returns>The voltage boost percentage.</returns>
+        public static PrivateVoltageBoostPercentV1 GetCoreVoltageBoostPercent(PhysicalGPUHandle gpuHandle)
+        {
+            var instance = typeof(PrivateVoltageBoostPercentV1).Instantiate<PrivateVoltageBoostPercentV1>();
+
+            using (var voltageBoostReference = ValueTypeReference.FromValueType(instance))
+            {
+                var status = DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_GetCoreVoltageBoostPercent>()(
+                    gpuHandle,
+                    voltageBoostReference
+                );
+
+                if (status != Status.Ok)
+                {
+                    throw new NVIDIAApiException(status);
+                }
+
+                return voltageBoostReference.ToValueType<PrivateVoltageBoostPercentV1>(
+                    typeof(PrivateVoltageBoostPercentV1));
+            }
+        }
+
         /// <summary>
         ///     This function returns the current AGP Rate (0 = AGP not present, 1 = 1x, 2 = 2x, etc.).
         /// </summary>
@@ -399,6 +738,26 @@ namespace NvAPIWrapper.Native
             }
 
             return (int) agpRate;
+        }
+
+        /// <summary>
+        ///     [PRIVATE]
+        ///     Gets the current fan speed level for the passed GPU handle.
+        /// </summary>
+        /// <param name="gpuHandle">The handle of the GPU to perform the operation on.</param>
+        /// <returns>The current fan speed level.</returns>
+        public static uint GetCurrentFanSpeedLevel(PhysicalGPUHandle gpuHandle)
+        {
+            var status =
+                DelegateFactory
+                    .GetDelegate<Delegates.GPU.NvAPI_GPU_GetCurrentFanSpeedLevel>()(gpuHandle, out var count);
+
+            if (status != Status.Ok)
+            {
+                throw new NVIDIAApiException(status);
+            }
+
+            return count;
         }
 
         /// <summary>
@@ -444,6 +803,51 @@ namespace NvAPIWrapper.Native
         }
 
         /// <summary>
+        ///     [PRIVATE]
+        ///     Gets the current thermal level for the passed GPU handle.
+        /// </summary>
+        /// <param name="gpuHandle">The handle of the GPU to perform the operation on.</param>
+        /// <returns>The current thermal level.</returns>
+        public static uint GetCurrentThermalLevel(PhysicalGPUHandle gpuHandle)
+        {
+            var status =
+                DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_GetCurrentThermalLevel>()(gpuHandle, out var count);
+
+            if (status != Status.Ok)
+            {
+                throw new NVIDIAApiException(status);
+            }
+
+            return count;
+        }
+
+        /// <summary>
+        ///     [PRIVATE] - [Pascal Only]
+        ///     Gets the current voltage status for the passed GPU handle.
+        /// </summary>
+        /// <param name="gpuHandle">The handle of the GPU to perform the operation on.</param>
+        /// <returns>The voltage status of the GPU.</returns>
+        public static PrivateVoltageStatusV1 GetCurrentVoltage(PhysicalGPUHandle gpuHandle)
+        {
+            var instance = typeof(PrivateVoltageStatusV1).Instantiate<PrivateVoltageStatusV1>();
+
+            using (var voltageStatusReference = ValueTypeReference.FromValueType(instance))
+            {
+                var status = DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_GetCurrentVoltage>()(
+                    gpuHandle,
+                    voltageStatusReference
+                );
+
+                if (status != Status.Ok)
+                {
+                    throw new NVIDIAApiException(status);
+                }
+
+                return voltageStatusReference.ToValueType<PrivateVoltageStatusV1>(typeof(PrivateVoltageStatusV1));
+            }
+        }
+
+        /// <summary>
         ///     This API converts a Physical GPU handle and output ID to a display ID.
         /// </summary>
         /// <param name="gpuHandle">Handle to the physical GPU</param>
@@ -466,6 +870,25 @@ namespace NvAPIWrapper.Native
             return display;
         }
 
+
+        /// <summary>
+        ///     [PRIVATE]
+        ///     Gets the driver model for the passed GPU handle.
+        /// </summary>
+        /// <param name="gpuHandle">The handle of the GPU to perform the operation on.</param>
+        /// <returns>The driver model of the GPU.</returns>
+        public static uint GetDriverModel(PhysicalGPUHandle gpuHandle)
+        {
+            var status = DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GetDriverModel>()(gpuHandle, out var count);
+
+            if (status != Status.Ok)
+            {
+                throw new NVIDIAApiException(status);
+            }
+
+            return count;
+        }
+
         /// <summary>
         ///     This function retrieves the dynamic performance states information from specific GPU
         /// </summary>
@@ -474,7 +897,7 @@ namespace NvAPIWrapper.Native
         /// <exception cref="NVIDIANotSupportedException">This operation is not supported.</exception>
         /// <exception cref="NVIDIAApiException">Status.NvidiaDeviceNotFound: No NVIDIA GPU driving a display was found.</exception>
         /// <exception cref="Exception">A delegate callback throws an exception.</exception>
-        public static DynamicPerformanceStatesInfo GetDynamicPerformanceStatesInfoEx(
+        public static DynamicPerformanceStatesInfoV1 GetDynamicPerformanceStatesInfoEx(
             PhysicalGPUHandle physicalGPUHandle)
         {
             var getDynamicPerformanceStatesInfoEx =
@@ -482,7 +905,7 @@ namespace NvAPIWrapper.Native
 
             foreach (var acceptType in getDynamicPerformanceStatesInfoEx.Accepts())
             {
-                var instance = acceptType.Instantiate<DynamicPerformanceStatesInfo>();
+                var instance = acceptType.Instantiate<DynamicPerformanceStatesInfoV1>();
 
                 using (var gpuDynamicPStateInfo = ValueTypeReference.FromValueType(instance, acceptType))
                 {
@@ -498,11 +921,89 @@ namespace NvAPIWrapper.Native
                         throw new NVIDIAApiException(status);
                     }
 
-                    return gpuDynamicPStateInfo.ToValueType<DynamicPerformanceStatesInfo>(acceptType);
+                    return gpuDynamicPStateInfo.ToValueType<DynamicPerformanceStatesInfoV1>(acceptType);
                 }
             }
 
             throw new NVIDIANotSupportedException("This operation is not supported.");
+        }
+
+        /// <summary>
+        ///     This function returns ECC memory configuration information.
+        /// </summary>
+        /// <param name="gpuHandle">
+        ///     handle identifying the physical GPU for which ECC configuration information is to be
+        ///     retrieved.
+        /// </param>
+        /// <returns>An instance of <see cref="ECCConfigurationInfoV1" /></returns>
+        public static ECCConfigurationInfoV1 GetECCConfigurationInfo(PhysicalGPUHandle gpuHandle)
+        {
+            var instance = typeof(ECCConfigurationInfoV1).Instantiate<ECCConfigurationInfoV1>();
+
+            using (var configurationInfoReference = ValueTypeReference.FromValueType(instance))
+            {
+                var status = DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_GetECCConfigurationInfo>()(
+                    gpuHandle,
+                    configurationInfoReference
+                );
+
+                if (status != Status.Ok)
+                {
+                    throw new NVIDIAApiException(status);
+                }
+
+                return configurationInfoReference.ToValueType<ECCConfigurationInfoV1>(typeof(ECCConfigurationInfoV1));
+            }
+        }
+
+        /// <summary>
+        ///     This function returns ECC memory error information.
+        /// </summary>
+        /// <param name="gpuHandle">A handle identifying the physical GPU for which ECC error information is to be retrieved.</param>
+        /// <returns>An instance of <see cref="ECCErrorInfoV1" /></returns>
+        public static ECCErrorInfoV1 GetECCErrorInfo(PhysicalGPUHandle gpuHandle)
+        {
+            var instance = typeof(ECCErrorInfoV1).Instantiate<ECCErrorInfoV1>();
+
+            using (var errorInfoReference = ValueTypeReference.FromValueType(instance))
+            {
+                var status = DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_GetECCErrorInfo>()(
+                    gpuHandle,
+                    errorInfoReference
+                );
+
+                if (status != Status.Ok)
+                {
+                    throw new NVIDIAApiException(status);
+                }
+
+                return errorInfoReference.ToValueType<ECCErrorInfoV1>(typeof(ECCErrorInfoV1));
+            }
+        }
+
+        /// <summary>
+        ///     This function returns ECC memory status information.
+        /// </summary>
+        /// <param name="gpuHandle">A handle identifying the physical GPU for which ECC status information is to be retrieved.</param>
+        /// <returns>An instance of <see cref="ECCStatusInfoV1" /></returns>
+        public static ECCStatusInfoV1 GetECCStatusInfo(PhysicalGPUHandle gpuHandle)
+        {
+            var instance = typeof(ECCStatusInfoV1).Instantiate<ECCStatusInfoV1>();
+
+            using (var statusInfoReference = ValueTypeReference.FromValueType(instance))
+            {
+                var status = DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_GetECCStatusInfo>()(
+                    gpuHandle,
+                    statusInfoReference
+                );
+
+                if (status != Status.Ok)
+                {
+                    throw new NVIDIAApiException(status);
+                }
+
+                return statusInfoReference.ToValueType<ECCStatusInfoV1>(typeof(ECCStatusInfoV1));
+            }
         }
 
         /// <summary>
@@ -597,6 +1098,46 @@ namespace NvAPIWrapper.Native
         }
 
         /// <summary>
+        ///     [PRIVATE]
+        ///     Gets the GPU manufacturing foundry of the passed GPU handle.
+        /// </summary>
+        /// <param name="gpuHandle">The handle of the GPU to retrieve this information from.</param>
+        /// <returns>The GPU manufacturing foundry of the GPU.</returns>
+        public static GPUFoundry GetFoundry(PhysicalGPUHandle gpuHandle)
+        {
+            var status = DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_GetFoundry>()(gpuHandle, out var foundry);
+
+            if (status != Status.Ok)
+            {
+                throw new NVIDIAApiException(status);
+            }
+
+            return foundry;
+        }
+
+        /// <summary>
+        ///     [PRIVATE]
+        ///     Gets the current frame buffer width and location for the passed GPU handle.
+        /// </summary>
+        /// <param name="gpuHandle">The handle of the GPU to perform the operation on.</param>
+        /// <param name="width">The frame buffer width.</param>
+        /// <param name="location">The frame buffer location.</param>
+        public static void GetFrameBufferWidthAndLocation(
+            PhysicalGPUHandle gpuHandle,
+            out uint width,
+            out uint location)
+        {
+            var status =
+                DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_GetFBWidthAndLocation>()(gpuHandle, out width,
+                    out location);
+
+            if (status != Status.Ok)
+            {
+                throw new NVIDIAApiException(status);
+            }
+        }
+
+        /// <summary>
         ///     This function retrieves the full GPU name as an ASCII string - for example, "Quadro FX 1400".
         /// </summary>
         /// <param name="gpuHandle">Physical GPU handle to get information about</param>
@@ -664,6 +1205,26 @@ namespace NvAPIWrapper.Native
             return (int) cores;
         }
 
+        // ReSharper disable once CommentTypo
+        /// <summary>
+        ///     [PRIVATE]
+        ///     Gets the GPUID of the passed GPU handle.
+        /// </summary>
+        /// <param name="gpuHandle">The GPU handle to get the GPUID for.</param>
+        /// <returns>The GPU's GPUID.</returns>
+        public static uint GetGPUIDFromPhysicalGPU(PhysicalGPUHandle gpuHandle)
+        {
+            var status =
+                DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GetGPUIDFromPhysicalGPU>()(gpuHandle, out var gpuId);
+
+            if (status != Status.Ok)
+            {
+                throw new NVIDIAApiException(status);
+            }
+
+            return gpuId;
+        }
+
 
         /// <summary>
         ///     This function returns the GPU type (integrated or discrete).
@@ -704,6 +1265,29 @@ namespace NvAPIWrapper.Native
             }
 
             return (int) irq;
+        }
+
+
+        /// <summary>
+        ///     [PRIVATE]
+        ///     Gets the current frame buffer width and location for the passed logical GPU handle.
+        /// </summary>
+        /// <param name="gpuHandle">The handle of the logical GPU to perform the operation on.</param>
+        /// <param name="width">The frame buffer width.</param>
+        /// <param name="location">The frame buffer location.</param>
+        public static void GetLogicalFrameBufferWidthAndLocation(
+            LogicalGPUHandle gpuHandle,
+            out uint width,
+            out uint location)
+        {
+            var status =
+                DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_GetLogicalFBWidthAndLocation>()(gpuHandle,
+                    out width, out location);
+
+            if (status != Status.Ok)
+            {
+                throw new NVIDIAApiException(status);
+            }
         }
 
         /// <summary>
@@ -828,6 +1412,49 @@ namespace NvAPIWrapper.Native
         }
 
         /// <summary>
+        ///     [PRIVATE]
+        ///     Gets the number of GPC (Graphic Processing Clusters) of the passed GPU handle.
+        /// </summary>
+        /// <param name="gpuHandle">The handle of the GPU to perform the operation on.</param>
+        /// <returns>The number of GPC units for the GPU.</returns>
+        public static uint GetPartitionCount(PhysicalGPUHandle gpuHandle)
+        {
+            var status =
+                DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_GetPartitionCount>()(gpuHandle, out var count);
+
+            if (status != Status.Ok)
+            {
+                throw new NVIDIAApiException(status);
+            }
+
+            return count;
+        }
+
+        /// <summary>
+        ///     [PRIVATE]
+        ///     Gets additional information about the PCIe interface and configuration for the passed GPU handle.
+        /// </summary>
+        /// <param name="gpuHandle">The handle of the GPU to perform the operation on.</param>
+        /// <returns>PCIe information and configurations.</returns>
+        public static PrivatePCIeInfoV2 GetPCIEInfo(PhysicalGPUHandle gpuHandle)
+        {
+            var instance = typeof(PrivatePCIeInfoV2).Instantiate<PrivatePCIeInfoV2>();
+
+            using (var pcieInfoReference = ValueTypeReference.FromValueType(instance))
+            {
+                var status =
+                    DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_GetPCIEInfo>()(gpuHandle, pcieInfoReference);
+
+                if (status != Status.Ok)
+                {
+                    throw new NVIDIAApiException(status);
+                }
+
+                return pcieInfoReference.ToValueType<PrivatePCIeInfoV2>(typeof(PrivatePCIeInfoV2));
+            }
+        }
+
+        /// <summary>
         ///     This function returns the PCI identifiers associated with this GPU.
         ///     TCC_SUPPORTED
         /// </summary>
@@ -866,6 +1493,7 @@ namespace NvAPIWrapper.Native
         /// <returns>Retrieved performance states information</returns>
         /// <exception cref="NVIDIAApiException">Status.InvalidArgument: gpuHandle is NULL</exception>
         /// <exception cref="NVIDIAApiException">Status.ExpectedPhysicalGPUHandle: gpuHandle was not a physical GPU handle</exception>
+        [SuppressMessage("ReSharper", "EventExceptionNotDocumented")]
         public static IPerformanceStatesInfo GetPerformanceStates(
             PhysicalGPUHandle physicalGPUHandle,
             GetPerformanceStatesInfoFlags flags)
@@ -905,6 +1533,7 @@ namespace NvAPIWrapper.Native
         /// <returns>Retrieved performance states 2.0 information</returns>
         /// <exception cref="NVIDIAApiException">Status.InvalidArgument: gpuHandle is NULL</exception>
         /// <exception cref="NVIDIAApiException">Status.ExpectedPhysicalGPUHandle: gpuHandle was not a physical GPU handle</exception>
+        [SuppressMessage("ReSharper", "EventExceptionNotDocumented")]
         public static IPerformanceStates20Info GetPerformanceStates20(PhysicalGPUHandle physicalGPUHandle)
         {
             var getPerformanceStates20 = DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_GetPStates20>();
@@ -977,6 +1606,25 @@ namespace NvAPIWrapper.Native
             }
 
             return gpu;
+        }
+
+        /// <summary>
+        ///     [PRIVATE]
+        ///     Gets a physical GPU handle from the passed GPUID
+        /// </summary>
+        /// <param name="gpuId">The GPUID to get the physical handle for.</param>
+        /// <returns>The retrieved physical GPU handle.</returns>
+        public static PhysicalGPUHandle GetPhysicalGPUFromGPUID(uint gpuId)
+        {
+            var status =
+                DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GetPhysicalGPUFromGPUID>()(gpuId, out var gpuHandle);
+
+            if (status != Status.Ok)
+            {
+                throw new NVIDIAApiException(status);
+            }
+
+            return gpuHandle;
         }
 
         /// <summary>
@@ -1072,6 +1720,120 @@ namespace NvAPIWrapper.Native
         }
 
         /// <summary>
+        ///     [PRIVATE]
+        ///     Gets the number of RAM banks for the passed GPU handle.
+        /// </summary>
+        /// <param name="gpuHandle">The handle of the GPU to retrieve this information from.</param>
+        /// <returns>The number of RAM memory banks.</returns>
+        public static uint GetRAMBankCount(PhysicalGPUHandle gpuHandle)
+        {
+            var status =
+                DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_GetRamBankCount>()(gpuHandle, out var bankCount);
+
+            if (status != Status.Ok)
+            {
+                throw new NVIDIAApiException(status);
+            }
+
+            return bankCount;
+        }
+
+        /// <summary>
+        ///     [PRIVATE]
+        ///     Gets the RAM bus width for the passed GPU handle.
+        /// </summary>
+        /// <param name="gpuHandle">The handle of the GPU to retrieve this information from.</param>
+        /// <returns>The RAM memory bus width.</returns>
+        public static uint GetRAMBusWidth(PhysicalGPUHandle gpuHandle)
+        {
+            var status =
+                DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_GetRamBusWidth>()(gpuHandle, out var busWidth);
+
+            if (status != Status.Ok)
+            {
+                throw new NVIDIAApiException(status);
+            }
+
+            return busWidth;
+        }
+
+        /// <summary>
+        ///     [PRIVATE]
+        ///     Gets the RAM maker for the passed GPU handle.
+        /// </summary>
+        /// <param name="gpuHandle">The handle of the GPU to retrieve this information from.</param>
+        /// <returns>The RAM memory maker.</returns>
+        public static GPUMemoryMaker GetRAMMaker(PhysicalGPUHandle gpuHandle)
+        {
+            var status =
+                DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_GetRamMaker>()(gpuHandle, out var ramMaker);
+
+            if (status != Status.Ok)
+            {
+                throw new NVIDIAApiException(status);
+            }
+
+            return ramMaker;
+        }
+
+        /// <summary>
+        ///     [PRIVATE]
+        ///     Gets the RAM type for the passed GPU handle.
+        /// </summary>
+        /// <param name="gpuHandle">The handle of the GPU to retrieve this information from.</param>
+        /// <returns>The RAM memory type.</returns>
+        public static GPUMemoryType GetRAMType(PhysicalGPUHandle gpuHandle)
+        {
+            var status = DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_GetRamType>()(gpuHandle, out var ramType);
+
+            if (status != Status.Ok)
+            {
+                throw new NVIDIAApiException(status);
+            }
+
+            return ramType;
+        }
+
+        /// <summary>
+        ///     [PRIVATE]
+        ///     Gets the ROP count for the passed GPU handle.
+        /// </summary>
+        /// <param name="gpuHandle">The handle of the GPU to retrieve this information from.</param>
+        /// <returns>The number of ROP units.</returns>
+        public static uint GetROPCount(PhysicalGPUHandle gpuHandle)
+        {
+            var status =
+                DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_GetROPCount>()(gpuHandle, out var ropCount);
+
+            if (status != Status.Ok)
+            {
+                throw new NVIDIAApiException(status);
+            }
+
+            return ropCount;
+        }
+
+
+        /// <summary>
+        ///     [PRIVATE]
+        ///     Gets the number of shader pipe lines for the passed GPU handle.
+        /// </summary>
+        /// <param name="gpuHandle">The handle of the GPU to retrieve this information from.</param>
+        /// <returns>The number of shader pipelines.</returns>
+        public static uint GetShaderPipeCount(PhysicalGPUHandle gpuHandle)
+        {
+            var status =
+                DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_GetShaderPipeCount>()(gpuHandle, out var spCount);
+
+            if (status != Status.Ok)
+            {
+                throw new NVIDIAApiException(status);
+            }
+
+            return spCount;
+        }
+
+        /// <summary>
         ///     This function retrieves the number of Shader SubPipes on the GPU
         ///     On newer architectures, this corresponds to the number of SM units
         /// </summary>
@@ -1090,6 +1852,24 @@ namespace NvAPIWrapper.Native
             }
 
             return (int) count;
+        }
+
+        /// <summary>
+        ///     [PRIVATE]
+        ///     Gets the GPU short name (code name) for the passed GPU handle.
+        /// </summary>
+        /// <param name="gpuHandle">The handle of the GPU to retrieve this information from.</param>
+        /// <returns>The GPU short name.</returns>
+        public static string GetShortName(PhysicalGPUHandle gpuHandle)
+        {
+            var status = DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_GetShortName>()(gpuHandle, out var name);
+
+            if (status != Status.Ok)
+            {
+                throw new NVIDIAApiException(status);
+            }
+
+            return name.Value;
         }
 
         /// <summary>
@@ -1135,6 +1915,59 @@ namespace NvAPIWrapper.Native
         }
 
         /// <summary>
+        ///     [PRIVATE]
+        ///     Gets the current thermal policies information for the passed GPU handle.
+        /// </summary>
+        /// <param name="gpuHandle">The handle of the GPU to perform the operation on.</param>
+        /// <returns>The current thermal policies information.</returns>
+        public static PrivateThermalPoliciesInfoV2 GetThermalPoliciesInfo(PhysicalGPUHandle gpuHandle)
+        {
+            var instance = typeof(PrivateThermalPoliciesInfoV2).Instantiate<PrivateThermalPoliciesInfoV2>();
+
+            using (var policiesInfoReference = ValueTypeReference.FromValueType(instance))
+            {
+                var status =
+                    DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_GetThermalPoliciesInfo>()(gpuHandle,
+                        policiesInfoReference);
+
+                if (status != Status.Ok)
+                {
+                    throw new NVIDIAApiException(status);
+                }
+
+                return policiesInfoReference.ToValueType<PrivateThermalPoliciesInfoV2>(
+                    typeof(PrivateThermalPoliciesInfoV2));
+            }
+        }
+
+        /// <summary>
+        ///     [PRIVATE]
+        ///     Gets the thermal policies status for the passed GPU handle.
+        /// </summary>
+        /// <param name="gpuHandle">The handle of the GPU to perform the operation on.</param>
+        /// <returns>The thermal policies status.</returns>
+        public static PrivateThermalPoliciesStatusV2 GetThermalPoliciesStatus(PhysicalGPUHandle gpuHandle)
+        {
+            var instance = typeof(PrivateThermalPoliciesStatusV2).Instantiate<PrivateThermalPoliciesStatusV2>();
+
+            using (var policiesStatusReference = ValueTypeReference.FromValueType(instance))
+            {
+                var status = DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_GetThermalPoliciesStatus>()(
+                    gpuHandle,
+                    policiesStatusReference
+                );
+
+                if (status != Status.Ok)
+                {
+                    throw new NVIDIAApiException(status);
+                }
+
+                return policiesStatusReference.ToValueType<PrivateThermalPoliciesStatusV2>(
+                    typeof(PrivateThermalPoliciesStatusV2));
+            }
+        }
+
+        /// <summary>
         ///     This function retrieves the thermal information of all thermal sensors or specific thermal sensor associated with
         ///     the selected GPU. To retrieve info for all sensors, set sensorTarget to ThermalSettingsTarget.All.
         /// </summary>
@@ -1173,6 +2006,89 @@ namespace NvAPIWrapper.Native
             }
 
             throw new NVIDIANotSupportedException("This operation is not supported.");
+        }
+
+        /// <summary>
+        ///     [PRIVATE]
+        ///     Gets the SM count for the passed GPU handle.
+        /// </summary>
+        /// <param name="gpuHandle">The handle of the GPU to retrieve this information from.</param>
+        /// <returns>The number of SM units.</returns>
+        public static uint GetTotalSMCount(PhysicalGPUHandle gpuHandle)
+        {
+            var status =
+                DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_GetTotalSMCount>()(gpuHandle, out var smCount);
+
+            if (status != Status.Ok)
+            {
+                throw new NVIDIAApiException(status);
+            }
+
+            return smCount;
+        }
+
+        /// <summary>
+        ///     [PRIVATE]
+        ///     Gets the SP count for the passed GPU handle.
+        /// </summary>
+        /// <param name="gpuHandle">The handle of the GPU to retrieve this information from.</param>
+        /// <returns>The number of SP units.</returns>
+        public static uint GetTotalSPCount(PhysicalGPUHandle gpuHandle)
+        {
+            var status =
+                DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_GetTotalSPCount>()(gpuHandle, out var spCount);
+
+            if (status != Status.Ok)
+            {
+                throw new NVIDIAApiException(status);
+            }
+
+            return spCount;
+        }
+
+        /// <summary>
+        ///     [PRIVATE]
+        ///     Gets the TPC count for the passed GPU handle.
+        /// </summary>
+        /// <param name="gpuHandle">The handle of the GPU to retrieve this information from.</param>
+        /// <returns>The number of TPC units.</returns>
+        public static uint GetTotalTPCCount(PhysicalGPUHandle gpuHandle)
+        {
+            var status =
+                DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_GetTotalTPCCount>()(gpuHandle, out var tpcCount);
+
+            if (status != Status.Ok)
+            {
+                throw new NVIDIAApiException(status);
+            }
+
+            return tpcCount;
+        }
+
+        /// <summary>
+        ///     [PRIVATE]
+        ///     Gets the GPU usage metrics for the passed GPU handle.
+        /// </summary>
+        /// <param name="gpuHandle">The handle of the GPU to perform the operation on.</param>
+        /// <returns>The usage information for the selected GPU.</returns>
+        public static PrivateUsagesInfoV1 GetUsages(PhysicalGPUHandle gpuHandle)
+        {
+            var instance = typeof(PrivateUsagesInfoV1).Instantiate<PrivateUsagesInfoV1>();
+
+            using (var usageInfoReference = ValueTypeReference.FromValueType(instance))
+            {
+                var status = DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_GetUsages>()(
+                    gpuHandle,
+                    usageInfoReference
+                );
+
+                if (status != Status.Ok)
+                {
+                    throw new NVIDIAApiException(status);
+                }
+
+                return usageInfoReference.ToValueType<PrivateUsagesInfoV1>(typeof(PrivateUsagesInfoV1));
+            }
         }
 
         /// <summary>
@@ -1240,6 +2156,32 @@ namespace NvAPIWrapper.Native
         }
 
         /// <summary>
+        ///     [PRIVATE] - [Pascal Only]
+        ///     Gets the VFP curve for the passed GPU handle.
+        /// </summary>
+        /// <param name="gpuHandle">The handle of the GPU to perform the operation on.</param>
+        /// <returns>The retrieved VFP curve.</returns>
+        public static PrivateVFPCurveV1 GetVFPCurve(PhysicalGPUHandle gpuHandle)
+        {
+            var instance = typeof(PrivateVFPCurveV1).Instantiate<PrivateVFPCurveV1>();
+
+            using (var vfpCurveReference = ValueTypeReference.FromValueType(instance))
+            {
+                var status = DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_GetVFPCurve>()(
+                    gpuHandle,
+                    vfpCurveReference
+                );
+
+                if (status != Status.Ok)
+                {
+                    throw new NVIDIAApiException(status);
+                }
+
+                return vfpCurveReference.ToValueType<PrivateVFPCurveV1>(typeof(PrivateVFPCurveV1));
+            }
+        }
+
+        /// <summary>
         ///     This function returns the virtual size of frame buffer in KB. This includes the physical RAM plus any system RAM
         ///     that has been dedicated for use by the GPU.
         /// </summary>
@@ -1259,6 +2201,306 @@ namespace NvAPIWrapper.Native
             }
 
             return (int) bufferSize;
+        }
+
+        /// <summary>
+        ///     [PRIVATE]
+        ///     Gets the VPE count for the passed GPU handle.
+        /// </summary>
+        /// <param name="gpuHandle">The handle of the GPU to retrieve this information from.</param>
+        /// <returns>The number of VPE units.</returns>
+        public static uint GetVPECount(PhysicalGPUHandle gpuHandle)
+        {
+            var status =
+                DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_GetVPECount>()(gpuHandle, out var vpeCount);
+
+            if (status != Status.Ok)
+            {
+                throw new NVIDIAApiException(status);
+            }
+
+            return vpeCount;
+        }
+
+        /// <summary>
+        ///     [PRIVATE]
+        ///     Gets the performance policies current information for the passed GPU handle.
+        /// </summary>
+        /// <param name="gpuHandle">The handle of the GPU to perform the operation on.</param>
+        /// <returns>The performance policies information.</returns>
+        public static PrivatePerformanceInfoV1 PerformancePoliciesGetInfo(PhysicalGPUHandle gpuHandle)
+        {
+            var instance = typeof(PrivatePerformanceInfoV1).Instantiate<PrivatePerformanceInfoV1>();
+
+            using (var performanceInfoReference = ValueTypeReference.FromValueType(instance))
+            {
+                var status = DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_PerfPoliciesGetInfo>()(
+                    gpuHandle,
+                    performanceInfoReference
+                );
+
+                if (status != Status.Ok)
+                {
+                    throw new NVIDIAApiException(status);
+                }
+
+                return performanceInfoReference.ToValueType<PrivatePerformanceInfoV1>(typeof(PrivatePerformanceInfoV1));
+            }
+        }
+
+        /// <summary>
+        ///     [PRIVATE]
+        ///     Gets the performance policies status for the passed GPU handle.
+        /// </summary>
+        /// <param name="gpuHandle">The handle of the GPU to perform the operation on.</param>
+        /// <returns>The performance policies status of the GPU.</returns>
+        public static PrivatePerformanceStatusV1 PerformancePoliciesGetStatus(PhysicalGPUHandle gpuHandle)
+        {
+            var instance = typeof(PrivatePerformanceStatusV1).Instantiate<PrivatePerformanceStatusV1>();
+
+            using (var performanceStatusReference = ValueTypeReference.FromValueType(instance))
+            {
+                var status = DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_PerfPoliciesGetStatus>()(
+                    gpuHandle,
+                    performanceStatusReference
+                );
+
+                if (status != Status.Ok)
+                {
+                    throw new NVIDIAApiException(status);
+                }
+
+                return performanceStatusReference.ToValueType<PrivatePerformanceStatusV1>(
+                    typeof(PrivatePerformanceStatusV1));
+            }
+        }
+
+        /// <summary>
+        ///     This function resets ECC memory error counters.
+        /// </summary>
+        /// <param name="gpuHandle">A handle identifying the physical GPU for which ECC error information is to be cleared.</param>
+        /// <param name="resetCurrent">Reset the current ECC error counters.</param>
+        /// <param name="resetAggregated">Reset the aggregate ECC error counters.</param>
+        public static void ResetECCErrorInfo(
+            PhysicalGPUHandle gpuHandle,
+            bool resetCurrent,
+            bool resetAggregated)
+        {
+            var status = DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_ResetECCErrorInfo>()(
+                gpuHandle,
+                (byte) (resetCurrent ? 1 : 0),
+                (byte) (resetAggregated ? 1 : 0)
+            );
+
+            if (status != Status.Ok)
+            {
+                throw new NVIDIAApiException(status);
+            }
+        }
+
+        /// <summary>
+        ///     [PRIVATE]
+        ///     Restores the cooler policy table to default for the passed GPU handle and cooler index.
+        /// </summary>
+        /// <param name="gpuHandle">The handle of the GPU to perform the operation on.</param>
+        /// <param name="policy">The cooler policy to restore to default.</param>
+        /// <param name="indexes">The indexes of the coolers to restore their policy tables to default.</param>
+        public static void RestoreCoolerPolicyTable(
+            PhysicalGPUHandle gpuHandle,
+            CoolerPolicy policy,
+            uint[] indexes = null)
+        {
+            var status = DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_RestoreCoolerPolicyTable>()(
+                gpuHandle,
+                indexes,
+                (uint) (indexes?.Length ?? 0),
+                policy
+            );
+
+            if (status != Status.Ok)
+            {
+                throw new NVIDIAApiException(status);
+            }
+        }
+
+        /// <summary>
+        ///     [PRIVATE]
+        ///     Restores the cooler settings to default for the passed GPU handle and cooler index.
+        /// </summary>
+        /// <param name="gpuHandle">The handle of the GPU to perform the operation on.</param>
+        /// <param name="indexes">The indexes of the coolers to restore their settings to default.</param>
+        public static void RestoreCoolerSettings(
+            PhysicalGPUHandle gpuHandle,
+            uint[] indexes = null)
+        {
+            var status = DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_RestoreCoolerSettings>()(
+                gpuHandle,
+                indexes,
+                (uint) (indexes?.Length ?? 0)
+            );
+
+            if (status != Status.Ok)
+            {
+                throw new NVIDIAApiException(status);
+            }
+        }
+
+
+        /// <summary>
+        ///     [PRIVATE] - [Pascal Only]
+        ///     Sets the clock boost lock status for the passed GPU handle.
+        /// </summary>
+        /// <param name="gpuHandle">The handle of the GPU to perform the operation on.</param>
+        /// <param name="clockBoostLock">The new clock boost lock status.</param>
+        public static void SetClockBoostLock(PhysicalGPUHandle gpuHandle, PrivateClockBoostLockV2 clockBoostLock)
+        {
+            using (var clockLockReference = ValueTypeReference.FromValueType(clockBoostLock))
+            {
+                var status = DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_SetClockBoostLock>()(
+                    gpuHandle,
+                    clockLockReference
+                );
+
+                if (status != Status.Ok)
+                {
+                    throw new NVIDIAApiException(status);
+                }
+            }
+        }
+
+        /// <summary>
+        ///     [PRIVATE] - [Pascal Only]
+        ///     Sets the clock boost table for the passed GPU handle.
+        /// </summary>
+        /// <param name="gpuHandle">The handle of the GPU to perform the operation on.</param>
+        /// <param name="clockBoostTable">The new clock table.</param>
+        public static void SetClockBoostTable(PhysicalGPUHandle gpuHandle, PrivateClockBoostTableV1 clockBoostTable)
+        {
+            using (var clockTableReference = ValueTypeReference.FromValueType(clockBoostTable))
+            {
+                var status = DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_SetClockBoostTable>()(
+                    gpuHandle,
+                    clockTableReference
+                );
+
+                if (status != Status.Ok)
+                {
+                    throw new NVIDIAApiException(status);
+                }
+            }
+        }
+
+        /// <summary>
+        ///     [PRIVATE]
+        ///     Sets the cooler levels for the passed GPU handle.
+        /// </summary>
+        /// <param name="gpuHandle">The handle of the GPU to perform the operation on.</param>
+        /// <param name="index">The cooler index.</param>
+        /// <param name="coolerLevels">The cooler level information.</param>
+        /// <param name="levelsCount">The number of entries in the cooler level information.</param>
+        // ReSharper disable once TooManyArguments
+        public static void SetCoolerLevels(
+            PhysicalGPUHandle gpuHandle,
+            uint index,
+            PrivateCoolerLevelsV1 coolerLevels,
+            uint levelsCount
+        )
+        {
+            using (var coolerLevelsReference = ValueTypeReference.FromValueType(coolerLevels))
+            {
+                var status = DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_SetCoolerLevels>()(
+                    gpuHandle,
+                    index,
+                    coolerLevelsReference,
+                    levelsCount
+                );
+
+                if (status != Status.Ok)
+                {
+                    throw new NVIDIAApiException(status);
+                }
+            }
+        }
+
+        /// <summary>
+        ///     [PRIVATE]
+        ///     Sets the cooler policy table for the passed GPU handle.
+        /// </summary>
+        /// <param name="gpuHandle">The handle of the GPU to perform the operation on.</param>
+        /// <param name="index">The cooler index.</param>
+        /// <param name="coolerPolicyTable">The cooler policy table.</param>
+        /// <param name="policyLevelsCount">The number of entries in the cooler policy table.</param>
+        // ReSharper disable once TooManyArguments
+        public static void SetCoolerPolicyTable(
+            PhysicalGPUHandle gpuHandle,
+            uint index,
+            PrivateCoolerPolicyTableV1 coolerPolicyTable,
+            uint policyLevelsCount
+        )
+        {
+            var instance = typeof(PrivateCoolerPolicyTableV1).Instantiate<PrivateCoolerPolicyTableV1>();
+
+            using (var policyTableReference = ValueTypeReference.FromValueType(instance))
+            {
+                var status = DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_SetCoolerPolicyTable>()(
+                    gpuHandle,
+                    index,
+                    policyTableReference,
+                    policyLevelsCount
+                );
+
+                if (status != Status.Ok)
+                {
+                    throw new NVIDIAApiException(status);
+                }
+            }
+        }
+
+        /// <summary>
+        ///     [PRIVATE] - [Pascal Only]
+        ///     Sets the core voltage boost percentage
+        /// </summary>
+        /// <param name="gpuHandle">The handle of the GPU to perform the operation on.</param>
+        /// <param name="boostPercent">The voltage boost percentages.</param>
+        public static void SetCoreVoltageBoostPercent(
+            PhysicalGPUHandle gpuHandle,
+            PrivateVoltageBoostPercentV1 boostPercent)
+        {
+            using (var boostPercentReference = ValueTypeReference.FromValueType(boostPercent))
+            {
+                var status = DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_SetCoreVoltageBoostPercent>()(
+                    gpuHandle,
+                    boostPercentReference
+                );
+
+                if (status != Status.Ok)
+                {
+                    throw new NVIDIAApiException(status);
+                }
+            }
+        }
+
+        /// <summary>
+        ///     This function updates the ECC memory configuration setting.
+        /// </summary>
+        /// <param name="gpuHandle">A handle identifying the physical GPU for which to update the ECC configuration setting.</param>
+        /// <param name="isEnable">The new ECC configuration setting.</param>
+        /// <param name="isEnableImmediately">Request that the new setting take effect immediately.</param>
+        public static void SetECCConfiguration(
+            PhysicalGPUHandle gpuHandle,
+            bool isEnable,
+            bool isEnableImmediately)
+        {
+            var status = DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_SetECCConfiguration>()(
+                gpuHandle,
+                (byte) (isEnable ? 1 : 0),
+                (byte) (isEnableImmediately ? 1 : 0)
+            );
+
+            if (status != Status.Ok)
+            {
+                throw new NVIDIAApiException(status);
+            }
         }
 
         /// <summary>
@@ -1355,6 +2597,29 @@ namespace NvAPIWrapper.Native
             }
         }
 
+        /// <summary>
+        ///     [PRIVATE]
+        ///     Sets the thermal policies status for the passed GPU handle.
+        /// </summary>
+        /// <param name="gpuHandle">The handle of the GPU to perform the operation on.</param>
+        /// <param name="thermalPoliciesStatus">The new thermal limiter policy to apply.</param>
+        public static void SetThermalPoliciesStatus(
+            PhysicalGPUHandle gpuHandle,
+            PrivateThermalPoliciesStatusV2 thermalPoliciesStatus)
+        {
+            using (var policiesStatusReference = ValueTypeReference.FromValueType(thermalPoliciesStatus))
+            {
+                var status = DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_SetThermalPoliciesStatus>()(
+                    gpuHandle,
+                    policiesStatusReference
+                );
+
+                if (status != Status.Ok)
+                {
+                    throw new NVIDIAApiException(status);
+                }
+            }
+        }
 
         /// <summary>
         ///     This function determines if a set of GPU outputs can be active simultaneously.  While a GPU may have 'n' outputs,

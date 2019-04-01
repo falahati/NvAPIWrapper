@@ -16,12 +16,12 @@ namespace NvAPIWrapper.Native.GPU.Structures
     [StructureVersion(1)]
     public struct ClockFrequenciesV1 : IInitializable, IClockFrequencies
     {
-        internal const int MaxClocksPerGpu = 32;
+        internal const int MaxClocksPerGPU = 32;
 
         internal StructureVersion _Version;
         internal readonly uint _Reserved;
 
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxClocksPerGpu)]
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxClocksPerGPU)]
         internal ClockDomainInfo[] _Clocks;
 
         /// <inheritdoc />

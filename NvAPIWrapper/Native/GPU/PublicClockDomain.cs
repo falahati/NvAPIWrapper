@@ -10,7 +10,7 @@ namespace NvAPIWrapper.Native.GPU
         /// <summary>
         ///     Undefined
         /// </summary>
-        Undefined = ClockFrequenciesV1.MaxClocksPerGpu,
+        Undefined = ClockFrequenciesV1.MaxClocksPerGPU,
 
         /// <summary>
         ///     3D graphics clock
