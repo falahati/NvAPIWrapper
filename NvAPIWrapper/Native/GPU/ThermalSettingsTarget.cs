@@ -1,8 +1,11 @@
-﻿namespace NvAPIWrapper.Native.GPU
+﻿using System;
+
+namespace NvAPIWrapper.Native.GPU
 {
     /// <summary>
     ///     List of possible thermal targets
     /// </summary>
+    [Flags]
     public enum ThermalSettingsTarget
     {
         /// <summary>
