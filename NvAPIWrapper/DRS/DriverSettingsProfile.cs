@@ -275,7 +275,13 @@ namespace NvAPIWrapper.DRS
                 );
             }
 
+            var isPredefined = IsPredefined;
             DRSApi.RestoreDefaults(Session.Handle, Handle);
+
+            if (!isPredefined)
+            {
+                Handle = DRSProfileHandle.DefaultHandle;
+            }
         }
 
         public void RestoreSettingToDefault(uint settingId)
