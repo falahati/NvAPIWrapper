@@ -63,6 +63,14 @@ namespace NvAPIWrapper
         }
 
         /// <summary>
+        ///     PRIVATE - Requests to restart the display driver
+        /// </summary>
+        public static void RestartDisplayDriver()
+        {
+            GeneralApi.RestartDisplayDriver();
+        }
+
+        /// <summary>
         ///     Decrements the ref-counter and when it reaches ZERO, unloads NVAPI library.
         /// </summary>
         public static void Unload()
