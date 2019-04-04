@@ -339,6 +339,11 @@ namespace NvAPIWrapper.Native.Delegates
             [Out] out uint revisionId,
             [Out] out uint extDeviceId);
 
+        [FunctionId(FunctionId.NvAPI_GPU_GetPerfDecreaseInfo)]
+        public delegate Status NvAPI_GPU_GetPerfDecreaseInfo(
+            [In] PhysicalGPUHandle gpu,
+            [Out] out PerformanceDecreaseReason performanceDecreaseReason);
+
         [FunctionId(FunctionId.NvAPI_GPU_GetPhysicalFrameBufferSize)]
         public delegate Status NvAPI_GPU_GetPhysicalFrameBufferSize(
             [In] PhysicalGPUHandle physicalGpu,

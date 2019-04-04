@@ -1485,6 +1485,26 @@ namespace NvAPIWrapper.Native
         }
 
         /// <summary>
+        ///     Gets the reason behind the current decrease in performance.
+        /// </summary>
+        /// <param name="gpuHandle">The handle of the GPU to perform the operation on.</param>
+        /// <returns>A value indicating the reason of current performance decrease.</returns>
+        public static PerformanceDecreaseReason GetPerformanceDecreaseInfo(PhysicalGPUHandle gpuHandle)
+        {
+            var status = DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_GetPerfDecreaseInfo>()(
+                gpuHandle,
+                out var decreaseReason
+            );
+
+            if (status != Status.Ok)
+            {
+                throw new NVIDIAApiException(status);
+            }
+
+            return decreaseReason;
+        }
+
+        /// <summary>
         ///     This function retrieves all available performance states (P-States) information.
         ///     P-States are GPU active/executing performance capability and power consumption states.
         /// </summary>
