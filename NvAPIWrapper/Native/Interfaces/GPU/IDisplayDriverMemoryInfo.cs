@@ -8,26 +8,26 @@
         /// <summary>
         ///     Size(in kb) of the available physical frame buffer for allocating video memory surfaces.
         /// </summary>
-        uint AvailableDedicatedVideoMemory { get; }
+        uint AvailableDedicatedVideoMemoryInkB { get; }
 
         /// <summary>
         ///     Size(in kb) of the current available physical frame buffer for allocating video memory surfaces.
         /// </summary>
-        uint CurrentAvailableDedicatedVideoMemory { get; }
+        uint CurrentAvailableDedicatedVideoMemoryInkB { get; }
 
         /// <summary>
         ///     Size(in kb) of the physical frame buffer.
         /// </summary>
-        uint DedicatedVideoMemory { get; }
+        uint DedicatedVideoMemoryInkB { get; }
 
         /// <summary>
         ///     Size(in kb) of shared system memory that driver is allowed to commit for surfaces across all allocations.
         /// </summary>
-        uint SharedSystemMemory { get; }
+        uint SharedSystemMemoryInkB { get; }
 
         /// <summary>
         ///     Size(in kb) of system memory the driver allocates at load time.
         /// </summary>
-        uint SystemVideoMemory { get; }
+        uint SystemVideoMemoryInkB { get; }
     }
 }
