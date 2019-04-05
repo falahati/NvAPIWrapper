@@ -39,6 +39,14 @@ namespace NvAPIWrapper.Display
         }
 
         /// <summary>
+        ///     Gets display driver build title
+        /// </summary>
+        public string DriverBuildTitle
+        {
+            get => DisplayApi.GetDisplayDriverBuildTitle(Handle);
+        }
+
+        /// <summary>
         ///     Gets display handle
         /// </summary>
         public DisplayHandle Handle { get; }
