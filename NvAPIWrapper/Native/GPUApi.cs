@@ -388,6 +388,33 @@ namespace NvAPIWrapper.Native
         }
 
         /// <summary>
+        ///     [PRIVATE]
+        ///     Gets the architect information for the passed physical GPU handle.
+        /// </summary>
+        /// <param name="gpuHandle">The GPU handle to retrieve information for.</param>
+        /// <returns>The GPU architect information.</returns>
+        public static PrivateArchitectInfoV2 GetArchitectInfo(PhysicalGPUHandle gpuHandle)
+        {
+            var instance = typeof(PrivateArchitectInfoV2).Instantiate<PrivateArchitectInfoV2>();
+
+            using (var architectInfoReference = ValueTypeReference.FromValueType(instance))
+            {
+                var status = DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_GetArchInfo>()(
+                    gpuHandle,
+                    architectInfoReference
+                );
+
+                if (status != Status.Ok)
+                {
+                    throw new NVIDIAApiException(status);
+                }
+
+                return architectInfoReference.ToValueType<PrivateArchitectInfoV2>(
+                    typeof(PrivateArchitectInfoV2));
+            }
+        }
+
+        /// <summary>
         ///     This API Retrieves the Board information (a unique GPU Board Serial Number) stored in the InfoROM.
         /// </summary>
         /// <param name="gpuHandle">Physical GPU Handle</param>

@@ -1,0 +1,32 @@
+﻿using System.Runtime.InteropServices;
+using NvAPIWrapper.Native.Attributes;
+using NvAPIWrapper.Native.General.Structures;
+using NvAPIWrapper.Native.Interfaces;
+
+namespace NvAPIWrapper.Native.GPU.Structures
+{
+    [StructLayout(LayoutKind.Sequential)]
+    [StructureVersion(2)]
+    public struct PrivateArchitectInfoV2 : IInitializable
+    {
+        internal StructureVersion _Version;
+        internal uint _Unknown1;
+        internal uint _Unknown2;
+        internal uint _Revision;
+
+        public uint Unknown1
+        {
+            get => _Unknown1;
+        }
+
+        public uint Unknown2
+        {
+            get => _Unknown2;
+        }
+
+        public uint Revision
+        {
+            get => _Revision;
+        }
+    }
+}

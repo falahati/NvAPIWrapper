@@ -134,6 +134,12 @@ namespace NvAPIWrapper.Native.Delegates
             ValueTypeArray pDisplayIds,
             [In] [Out] ref uint displayIdCount);
 
+        [FunctionId(FunctionId.NvAPI_GPU_GetArchInfo)]
+        public delegate Status NvAPI_GPU_GetArchInfo(
+            [In] PhysicalGPUHandle physicalGpu,
+            [Accepts(typeof(PrivateArchitectInfoV2))] [In]
+            ValueTypeReference info);
+
         [FunctionId(FunctionId.NvAPI_GPU_GetBoardInfo)]
         public delegate Status NvAPI_GPU_GetBoardInfo(
             [In] PhysicalGPUHandle physicalGpu,
