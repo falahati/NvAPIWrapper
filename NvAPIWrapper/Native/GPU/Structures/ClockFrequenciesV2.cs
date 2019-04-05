@@ -26,7 +26,7 @@ namespace NvAPIWrapper.Native.GPU.Structures
         internal ClockDomainInfo[] _Clocks;
 
         /// <summary>
-        ///     Creates a new ClockFrequenciesV3
+        ///     Creates a new ClockFrequenciesV2
         /// </summary>
         /// <param name="clockType">The type of the clock frequency being requested</param>
         public ClockFrequenciesV2(ClockType clockType = ClockType.CurrentClock)

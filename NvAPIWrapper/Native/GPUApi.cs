@@ -2204,7 +2204,7 @@ namespace NvAPIWrapper.Native
 
         /// <summary>
         ///     [PRIVATE] - [Pascal Only]
-        ///     Gets the VFP curve for the passed GPU handle.
+        ///     Gets the GPU boost frequency curve controls for the passed GPU handle.
         /// </summary>
         /// <param name="gpuHandle">The handle of the GPU to perform the operation on.</param>
         /// <returns>The retrieved VFP curve.</returns>
