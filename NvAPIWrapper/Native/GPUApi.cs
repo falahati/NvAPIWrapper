@@ -1219,7 +1219,7 @@ namespace NvAPIWrapper.Native
         /// <exception cref="NVIDIAApiException">Status.NvidiaDeviceNotFound: No NVIDIA GPU driving a display was found</exception>
         /// <exception cref="NVIDIAApiException">Status.ExpectedPhysicalGPUHandle: gpuHandle was not a physical GPU handle.</exception>
         /// <exception cref="NVIDIAApiException">Status.NotSupported: API call is not supported on current architecture</exception>
-        public static int GetGPUCoreCount(PhysicalGPUHandle gpuHandle)
+        public static uint GetGPUCoreCount(PhysicalGPUHandle gpuHandle)
         {
             var status =
                 DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_GetGpuCoreCount>()(gpuHandle, out var cores);
@@ -1229,7 +1229,7 @@ namespace NvAPIWrapper.Native
                 throw new NVIDIAApiException(status);
             }
 
-            return (int) cores;
+            return cores;
         }
 
         // ReSharper disable once CommentTypo
@@ -1888,7 +1888,7 @@ namespace NvAPIWrapper.Native
         /// <returns>Number of Shader SubPipes on the GPU</returns>
         /// <exception cref="NVIDIAApiException">Status.NvidiaDeviceNotFound: No NVIDIA GPU driving a display was found</exception>
         /// <exception cref="NVIDIAApiException">Status.ExpectedPhysicalGPUHandle: gpuHandle was not a physical GPU handle</exception>
-        public static int GetShaderSubPipeCount(PhysicalGPUHandle gpuHandle)
+        public static uint GetShaderSubPipeCount(PhysicalGPUHandle gpuHandle)
         {
             var status =
                 DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_GetShaderSubPipeCount>()(gpuHandle, out var count);
@@ -1898,7 +1898,7 @@ namespace NvAPIWrapper.Native
                 throw new NVIDIAApiException(status);
             }
 
-            return (int) count;
+            return count;
         }
 
         /// <summary>
