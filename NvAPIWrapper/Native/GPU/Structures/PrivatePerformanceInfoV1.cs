@@ -21,22 +21,22 @@ namespace NvAPIWrapper.Native.GPU.Structures
 
         public bool IsPowerLimitSupported
         {
-            get => _SupportedLimits.GetBit(0);
+            get => _SupportedLimits.HasFlag(PerformanceLimit.PowerLimit);
         }
 
         public bool IsTemperatureLimitSupported
         {
-            get => _SupportedLimits.GetBit(1);
+            get => _SupportedLimits.HasFlag(PerformanceLimit.TemperatureLimit);
         }
 
         public bool IsVoltageLimitSupported
         {
-            get => _SupportedLimits.GetBit(2);
+            get => _SupportedLimits.HasFlag(PerformanceLimit.VoltageLimit);
         }
 
         public bool IsNoLoadLimitSupported
         {
-            get => _SupportedLimits.GetBit(4);
+            get => _SupportedLimits.HasFlag(PerformanceLimit.NoLoadLimit);
         }
     }
 }
