@@ -9,6 +9,9 @@ using NvAPIWrapper.Native.Stereo.Structures;
 
 namespace NvAPIWrapper.Native
 {
+    /// <summary>
+    ///     Contains Stereo static functions
+    /// </summary>
     // ReSharper disable once ClassTooBig
     public static class StereoApi
     {
