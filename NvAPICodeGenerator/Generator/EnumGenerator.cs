@@ -64,6 +64,7 @@ namespace NvAPICodeGenerator.Generator
                     extraSpaces = "    ";
                 }
 
+                writer.WriteLine("#pragma warning disable 1591");
                 writer.WriteLine($"{extraSpaces}public enum {_name} : {typeof(T).Name}");
                 writer.WriteLine($"{extraSpaces}{{");
 
@@ -103,6 +104,7 @@ namespace NvAPICodeGenerator.Generator
                 }
 
                 writer.WriteLine($"{extraSpaces}}}");
+                writer.WriteLine("#pragma warning restore 1591");
 
                 if (!string.IsNullOrWhiteSpace(_ns))
                 {
