@@ -5,8 +5,9 @@ namespace NvAPIWrapper.GPU
     /// <summary>
     ///     Contains information about the PCI connection
     /// </summary>
-    public struct PCIIdentifiers : IEquatable<PCIIdentifiers>
+    public class PCIIdentifiers : IEquatable<PCIIdentifiers>
     {
+        // ReSharper disable once TooManyDependencies
         internal PCIIdentifiers(uint deviceId, uint subSystemId, uint revisionId, int externalDeviceId = 0)
         {
             DeviceId = deviceId;
@@ -25,36 +26,37 @@ namespace NvAPIWrapper.GPU
             VendorId = (ushort) ((DeviceId << 16) >> 16);
         }
 
+        /// <summary>
+        ///     Gets the internal PCI device identifier
+        /// </summary>
+        public uint DeviceId { get; }
+
+        /// <summary>
+        ///     Gets the external PCI device identifier
+        /// </summary>
+        public ushort ExternalDeviceId { get; }
+
+        /// <summary>
+        ///     Gets the internal PCI device-specific revision identifier
+        /// </summary>
+        public uint RevisionId { get; }
+
+        /// <summary>
+        ///     Gets the internal PCI subsystem identifier
+        /// </summary>
+        public uint SubSystemId { get; }
+
+        /// <summary>
+        ///     Gets the vendor identification calculated from internal device identification
+        /// </summary>
+        public ushort VendorId { get; }
+
         /// <inheritdoc />
         public bool Equals(PCIIdentifiers other)
         {
             return DeviceId == other.DeviceId &&
                    SubSystemId == other.SubSystemId &&
                    RevisionId == other.RevisionId;
-        }
-
-        /// <inheritdoc />
-        public override bool Equals(object obj)
-        {
-            if (ReferenceEquals(null, obj))
-            {
-                return false;
-            }
-
-            return obj is PCIIdentifiers && Equals((PCIIdentifiers) obj);
-        }
-
-        /// <inheritdoc />
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                var hashCode = (int) DeviceId;
-                hashCode = (hashCode * 397) ^ (int) SubSystemId;
-                hashCode = (hashCode * 397) ^ (int) RevisionId;
-
-                return hashCode;
-            }
         }
 
         /// <summary>
@@ -80,34 +82,33 @@ namespace NvAPIWrapper.GPU
         }
 
         /// <inheritdoc />
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+
+            return obj is PCIIdentifiers identifiers && Equals(identifiers);
+        }
+
+        /// <inheritdoc />
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = (int) DeviceId;
+                hashCode = (hashCode * 397) ^ (int) SubSystemId;
+                hashCode = (hashCode * 397) ^ (int) RevisionId;
+
+                return hashCode;
+            }
+        }
+
+        /// <inheritdoc />
         public override string ToString()
         {
             return $"PCI\\VEN_{VendorId:X}&DEV_{ExternalDeviceId:X}&SUBSYS_{SubSystemId:X}&REV_{RevisionId:X}";
         }
-
-        /// <summary>
-        ///     Gets the internal PCI device identifier
-        /// </summary>
-        public uint DeviceId { get; }
-
-        /// <summary>
-        ///     Gets the internal PCI subsystem identifier
-        /// </summary>
-        public uint SubSystemId { get; }
-
-        /// <summary>
-        ///     Gets the internal PCI device-specific revision identifier
-        /// </summary>
-        public uint RevisionId { get; }
-
-        /// <summary>
-        ///     Gets the vendor identification calculated from internal device identification
-        /// </summary>
-        public ushort VendorId { get; }
-
-        /// <summary>
-        ///     Gets the external PCI device identifier
-        /// </summary>
-        public ushort ExternalDeviceId { get; }
     }
 }

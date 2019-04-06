@@ -31,6 +31,12 @@ namespace NvAPIWrapper.Native.GPU.Structures
 
         internal PerformanceStates20InfoV2.PerformanceStates20OverVoltingSetting _OverVoltingSettings;
 
+        /// <summary>
+        ///     Creates a new instance of <see cref="PerformanceStates20InfoV3" />
+        /// </summary>
+        /// <param name="performanceStates">The list of performance states and their settings.</param>
+        /// <param name="clocksCount">Number of clock frequencies per each performance state.</param>
+        /// <param name="baseVoltagesCount">Number of base voltage per each performance state.</param>
         public PerformanceStates20InfoV3(
             PerformanceStates20InfoV1.PerformanceState20[] performanceStates,
             uint clocksCount,
@@ -56,6 +62,13 @@ namespace NvAPIWrapper.Native.GPU.Structures
             Array.Copy(performanceStates, 0, _PerformanceStates, 0, performanceStates.Length);
         }
 
+        /// <summary>
+        ///     Creates a new instance of <see cref="PerformanceStates20InfoV3" />
+        /// </summary>
+        /// <param name="performanceStates">The list of performance states and their settings.</param>
+        /// <param name="clocksCount">Number of clock frequencies per each performance state.</param>
+        /// <param name="baseVoltagesCount">Number of base voltage per each performance state.</param>
+        /// <param name="generalVoltages">The list of general voltages and their settings.</param>
         // ReSharper disable once TooManyDependencies
         public PerformanceStates20InfoV3(
             PerformanceStates20InfoV1.PerformanceState20[] performanceStates,

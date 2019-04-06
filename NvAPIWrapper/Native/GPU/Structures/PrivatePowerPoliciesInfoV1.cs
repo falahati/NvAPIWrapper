@@ -6,6 +6,9 @@ using NvAPIWrapper.Native.Interfaces;
 
 namespace NvAPIWrapper.Native.GPU.Structures
 {
+    /// <summary>
+    ///     Contains information regarding GPU power policies
+    /// </summary>
     [StructLayout(LayoutKind.Sequential, Pack = 8)]
     [StructureVersion(1)]
     public struct PrivatePowerPoliciesInfoV1 : IInitializable
@@ -19,11 +22,17 @@ namespace NvAPIWrapper.Native.GPU.Structures
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxNumberOfPowerPolicyInfoEntries)]
         internal readonly PowerPolicyInfoEntry[] _PowerPolicyInfoEntries;
 
+        /// <summary>
+        ///     Gets a list of power policy entries
+        /// </summary>
         public PowerPolicyInfoEntry[] PowerPolicyInfoEntries
         {
             get => _PowerPolicyInfoEntries.Take(_PowerPolicyEntriesCount).ToArray();
         }
 
+        /// <summary>
+        ///     Contains information regarding a GPU power policy entry
+        /// </summary>
         [StructLayout(LayoutKind.Sequential, Pack = 8)]
         public struct PowerPolicyInfoEntry
         {
@@ -39,22 +48,34 @@ namespace NvAPIWrapper.Native.GPU.Structures
             internal uint _MaximumPower;
             internal uint _Unknown7;
 
+            /// <summary>
+            ///     Gets the performance state identification number
+            /// </summary>
             public PerformanceStateId PerformanceStateId
             {
                 get => _StateId;
             }
 
-            public uint MinimumPower
+            /// <summary>
+            ///     Gets the minimum power limit in per cent mille
+            /// </summary>
+            public uint MinimumPowerInPCM
             {
                 get => _MinimumPower;
             }
 
-            public uint DefaultPower
+            /// <summary>
+            ///     Gets the default power limit in per cent mille
+            /// </summary>
+            public uint DefaultPowerInPCM
             {
                 get => _DefaultPower;
             }
 
-            public uint MaximumPower
+            /// <summary>
+            ///     Gets the maximum power limit in per cent mille
+            /// </summary>
+            public uint MaximumPowerInPCM
             {
                 get => _MaximumPower;
             }

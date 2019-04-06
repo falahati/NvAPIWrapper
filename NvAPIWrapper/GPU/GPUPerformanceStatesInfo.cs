@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using NvAPIWrapper.Native.GPU;
+using NvAPIWrapper.Native.GPU.Structures;
 using NvAPIWrapper.Native.Interfaces.GPU;
 
 namespace NvAPIWrapper.GPU
@@ -8,11 +9,12 @@ namespace NvAPIWrapper.GPU
     /// <summary>
     ///     Holds the retrieved performance states information
     /// </summary>
-    public class GPUPerformanceStatesInfo
+    public class GPUPerformanceStatesInformation
     {
-        internal GPUPerformanceStatesInfo(
+        internal GPUPerformanceStatesInformation(
             IPerformanceStates20Info states20Info,
-            PerformanceStateId currentPerformanceStateId)
+            PerformanceStateId currentPerformanceStateId,
+            PrivatePCIeInfoV2? pciInformation)
         {
             IsReadOnly = !states20Info.IsEditable;
 
@@ -23,9 +25,23 @@ namespace NvAPIWrapper.GPU
             var clocks = states20Info.Clocks;
             var baseVoltages = states20Info.Voltages;
 
-            PerformanceStates = states20Info.PerformanceStates.Select(state20 =>
-                new GPUPerformanceState(state20, clocks[state20.StateId], baseVoltages[state20.StateId])
-            ).ToArray();
+            PerformanceStates = states20Info.PerformanceStates.Select((state20, i) =>
+            {
+                PCIeInformation statePCIeInfo = null;
+
+                if (pciInformation != null && pciInformation.Value.PCIePerformanceStateInfos.Length > i)
+                {
+                    statePCIeInfo = new PCIeInformation(pciInformation.Value.PCIePerformanceStateInfos[i]);
+                }
+
+                return new GPUPerformanceState(
+                    i,
+                    state20,
+                    clocks[state20.StateId],
+                    baseVoltages[state20.StateId],
+                    statePCIeInfo
+                );
+            }).ToArray();
 
             CurrentPerformanceState =
                 PerformanceStates.FirstOrDefault(performanceState =>

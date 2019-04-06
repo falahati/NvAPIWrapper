@@ -6,6 +6,7 @@ using NvAPIWrapper.Native.Attributes;
 using NvAPIWrapper.Native.General.Structures;
 using NvAPIWrapper.Native.Helpers;
 using NvAPIWrapper.Native.Interfaces;
+using NvAPIWrapper.Native.Interfaces.GPU;
 
 namespace NvAPIWrapper.Native.GPU.Structures
 {
@@ -14,7 +15,7 @@ namespace NvAPIWrapper.Native.GPU.Structures
     /// </summary>
     [StructLayout(LayoutKind.Sequential, Pack = 8)]
     [StructureVersion(1)]
-    public struct DynamicPerformanceStatesInfoV1 : IInitializable
+    public struct DynamicPerformanceStatesInfoV1 : IInitializable, IUtilizationStatus
     {
         internal const int MaxGpuUtilizations = 8;
 
@@ -27,50 +28,40 @@ namespace NvAPIWrapper.Native.GPU.Structures
         /// <summary>
         ///     Gets a boolean value indicating if the dynamic performance state is enabled
         /// </summary>
-        public bool IsDynamicPerformanceStateEnabled
+        public bool IsDynamicPerformanceStatesEnabled
         {
             get => _Flags.GetBit(0);
         }
 
-        /// <summary>
-        ///     Gets all valid DynamicPerformanceStateUtilizationDomainInfo
-        /// </summary>
-        public Dictionary<UtilizationDomain, UtilizationDomainInfo> Domains
+        /// <inheritdoc />
+        public Dictionary<UtilizationDomain, IUtilizationDomainInfo> Domains
         {
             get => _UtilizationDomain
                 .Select((value, index) => new {index, value})
-                .Where(arg => Enum.IsDefined(typeof(UtilizationDomain), arg.index))
-                .ToDictionary(arg => (UtilizationDomain) arg.index, arg => arg.value);
+                .Where(arg => Enum.IsDefined(typeof(UtilizationDomain), arg.index) && arg.value.IsPresent)
+                .ToDictionary(arg => (UtilizationDomain) arg.index, arg => arg.value as IUtilizationDomainInfo);
         }
 
-        /// <summary>
-        ///     Gets the graphic engine (GPU) utilization
-        /// </summary>
-        public UtilizationDomainInfo GPU
+        /// <inheritdoc />
+        public IUtilizationDomainInfo GPU
         {
             get => _UtilizationDomain[(int) UtilizationDomain.GPU];
         }
 
-        /// <summary>
-        ///     Gets the frame buffer (FB) utilization
-        /// </summary>
-        public UtilizationDomainInfo FrameBuffer
+        /// <inheritdoc />
+        public IUtilizationDomainInfo FrameBuffer
         {
             get => _UtilizationDomain[(int) UtilizationDomain.FrameBuffer];
         }
 
-        /// <summary>
-        ///     Gets the Video engine (VID) utilization
-        /// </summary>
-        public UtilizationDomainInfo VideoEngine
+        /// <inheritdoc />
+        public IUtilizationDomainInfo VideoEngine
         {
             get => _UtilizationDomain[(int) UtilizationDomain.VideoEngine];
         }
 
-        /// <summary>
-        ///     Gets the Bus interface (BUS) utilization
-        /// </summary>
-        public UtilizationDomainInfo BusInterface
+        /// <inheritdoc />
+        public IUtilizationDomainInfo BusInterface
         {
             get => _UtilizationDomain[(int) UtilizationDomain.BusInterface];
         }
@@ -88,22 +79,18 @@ namespace NvAPIWrapper.Native.GPU.Structures
         ///     Holds information about a dynamic performance state utilization domain
         /// </summary>
         [StructLayout(LayoutKind.Sequential)]
-        public struct UtilizationDomainInfo
+        public struct UtilizationDomainInfo : IUtilizationDomainInfo
         {
             internal readonly uint _IsPresent;
             internal readonly uint _Percentage;
 
-            /// <summary>
-            ///     Gets a boolean value that indicates if this utilization domain is present on this GPU.
-            /// </summary>
+            /// <inheritdoc />
             public bool IsPresent
             {
                 get => _IsPresent.GetBit(0);
             }
 
-            /// <summary>
-            ///     Gets the percentage of time where the domain is considered busy in the last 1 second interval.
-            /// </summary>
+            /// <inheritdoc />
             public uint Percentage
             {
                 get => _Percentage;

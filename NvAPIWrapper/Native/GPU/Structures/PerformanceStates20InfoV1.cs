@@ -28,6 +28,12 @@ namespace NvAPIWrapper.Native.GPU.Structures
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxPerformanceStates)]
         internal PerformanceState20[] _PerformanceStates;
 
+        /// <summary>
+        ///     Creates a new instance of <see cref="PerformanceStates20InfoV1" />
+        /// </summary>
+        /// <param name="performanceStates">The list of performance states and their settings.</param>
+        /// <param name="clocksCount">Number of clock frequencies per each performance state.</param>
+        /// <param name="baseVoltagesCount">Number of base voltage per each performance state.</param>
         public PerformanceStates20InfoV1(
             PerformanceState20[] performanceStates,
             uint clocksCount,
@@ -148,7 +154,16 @@ namespace NvAPIWrapper.Native.GPU.Structures
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxPerformanceStatesBaseVoltages)]
             internal PerformanceStates20BaseVoltageEntryV1[] _BaseVoltages;
 
-            public PerformanceState20(PerformanceStateId stateId, PerformanceStates20ClockEntryV1[] clocks, PerformanceStates20BaseVoltageEntryV1[] baseVoltages)
+            /// <summary>
+            ///     Creates a new instance of <see cref="PerformanceState20" />.
+            /// </summary>
+            /// <param name="stateId">The performance identification number.</param>
+            /// <param name="clocks">The list of clock entries.</param>
+            /// <param name="baseVoltages">The list of base voltages.</param>
+            public PerformanceState20(
+                PerformanceStateId stateId,
+                PerformanceStates20ClockEntryV1[] clocks,
+                PerformanceStates20BaseVoltageEntryV1[] baseVoltages)
             {
                 if (clocks?.Length > MaxPerformanceStatesClocks)
                 {

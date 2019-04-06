@@ -1,7 +1,13 @@
 ﻿namespace NvAPIWrapper.Native.GPU
 {
+    /// <summary>
+    ///     Holds a list of possible ECC memory configurations
+    /// </summary>
     public enum ECCConfiguration : uint
     {
+        /// <summary>
+        ///     ECC memory configurations are not supported
+        /// </summary>
         NotSupported = 0,
 
         /// <summary>

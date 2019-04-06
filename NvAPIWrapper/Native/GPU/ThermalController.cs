@@ -3,7 +3,7 @@
     /// <summary>
     ///     List of possible thermal sensor controllers
     /// </summary>
-    public enum ThermalSettingsController
+    public enum ThermalController
     {
         /// <summary>
         ///     No Thermal Controller

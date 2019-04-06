@@ -5,6 +5,9 @@ using NvAPIWrapper.Native.Interfaces;
 
 namespace NvAPIWrapper.Native.GPU.Structures
 {
+    /// <summary>
+    ///     Contains information regarding GPU boost frequency curve
+    /// </summary>
     [StructLayout(LayoutKind.Sequential, Pack = 8)]
     [StructureVersion(1)]
     public struct PrivateVFPCurveV1 : IInitializable
@@ -24,57 +27,56 @@ namespace NvAPIWrapper.Native.GPU.Structures
         internal readonly uint[] _Unknown1;
 
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxNumberOfGPUCurveEntries)]
-        internal readonly GPUCurveEntry[] _GPUCurveEntries;
+        internal readonly VFPCurveEntry[] _GPUCurveEntries;
 
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxNumberOfMemoryCurveEntries)]
-        internal readonly MemoryCurveEntry[] _MemoryCurveEntries;
+        internal readonly VFPCurveEntry[] _MemoryCurveEntries;
 
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxNumberOfUnknown2)]
         internal readonly uint[] _Unknown2;
 
-        public uint[] Masks
-        {
-            get => _Masks;
-        }
 
-        public GPUCurveEntry[] GPUCurveEntries
+        /// <summary>
+        ///     Gets the list of GPU curve entries
+        /// </summary>
+        public VFPCurveEntry[] GPUCurveEntries
         {
             get => _GPUCurveEntries;
         }
 
-        public MemoryCurveEntry[] MemoryCurveEntries
+        /// <summary>
+        ///     Gets the list of memory curve entries
+        /// </summary>
+        public VFPCurveEntry[] MemoryCurveEntries
         {
             get => _MemoryCurveEntries;
         }
 
+        /// <summary>
+        ///     Contains information regarding a boost frequency curve entry
+        /// </summary>
         [StructLayout(LayoutKind.Sequential, Pack = 8)]
-        public struct GPUCurveEntry
+        public struct VFPCurveEntry
         {
             internal uint _Unknown1;
             internal uint _FrequencyInkHz;
+            internal uint _VoltageInMicroV;
             internal uint _Unknown2;
             internal uint _Unknown3;
             internal uint _Unknown4;
             internal uint _Unknown5;
-            internal uint _Unknown6;
 
+            /// <summary>
+            ///     Gets the frequency in kHz
+            /// </summary>
             public uint FrequencyInkHz
             {
                 get => _FrequencyInkHz;
             }
-        }
 
-        [StructLayout(LayoutKind.Sequential, Pack = 8)]
-        public struct MemoryCurveEntry
-        {
-            internal uint _Unknown1;
-            internal uint _Unknown2;
-            internal uint _VoltageInMicroV;
-            internal uint _Unknown3;
-            internal uint _Unknown4;
-            internal uint _Unknown5;
-            internal uint _Unknown6;
-
+            /// <summary>
+            ///     Gets the voltage in uV
+            /// </summary>
             public uint VoltageInMicroV
             {
                 get => _VoltageInMicroV;

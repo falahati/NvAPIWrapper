@@ -23,6 +23,15 @@ namespace NvAPIWrapper.GPU
         public PhysicalGPU(PhysicalGPUHandle handle)
         {
             Handle = handle;
+            UsageInformation = new GPUUsageInformation(this);
+            ThermalInformation = new GPUThermalInformation(this);
+            BusInformation = new GPUBusInformation(this);
+            ArchitectInformation = new GPUArchitectInformation(this);
+            MemoryInformation = new GPUMemoryInformation(this);
+            CoolerInformation = new GPUCoolerInformation(this);
+            ECCMemoryInformation = new ECCMemoryInformation(this);
+            PerformanceControl = new GPUPerformanceControl(this);
+            PowerTopologyInformation = new GPUPowerTopologyInformation(this);
         }
 
         /// <summary>
@@ -48,15 +57,9 @@ namespace NvAPIWrapper.GPU
         }
 
         /// <summary>
-        ///     Gets accelerated graphics port information
+        ///     Gets GPU architect information
         /// </summary>
-        public AGPInformation AGPInformation
-        {
-            get => new AGPInformation(
-                GPUApi.GetAGPAperture(Handle),
-                GPUApi.GetCurrentAGPRate(Handle)
-            );
-        }
+        public GPUArchitectInformation ArchitectInformation { get; }
 
         /// <summary>
         ///     Gets GPU base clock frequencies
@@ -112,14 +115,12 @@ namespace NvAPIWrapper.GPU
         /// <summary>
         ///     Gets GPU bus information
         /// </summary>
-        public GPUBus BusInfo
-        {
-            get => new GPUBus(
-                GPUApi.GetBusId(Handle),
-                GPUApi.GetBusSlotId(Handle),
-                GPUApi.GetBusType(Handle)
-            );
-        }
+        public GPUBusInformation BusInformation { get; }
+
+        /// <summary>
+        ///     Gets GPU coolers information
+        /// </summary>
+        public GPUCoolerInformation CoolerInformation { get; }
 
         /// <summary>
         ///     Gets corresponding logical GPU
@@ -130,43 +131,32 @@ namespace NvAPIWrapper.GPU
         }
 
         /// <summary>
-        ///     Gets total number of cores defined for this GPU, or zero for older architectures
-        /// </summary>
-        public int CUDACores
-        {
-            get => GPUApi.GetGPUCoreCount(Handle);
-        }
-
-        /// <summary>
         ///     Gets GPU current clock frequencies
         /// </summary>
         public IClockFrequencies CurrentClockFrequencies
         {
-            get => GPUApi.GetAllClockFrequencies(Handle);
+            get => GPUApi.GetAllClockFrequencies(Handle, new ClockFrequenciesV2(ClockType.CurrentClock));
         }
 
         /// <summary>
-        ///     Gets number of PCIE lanes being used for the PCIE interface downstream
+        ///     Gets the driver model number for this GPU
         /// </summary>
-        public int CurrentPCIEDownStreamWidth
+        public uint DriverModel
         {
-            get => GPUApi.GetCurrentPCIEDownStreamWidth(Handle);
+            get => GPUApi.GetDriverModel(Handle);
         }
 
         /// <summary>
-        ///     Gets the GPU dynamic performance states information (utilization domains)
+        ///     Gets GPU ECC memory information
         /// </summary>
-        public DynamicPerformanceStatesInfoV1 DynamicPerformanceStatesInfo
-        {
-            get => GPUApi.GetDynamicPerformanceStatesInfoEx(Handle);
-        }
+        public ECCMemoryInformation ECCMemoryInformation { get; }
 
         /// <summary>
-        ///     Gets the GPU fan speed in revolutions per minute
+        ///     Gets the chipset foundry
         /// </summary>
-        public int FanSpeed
+        public GPUFoundry Foundry
         {
-            get => (int) GPUApi.GetTachReading(Handle);
+            get => GPUApi.GetFoundry(Handle);
         }
 
         /// <summary>
@@ -175,6 +165,14 @@ namespace NvAPIWrapper.GPU
         public string FullName
         {
             get => GPUApi.GetFullName(Handle);
+        }
+
+        /// <summary>
+        ///     Gets the GPU identification number
+        /// </summary>
+        public uint GPUId
+        {
+            get => GPUApi.GetGPUIDFromPhysicalGPU(Handle);
         }
 
         /// <summary>
@@ -191,14 +189,6 @@ namespace NvAPIWrapper.GPU
         public PhysicalGPUHandle Handle { get; }
 
         /// <summary>
-        ///     Gets GPU interrupt number
-        /// </summary>
-        public int IRQ
-        {
-            get => GPUApi.GetIRQ(Handle);
-        }
-
-        /// <summary>
         ///     Gets a boolean value indicating the Quadro line of products
         /// </summary>
         public bool IsQuadro
@@ -207,57 +197,48 @@ namespace NvAPIWrapper.GPU
         }
 
         /// <summary>
-        ///     Gets GPU memory information
+        ///     Gets GPU memory and RAM information as well as frame-buffer information
         /// </summary>
-        public IDisplayDriverMemoryInfo MemoryInfo
-        {
-            get => GPUApi.GetMemoryInfo(Handle);
-        }
+        public GPUMemoryInformation MemoryInformation { get; }
 
         /// <summary>
-        ///     Gets the PCI identifiers
+        ///     Gets GPU performance control status and configurations
         /// </summary>
-        public PCIIdentifiers PCIIdentifiers
-        {
-            get
-            {
-                GPUApi.GetPCIIdentifiers(Handle, out var deviceId, out var subSystemId, out var revisionId,
-                    out var extDeviceId);
+        public GPUPerformanceControl PerformanceControl { get; }
 
-                return new PCIIdentifiers(deviceId, subSystemId, revisionId, (int) extDeviceId);
-            }
-        }
 
         /// <summary>
         ///     Gets the GPU performance states information and configurations
         /// </summary>
-        public GPUPerformanceStatesInfo PerformanceStatesInfo
+        public GPUPerformanceStatesInformation PerformanceStatesInfo
         {
             get
             {
                 var performanceStates20Info = GPUApi.GetPerformanceStates20(Handle);
                 var currentPerformanceState = GPUApi.GetCurrentPerformanceState(Handle);
+                PrivatePCIeInfoV2? pcieInformation = null;
 
-                return new GPUPerformanceStatesInfo(performanceStates20Info, currentPerformanceState);
+                if (BusInformation.BusType == GPUBusType.PCIExpress)
+                {
+                    try
+                    {
+                        pcieInformation = GPUApi.GetPCIEInfo(Handle);
+                    }
+                    catch
+                    {
+                        // ignore
+                    }
+                }
+
+                return new GPUPerformanceStatesInformation(performanceStates20Info, currentPerformanceState,
+                    pcieInformation);
             }
         }
 
         /// <summary>
-        ///     Gets GPU physical frame buffer size in KB. This does NOT include any system RAM that may be dedicated for use by
-        ///     the GPU.
+        ///     Gets GPU coolers information
         /// </summary>
-        public int PhysicalFrameBufferSize
-        {
-            get => GPUApi.GetPhysicalFrameBufferSize(Handle);
-        }
-
-        /// <summary>
-        ///     Gets number of GPU Shader SubPipes or SM units
-        /// </summary>
-        public int ShaderSubPipeLines
-        {
-            get => GPUApi.GetShaderSubPipeCount(Handle);
-        }
+        public GPUPowerTopologyInformation PowerTopologyInformation { get; }
 
         /// <summary>
         ///     Gets GPU system type
@@ -270,19 +251,12 @@ namespace NvAPIWrapper.GPU
         /// <summary>
         ///     Gets GPU thermal sensors information
         /// </summary>
-        public IThermalSensor[] ThermalSensors
-        {
-            get => GPUApi.GetThermalSettings(Handle);
-        }
+        public GPUThermalInformation ThermalInformation { get; }
 
         /// <summary>
-        ///     Gets virtual size of frame-buffer in KB for this GPU. This includes the physical RAM plus any system RAM that has
-        ///     been dedicated for use by the GPU.
+        ///     Gets the GPU utilization domains and usages
         /// </summary>
-        public int VirtualFrameBufferSize
-        {
-            get => GPUApi.GetVirtualFrameBufferSize(Handle);
-        }
+        public GPUUsageInformation UsageInformation { get; }
 
         /// <inheritdoc />
         public bool Equals(PhysicalGPU other)
@@ -298,6 +272,23 @@ namespace NvAPIWrapper.GPU
             }
 
             return Handle.Equals(other.Handle);
+        }
+
+        /// <summary>
+        ///     Gets the corresponding <see cref="PhysicalGPU" /> instance from a GPU identification number.
+        /// </summary>
+        /// <param name="gpuId">The GPU identification number.</param>
+        /// <returns>An instance of <see cref="PhysicalGPU" /> or <see langword="null" /> if operation failed.</returns>
+        public static PhysicalGPU FromGPUId(uint gpuId)
+        {
+            var handle = GPUApi.GetPhysicalGPUFromGPUID(gpuId);
+
+            if (handle.IsNull)
+            {
+                return null;
+            }
+
+            return new PhysicalGPU(handle);
         }
 
         /// <summary>

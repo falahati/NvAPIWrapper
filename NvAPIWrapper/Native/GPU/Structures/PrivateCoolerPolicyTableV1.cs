@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Runtime.InteropServices;
 using NvAPIWrapper.Native.Attributes;
 using NvAPIWrapper.Native.General.Structures;
@@ -7,6 +8,9 @@ using NvAPIWrapper.Native.Interfaces;
 
 namespace NvAPIWrapper.Native.GPU.Structures
 {
+    /// <summary>
+    ///     Contains information regarding GPU cooler policy table
+    /// </summary>
     [StructLayout(LayoutKind.Sequential, Pack = 8)]
     [StructureVersion(1)]
     public struct PrivateCoolerPolicyTableV1 : IInitializable
@@ -17,61 +21,92 @@ namespace NvAPIWrapper.Native.GPU.Structures
         internal CoolerPolicy _Policy;
 
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxNumberOfPolicyLevels)]
-        internal readonly PolicyLevel[] _PolicyLevels;
+        internal readonly CoolerPolicyTableEntry[] _TableEntries;
 
-        public PolicyLevel[] PolicyLevels
+        /// <summary>
+        ///     Gets an array of policy table entries
+        /// </summary>
+        /// <param name="count">The number of table entries.</param>
+        /// <returns>An array of <see cref="CoolerPolicyTableEntry" /> instances.</returns>
+        public CoolerPolicyTableEntry[] TableEntries(int count)
         {
-            get => _PolicyLevels;
+            return _TableEntries.Take(count).ToArray();
         }
 
+        /// <summary>
+        ///     Gets the table cooler policy
+        /// </summary>
         public CoolerPolicy Policy
         {
             get => _Policy;
         }
 
-        public PrivateCoolerPolicyTableV1(CoolerPolicy policy, PolicyLevel[] policyLevels)
+        /// <summary>
+        ///     Creates a new instance of <see cref="PrivateCoolerPolicyTableV1" />
+        /// </summary>
+        /// <param name="policy">The table cooler policy.</param>
+        /// <param name="policyTableEntries">An array of table entries.</param>
+        public PrivateCoolerPolicyTableV1(CoolerPolicy policy, CoolerPolicyTableEntry[] policyTableEntries)
         {
-            if (policyLevels?.Length > MaxNumberOfPolicyLevels)
+            if (policyTableEntries?.Length > MaxNumberOfPolicyLevels)
             {
                 throw new ArgumentException($"Maximum of {MaxNumberOfPolicyLevels} policy levels are configurable.",
-                    nameof(policyLevels));
+                    nameof(policyTableEntries));
             }
 
-            if (policyLevels == null || policyLevels.Length == 0)
+            if (policyTableEntries == null || policyTableEntries.Length == 0)
             {
-                throw new ArgumentException("Array is null or empty.", nameof(policyLevels));
+                throw new ArgumentException("Array is null or empty.", nameof(policyTableEntries));
             }
 
             this = typeof(PrivateCoolerPolicyTableV1).Instantiate<PrivateCoolerPolicyTableV1>();
             _Policy = policy;
-            Array.Copy(policyLevels, 0, _PolicyLevels, 0, policyLevels.Length);
+            Array.Copy(policyTableEntries, 0, _TableEntries, 0, policyTableEntries.Length);
         }
 
+        /// <summary>
+        ///     Contains information regarding a clock boost mask
+        /// </summary>
         [StructLayout(LayoutKind.Sequential, Pack = 8)]
-        public struct PolicyLevel
+        public struct CoolerPolicyTableEntry
         {
-            internal uint _LevelId;
+            internal uint _EntryId;
             internal uint _CurrentLevel;
             internal uint _DefaultLevel;
 
-            public uint LevelId
+            /// <summary>
+            ///     Gets the entry identification number
+            /// </summary>
+            public uint EntryId
             {
-                get => _LevelId;
+                get => _EntryId;
             }
 
+            /// <summary>
+            ///     Gets the current level in percentage
+            /// </summary>
             public uint CurrentLevel
             {
                 get => _CurrentLevel;
             }
 
+            /// <summary>
+            ///     Gets the default level in percentage
+            /// </summary>
             public uint DefaultLevel
             {
                 get => _DefaultLevel;
             }
 
-            public PolicyLevel(uint levelId, uint currentLevel, uint defaultLevel)
+            /// <summary>
+            ///     Creates a new instance of <see cref="CoolerPolicyTableEntry" />.
+            /// </summary>
+            /// <param name="entryId">The entry identification number.</param>
+            /// <param name="currentLevel">The current level in percentage.</param>
+            /// <param name="defaultLevel">The default level in percentage.</param>
+            public CoolerPolicyTableEntry(uint entryId, uint currentLevel, uint defaultLevel)
             {
-                _LevelId = levelId;
+                _EntryId = entryId;
                 _CurrentLevel = currentLevel;
                 _DefaultLevel = defaultLevel;
             }

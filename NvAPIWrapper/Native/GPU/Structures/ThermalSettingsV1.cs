@@ -35,14 +35,14 @@ namespace NvAPIWrapper.Native.GPU.Structures
         [StructLayout(LayoutKind.Sequential)]
         public struct ThermalSensor : IThermalSensor
         {
-            internal readonly ThermalSettingsController _Controller;
+            internal readonly ThermalController _Controller;
             internal readonly uint _DefaultMinTemp;
             internal readonly uint _DefaultMaxTemp;
             internal readonly uint _CurrentTemp;
             internal readonly ThermalSettingsTarget _Target;
 
             /// <inheritdoc />
-            public ThermalSettingsController Controller
+            public ThermalController Controller
             {
                 get => _Controller;
             }
@@ -75,7 +75,7 @@ namespace NvAPIWrapper.Native.GPU.Structures
             public override string ToString()
             {
                 return
-                    $"[{Controller}]: {Target} = {CurrentTemperature}°C [({DefaultMinimumTemperature}°C) , ({DefaultMaximumTemperature}°C)]";
+                    $"[{Target} @ {Controller}] Current: {CurrentTemperature}°C - Default Range: [({DefaultMinimumTemperature}°C) , ({DefaultMaximumTemperature}°C)]";
             }
         }
     }

@@ -6,6 +6,9 @@ using NvAPIWrapper.Native.Interfaces;
 
 namespace NvAPIWrapper.Native.GPU.Structures
 {
+    /// <summary>
+    ///     Contains information regarding GPU clock boost ranges
+    /// </summary>
     [StructLayout(LayoutKind.Sequential, Pack = 8)]
     [StructureVersion(1)]
     public struct PrivateClockBoostRangesV1 : IInitializable
@@ -22,11 +25,17 @@ namespace NvAPIWrapper.Native.GPU.Structures
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxNumberOfClocksPerGPU)]
         internal ClockBoostRange[] _ClockBoostRanges;
 
+        /// <summary>
+        ///     Gets a list of clock boost ranges
+        /// </summary>
         public ClockBoostRange[] ClockBoostRanges
         {
             get => _ClockBoostRanges.Take((int) _ClockBoostRangesCount).ToArray();
         }
 
+        /// <summary>
+        ///     Contains information regarding a clock boost range
+        /// </summary>
         [StructLayout(LayoutKind.Sequential, Pack = 8)]
         public struct ClockBoostRange
         {
@@ -40,8 +49,8 @@ namespace NvAPIWrapper.Native.GPU.Structures
             internal uint _Unknown7;
             internal uint _Unknown8;
             internal uint _Unknown9;
-            internal int _RangeMaximum;
-            internal int _RangeMinimum;
+            internal int _RangeMaximumInkHz;
+            internal int _RangeMinimumInkHz;
             internal int _MaximumTemperature;
             internal uint _Unknown10;
             internal uint _Unknown11;
@@ -49,21 +58,33 @@ namespace NvAPIWrapper.Native.GPU.Structures
             internal uint _Unknown13;
             internal uint _Unknown14;
 
+            /// <summary>
+            ///     Gets the clock type
+            /// </summary>
             public ClockType ClockType
             {
                 get => _ClockType;
             }
 
-            public int Maximum
+            /// <summary>
+            ///     Gets the maximum boost frequency in kHz
+            /// </summary>
+            public int MaximumInkHz
             {
-                get => _RangeMaximum;
+                get => _RangeMaximumInkHz;
             }
 
-            public int Minimum
+            /// <summary>
+            ///     Gets the minimum boost frequency in kHz
+            /// </summary>
+            public int MinimumInkHz
             {
-                get => _RangeMinimum;
+                get => _RangeMinimumInkHz;
             }
 
+            /// <summary>
+            ///     Gets the maximum boost temperature
+            /// </summary>
             public int MaximumTemperature
             {
                 get => _MaximumTemperature;

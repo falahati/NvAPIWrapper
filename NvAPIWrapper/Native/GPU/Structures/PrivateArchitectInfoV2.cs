@@ -5,6 +5,9 @@ using NvAPIWrapper.Native.Interfaces;
 
 namespace NvAPIWrapper.Native.GPU.Structures
 {
+    /// <summary>
+    ///     Contains information regarding a GPU architecture
+    /// </summary>
     [StructLayout(LayoutKind.Sequential)]
     [StructureVersion(2)]
     public struct PrivateArchitectInfoV2 : IInitializable
@@ -14,16 +17,9 @@ namespace NvAPIWrapper.Native.GPU.Structures
         internal uint _Unknown2;
         internal uint _Revision;
 
-        public uint Unknown1
-        {
-            get => _Unknown1;
-        }
-
-        public uint Unknown2
-        {
-            get => _Unknown2;
-        }
-
+        /// <summary>
+        ///     Gets the GPU revision
+        /// </summary>
         public uint Revision
         {
             get => _Revision;

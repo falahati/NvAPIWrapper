@@ -13,6 +13,12 @@ namespace NvAPIWrapper.Native.GPU.Structures
         internal uint _Value;
         internal PerformanceStates20ParameterDelta _ValueDelta;
 
+        /// <summary>
+        ///     Creates a new instance of <see cref="PerformanceStates20BaseVoltageEntryV1" />.
+        /// </summary>
+        /// <param name="domain">The voltage domain.</param>
+        /// <param name="value">The value in micro volt.</param>
+        /// <param name="valueDelta">The base value delta.</param>
         public PerformanceStates20BaseVoltageEntryV1(
             PerformanceVoltageDomain domain,
             uint value,
@@ -23,6 +29,11 @@ namespace NvAPIWrapper.Native.GPU.Structures
             _ValueDelta = valueDelta;
         }
 
+        /// <summary>
+        ///     Creates a new instance of <see cref="PerformanceStates20BaseVoltageEntryV1" />.
+        /// </summary>
+        /// <param name="domain">The voltage domain.</param>
+        /// <param name="valueDelta">The base value delta.</param>
         public PerformanceStates20BaseVoltageEntryV1(
             PerformanceVoltageDomain domain,
             PerformanceStates20ParameterDelta valueDelta) : this()

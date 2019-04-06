@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using NvAPIWrapper.Native.Attributes;
 using NvAPIWrapper.Native.General.Structures;
 using NvAPIWrapper.Native.Interfaces;
+using NvAPIWrapper.Native.Interfaces.GPU;
 
 namespace NvAPIWrapper.Native.GPU.Structures
 {
@@ -13,7 +14,7 @@ namespace NvAPIWrapper.Native.GPU.Structures
     /// </summary>
     [StructLayout(LayoutKind.Sequential, Pack = 8)]
     [StructureVersion(1)]
-    public struct PrivateUsagesInfoV1 : IInitializable
+    public struct PrivateUsagesInfoV1 : IInitializable, IUtilizationStatus
     {
         internal const int MaxNumberOfUsageEntries = DynamicPerformanceStatesInfoV1.MaxGpuUtilizations;
 
@@ -23,45 +24,35 @@ namespace NvAPIWrapper.Native.GPU.Structures
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxNumberOfUsageEntries, ArraySubType = UnmanagedType.Struct)]
         internal UsagesInfoEntry[] _UsagesInfoEntries;
 
-        /// <summary>
-        ///     Gets all valid <see cref="UsagesInfoEntry" />s
-        /// </summary>
-        public Dictionary<UtilizationDomain, UsagesInfoEntry> Usages
+        /// <inheritdoc />
+        public Dictionary<UtilizationDomain, IUtilizationDomainInfo> Domains
         {
             get => _UsagesInfoEntries
                 .Select((value, index) => new {index, value})
-                .Where(arg => Enum.IsDefined(typeof(UtilizationDomain), arg.index))
-                .ToDictionary(arg => (UtilizationDomain) arg.index, arg => arg.value);
+                .Where(arg => Enum.IsDefined(typeof(UtilizationDomain), arg.index) && arg.value.IsPresent)
+                .ToDictionary(arg => (UtilizationDomain) arg.index, arg => arg.value as IUtilizationDomainInfo);
         }
 
-        /// <summary>
-        ///     Gets the graphic engine (GPU) usage information
-        /// </summary>
-        public UsagesInfoEntry GPU
+        /// <inheritdoc />
+        public IUtilizationDomainInfo GPU
         {
             get => _UsagesInfoEntries[(int) UtilizationDomain.GPU];
         }
 
-        /// <summary>
-        ///     Gets the frame buffer (FB) usage information
-        /// </summary>
-        public UsagesInfoEntry FrameBuffer
+        /// <inheritdoc />
+        public IUtilizationDomainInfo FrameBuffer
         {
             get => _UsagesInfoEntries[(int) UtilizationDomain.FrameBuffer];
         }
 
-        /// <summary>
-        ///     Gets the video engine (VID) usage information
-        /// </summary>
-        public UsagesInfoEntry VideoEngine
+        /// <inheritdoc />
+        public IUtilizationDomainInfo VideoEngine
         {
             get => _UsagesInfoEntries[(int) UtilizationDomain.VideoEngine];
         }
 
-        /// <summary>
-        ///     Gets the bus interface (BUS) usage information
-        /// </summary>
-        public UsagesInfoEntry BusInterface
+        /// <inheritdoc />
+        public IUtilizationDomainInfo BusInterface
         {
             get => _UsagesInfoEntries[(int) UtilizationDomain.BusInterface];
         }
@@ -78,26 +69,21 @@ namespace NvAPIWrapper.Native.GPU.Structures
         /// <summary>
         ///     Holds information about the usage statistics for a domain
         /// </summary>
-
         [StructLayout(LayoutKind.Sequential, Pack = 8)]
-        public struct UsagesInfoEntry
+        public struct UsagesInfoEntry : IUtilizationDomainInfo
         {
             internal uint _IsPresent;
             internal uint _Percentage;
             internal uint _Unknown1;
             internal uint _Unknown2;
 
-            /// <summary>
-            ///     Gets a boolean value that indicates if this utilization domain is present on this GPU.
-            /// </summary>
+            /// <inheritdoc />
             public bool IsPresent
             {
                 get => _IsPresent > 0;
             }
 
-            /// <summary>
-            ///     Gets the percentage of time where the domain is considered busy in the last 1 second interval.
-            /// </summary>
+            /// <inheritdoc />
             public uint Percentage
             {
                 get => _Percentage;

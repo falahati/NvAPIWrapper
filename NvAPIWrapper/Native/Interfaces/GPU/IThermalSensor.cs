@@ -10,7 +10,7 @@ namespace NvAPIWrapper.Native.Interfaces.GPU
         /// <summary>
         ///     Internal, ADM1032, MAX6649...
         /// </summary>
-        ThermalSettingsController Controller { get; }
+        ThermalController Controller { get; }
 
         /// <summary>
         ///     Current temperature value of the thermal sensor in degree Celsius

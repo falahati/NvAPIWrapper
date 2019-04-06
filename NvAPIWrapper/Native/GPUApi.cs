@@ -2020,11 +2020,11 @@ namespace NvAPIWrapper.Native
         /// </summary>
         /// <param name="physicalGPUHandle">Handle of the physical GPU for which the memory information is to be extracted.</param>
         /// <param name="sensorTarget">Specifies the requested thermal sensor target.</param>
-        /// <returns>The device thermal sensors information array.</returns>
+        /// <returns>The device thermal sensors information.</returns>
         /// <exception cref="NVIDIANotSupportedException">This operation is not supported.</exception>
         /// <exception cref="NVIDIAApiException">Status.NvidiaDeviceNotFound: No NVIDIA GPU driving a display was found.</exception>
         /// <exception cref="Exception">A delegate callback throws an exception.</exception>
-        public static IThermalSensor[] GetThermalSettings(
+        public static IThermalSettings GetThermalSettings(
             PhysicalGPUHandle physicalGPUHandle,
             ThermalSettingsTarget sensorTarget = ThermalSettingsTarget.All)
         {
@@ -2048,7 +2048,7 @@ namespace NvAPIWrapper.Native
                         throw new NVIDIAApiException(status);
                     }
 
-                    return gpuThermalSettings.ToValueType<IThermalSettings>(acceptType).Sensors;
+                    return gpuThermalSettings.ToValueType<IThermalSettings>(acceptType);
                 }
             }
 

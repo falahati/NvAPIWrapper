@@ -12,12 +12,23 @@ namespace NvAPIWrapper.Native.GPU.Structures
         internal int _DeltaValue;
         internal PerformanceState20ParameterDeltaValueRange _DeltaRange;
 
+        /// <summary>
+        ///     Creates a new instance of <see cref="PerformanceStates20ParameterDelta" />
+        /// </summary>
+        /// <param name="deltaValue">The delta value.</param>
+        /// <param name="deltaMinimum">The delta range minimum value.</param>
+        /// <param name="deltaMaximum">The delta range maximum value.</param>
         public PerformanceStates20ParameterDelta(int deltaValue, int deltaMinimum, int deltaMaximum)
         {
             _DeltaValue = deltaValue;
             _DeltaRange = new PerformanceState20ParameterDeltaValueRange(deltaMinimum, deltaMaximum);
         }
 
+
+        /// <summary>
+        ///     Creates a new instance of <see cref="PerformanceStates20ParameterDelta" />
+        /// </summary>
+        /// <param name="deltaValue">The delta value.</param>
         public PerformanceStates20ParameterDelta(int deltaValue)
         {
             _DeltaValue = deltaValue;
@@ -50,6 +61,11 @@ namespace NvAPIWrapper.Native.GPU.Structures
             internal int _Minimum;
             internal int _Maximum;
 
+            /// <summary>
+            ///     Creates a new instance of <see cref="PerformanceState20ParameterDeltaValueRange" />.
+            /// </summary>
+            /// <param name="minimum">The minimum value of delta range.</param>
+            /// <param name="maximum">The maximum value of delta range.</param>
             public PerformanceState20ParameterDeltaValueRange(int minimum, int maximum)
             {
                 _Minimum = minimum;

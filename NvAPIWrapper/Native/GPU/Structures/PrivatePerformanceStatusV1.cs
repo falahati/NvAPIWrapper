@@ -5,6 +5,9 @@ using NvAPIWrapper.Native.Interfaces;
 
 namespace NvAPIWrapper.Native.GPU.Structures
 {
+    /// <summary>
+    ///     Contains information regarding GPU performance limitations status
+    /// </summary>
     [StructLayout(LayoutKind.Sequential, Pack = 8)]
     [StructureVersion(1)]
     public struct PrivatePerformanceStatusV1 : IInitializable
@@ -26,16 +29,9 @@ namespace NvAPIWrapper.Native.GPU.Structures
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxNumberOfUnknown5)]
         internal uint[] _Unknown5;
 
-        public ulong TimerInNanoSecond
-        {
-            get => _TimerInNanoSecond;
-        }
-
-        public ulong[] TimersInNanoSecond
-        {
-            get => _TimersInNanoSecond;
-        }
-
+        /// <summary>
+        ///     Gets the current effective performance limitation
+        /// </summary>
         public PerformanceLimit PerformanceLimit
         {
             get => _PerformanceLimit;

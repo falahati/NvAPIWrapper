@@ -8,6 +8,9 @@ using NvAPIWrapper.Native.Interfaces;
 
 namespace NvAPIWrapper.Native.GPU.Structures
 {
+    /// <summary>
+    ///     Contains information regarding GPU power policies status
+    /// </summary>
     [StructLayout(LayoutKind.Sequential, Pack = 8)]
     [StructureVersion(1)]
     public struct PrivatePowerPoliciesStatusV1 : IInitializable
@@ -21,11 +24,18 @@ namespace NvAPIWrapper.Native.GPU.Structures
             ArraySubType = UnmanagedType.Struct)]
         internal readonly PowerPolicyStatusEntry[] _PowerPoliciesStatusEntries;
 
+        /// <summary>
+        ///     Gets a list of power policy status entries
+        /// </summary>
         public PowerPolicyStatusEntry[] PowerPolicyStatusEntries
         {
             get => _PowerPoliciesStatusEntries.Take((int) _PowerPoliciesStatusEntriesCount).ToArray();
         }
 
+        /// <summary>
+        ///     Creates a new instance of <see cref="PrivatePowerPoliciesStatusV1" />
+        /// </summary>
+        /// <param name="powerPoliciesStatusEntries">The list of power policy status entries.</param>
         public PrivatePowerPoliciesStatusV1(PowerPolicyStatusEntry[] powerPoliciesStatusEntries)
         {
             if (powerPoliciesStatusEntries?.Length > MaxNumberOfPowerPoliciesStatusEntries)
@@ -52,22 +62,40 @@ namespace NvAPIWrapper.Native.GPU.Structures
             );
         }
 
+        /// <summary>
+        ///     Contains information regarding a power policies status entry
+        /// </summary>
         [StructLayout(LayoutKind.Sequential, Pack = 8)]
         public struct PowerPolicyStatusEntry
         {
-            internal uint _Unknown;
+            internal PerformanceStateId _PerformanceStateId;
+            internal uint _Unknown1;
+            internal uint _PowerTargetInPCM;
             internal uint _Unknown2;
-            internal uint _Power;
-            internal uint _Unknown3;
 
-            public PowerPolicyStatusEntry(uint power) : this()
+            /// <summary>
+            ///     Gets the performance state identification number
+            /// </summary>
+            public PerformanceStateId PerformanceStateId
             {
-                _Power = power;
+                get => _PerformanceStateId;
             }
 
-            public uint Power
+            /// <summary>
+            ///     Creates a new instance of PowerPolicyStatusEntry.
+            /// </summary>
+            /// <param name="powerTargetInPCM">The power limit target in per cent mille.</param>
+            public PowerPolicyStatusEntry(uint powerTargetInPCM) : this()
             {
-                get => _Power;
+                _PowerTargetInPCM = powerTargetInPCM;
+            }
+
+            /// <summary>
+            ///     Gets the power limit target in per cent mille
+            /// </summary>
+            public uint PowerTargetInPCM
+            {
+                get => _PowerTargetInPCM;
             }
         }
     }
