@@ -9,6 +9,9 @@ using NvAPIWrapper.Native.DRS;
 
 namespace NvAPIWrapper.DRS
 {
+    /// <summary>
+    ///     Contains information about a setting
+    /// </summary>
     public class SettingInfo
     {
         private static uint[] _availableSettingIds;
@@ -18,6 +21,9 @@ namespace NvAPIWrapper.DRS
             SettingId = settingId;
         }
 
+        /// <summary>
+        ///     Gets an array of available possible valid values.
+        /// </summary>
         public object[] AvailableValues
         {
             get
@@ -31,6 +37,9 @@ namespace NvAPIWrapper.DRS
             }
         }
 
+        /// <summary>
+        ///     Gets the default value of this setting
+        /// </summary>
         public object DefaultValue
         {
             get
@@ -46,16 +55,27 @@ namespace NvAPIWrapper.DRS
             }
         }
 
+        /// <summary>
+        ///     Gets a boolean value indicating if this setting is available on this machine and with the current version of NVIDIA
+        ///     driver
+        /// </summary>
         public bool IsAvailable
         {
             get => GetAvailableSetting().Any(info => info.SettingId == SettingId);
         }
 
+        /// <summary>
+        ///     Gets a boolean value indicating if this setting is know by this library
+        /// </summary>
         public bool IsKnown
         {
             get => IsSettingKnown(SettingId);
         }
 
+        /// <summary>
+        ///     Gets the description of this setting from the library or <see langword="null" /> if this setting is not known by
+        ///     the library.
+        /// </summary>
         public string KnownDescription
         {
             get
@@ -69,6 +89,10 @@ namespace NvAPIWrapper.DRS
             }
         }
 
+        /// <summary>
+        ///     Gets the known identification number of this setting from the library or <see langword="null" /> if this setting is
+        ///     not known by the library.
+        /// </summary>
         public KnownSettingId? KnownSettingId
         {
             get
@@ -82,6 +106,10 @@ namespace NvAPIWrapper.DRS
             }
         }
 
+        /// <summary>
+        ///     Gets the type of a static class or an enum containing possible known values for this setting from the library or
+        ///     <see langword="null" /> if this setting is not known by the library
+        /// </summary>
         public Type KnownValueType
         {
             get
@@ -114,6 +142,10 @@ namespace NvAPIWrapper.DRS
             }
         }
 
+        /// <summary>
+        ///     Gets the name of the setting from NVIDIA driver or <see langword="null" /> if the setting is not available on this
+        ///     machine.
+        /// </summary>
         public string Name
         {
             get
@@ -127,8 +159,15 @@ namespace NvAPIWrapper.DRS
             }
         }
 
+        /// <summary>
+        ///     Gets the setting identification number
+        /// </summary>
         public uint SettingId { get; }
 
+        /// <summary>
+        ///     Gets the value type of the setting from NVIDIA driver or <see langword="null" /> if the setting is not available on
+        ///     this machine.
+        /// </summary>
         public DRSSettingType? SettingType
         {
             get
@@ -144,16 +183,31 @@ namespace NvAPIWrapper.DRS
             }
         }
 
+        /// <summary>
+        ///     Gets information regarding a setting from its identification number.
+        /// </summary>
+        /// <param name="settingId">The identification number of the setting to get information about.</param>
+        /// <returns>An instance of <see cref="SettingInfo" /> containing information about the setting.</returns>
         public static SettingInfo FromId(uint settingId)
         {
             return new SettingInfo(settingId);
         }
 
+        /// <summary>
+        ///     Gets information regarding a setting from its known identification number.
+        /// </summary>
+        /// <param name="settingId">The known identification number of the setting to get information about.</param>
+        /// <returns>An instance of <see cref="SettingInfo" /> containing information about the setting.</returns>
         public static SettingInfo FromKnownSettingId(KnownSettingId settingId)
         {
             return FromId(GetSettingId(settingId));
         }
 
+        /// <summary>
+        ///     Gets information regarding a setting from its name.
+        /// </summary>
+        /// <param name="settingName">The name of the setting to get information about.</param>
+        /// <returns>An instance of <see cref="SettingInfo" /> containing information about the setting.</returns>
         public static SettingInfo FromName(string settingName)
         {
             var settingId = DRSApi.GetSettingIdFromName(settingName);
@@ -161,6 +215,10 @@ namespace NvAPIWrapper.DRS
             return FromId(settingId);
         }
 
+        /// <summary>
+        ///     Gets a list of all available setting on this machine
+        /// </summary>
+        /// <returns>Instances of <see cref="SettingInfo" /> each representing a available setting on this machine.</returns>
         public static SettingInfo[] GetAvailableSetting()
         {
             if (_availableSettingIds == null)
@@ -171,6 +229,11 @@ namespace NvAPIWrapper.DRS
             return _availableSettingIds.Select(FromId).ToArray();
         }
 
+        /// <summary>
+        ///     Gets the known identification number of a setting from its identification number
+        /// </summary>
+        /// <param name="settingId">The setting identification number.</param>
+        /// <returns>The known setting identification number if the setting is known; otherwise <see langword="null" />.</returns>
         public static KnownSettingId? GetKnownSettingId(uint settingId)
         {
             if (!IsSettingKnown(settingId))
@@ -181,6 +244,11 @@ namespace NvAPIWrapper.DRS
             return (KnownSettingId) settingId;
         }
 
+        /// <summary>
+        ///     Gets the known setting description from its identification number
+        /// </summary>
+        /// <param name="knownSettingId">The known setting identification number.</param>
+        /// <returns>The known setting description if available; otherwise <see langword="null" />.</returns>
         public static string GetSettingDescription(KnownSettingId knownSettingId)
         {
             var enumName = Enum.GetName(typeof(KnownSettingId), knownSettingId);
@@ -210,11 +278,21 @@ namespace NvAPIWrapper.DRS
             return descriptionAttribute.Description;
         }
 
+        /// <summary>
+        ///     Gets the identification number of a setting from its known identification number
+        /// </summary>
+        /// <param name="knownSettingId">The known setting identification number.</param>
+        /// <returns>The setting identification number.</returns>
         public static uint GetSettingId(KnownSettingId knownSettingId)
         {
             return (uint) knownSettingId;
         }
 
+        /// <summary>
+        ///     Checks if a setting is known by this library.
+        /// </summary>
+        /// <param name="settingId">The setting identification number.</param>
+        /// <returns>true if setting is known by this library; otherwise false.</returns>
         public static bool IsSettingKnown(uint settingId)
         {
             return Enum.IsDefined(typeof(KnownSettingId), settingId);
@@ -240,6 +318,11 @@ namespace NvAPIWrapper.DRS
             return $"#{SettingId:X}";
         }
 
+        /// <summary>
+        ///     Tries to resolve the name of a known value using its actual value
+        /// </summary>
+        /// <param name="value">The actual value</param>
+        /// <returns>The name of the known value member.</returns>
         public string ResolveKnownValueName(object value)
         {
             if (!IsKnown)

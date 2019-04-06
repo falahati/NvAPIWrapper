@@ -301,7 +301,7 @@ namespace NvAPIWrapper.Native
         /// <returns>All available setting values.</returns>
         public static DRSSettingValues EnumAvailableSettingValues(uint settingId)
         {
-            var settingValuesCount = (uint) DRSSettingValues.MaxValues;
+            var settingValuesCount = (uint) DRSSettingValues.MaximumNumberOfValues;
             var settingValues = typeof(DRSSettingValues).Instantiate<DRSSettingValues>();
 
             using (var settingValuesReference = ValueTypeReference.FromValueType(settingValues))

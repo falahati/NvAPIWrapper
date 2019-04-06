@@ -8,6 +8,7 @@ using NvAPIWrapper.Native.Interfaces.DRS;
 
 namespace NvAPIWrapper.Native.DRS.Structures
 {
+    /// <inheritdoc cref="IDRSApplication" />
     [StructLayout(LayoutKind.Sequential, Pack = 8)]
     [StructureVersion(1)]
     public struct DRSApplicationV1 : IInitializable, IDRSApplication
@@ -18,6 +19,12 @@ namespace NvAPIWrapper.Native.DRS.Structures
         internal UnicodeString _FriendlyName;
         internal UnicodeString _LauncherName;
 
+        /// <summary>
+        ///     Creates a new instance of <see cref="DRSApplicationV1" />
+        /// </summary>
+        /// <param name="applicationName">The application file name.</param>
+        /// <param name="friendlyName">The application friendly name.</param>
+        /// <param name="launcherName">The application launcher name.</param>
         public DRSApplicationV1(
             string applicationName,
             string friendlyName = null,
@@ -31,12 +38,14 @@ namespace NvAPIWrapper.Native.DRS.Structures
             LauncherName = launcherName ?? string.Empty;
         }
 
+        /// <inheritdoc />
         public bool IsPredefined
         {
             get => _IsPredefined > 0;
             private set => _IsPredefined = value ? 1u : 0u;
         }
 
+        /// <inheritdoc />
         public string ApplicationName
         {
             get => _ApplicationName.Value;
@@ -51,12 +60,14 @@ namespace NvAPIWrapper.Native.DRS.Structures
             }
         }
 
+        /// <inheritdoc />
         public string FriendlyName
         {
             get => _FriendlyName.Value;
             private set => _FriendlyName = new UnicodeString(value);
         }
 
+        /// <inheritdoc />
         public string LauncherName
         {
             get => _LauncherName.Value;

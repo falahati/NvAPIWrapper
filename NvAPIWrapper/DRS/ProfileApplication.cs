@@ -6,6 +6,9 @@ using NvAPIWrapper.Native.Interfaces.DRS;
 
 namespace NvAPIWrapper.DRS
 {
+    /// <summary>
+    ///     Represents an application rule registered in a profile
+    /// </summary>
     public class ProfileApplication
     {
         private IDRSApplication _application;
@@ -16,6 +19,9 @@ namespace NvAPIWrapper.DRS
             _application = application;
         }
 
+        /// <summary>
+        ///     Gets the application name
+        /// </summary>
         public string ApplicationName
         {
             get
@@ -31,6 +37,9 @@ namespace NvAPIWrapper.DRS
             }
         }
 
+        /// <summary>
+        ///     Gets the application command line
+        /// </summary>
         public string CommandLine
         {
             get
@@ -51,6 +60,9 @@ namespace NvAPIWrapper.DRS
             }
         }
 
+        /// <summary>
+        ///     Gets a list of files that are necessary to be present inside the application parent directory
+        /// </summary>
         public string[] FilesInFolder
         {
             get
@@ -81,6 +93,9 @@ namespace NvAPIWrapper.DRS
             }
         }
 
+        /// <summary>
+        ///     Gets the application friendly name
+        /// </summary>
         public string FriendlyName
         {
             get
@@ -96,6 +111,10 @@ namespace NvAPIWrapper.DRS
             }
         }
 
+        /// <summary>
+        ///     Gets a boolean value indicating if this application rule needs a specific command line; or <see langword="null" />
+        ///     if this information is not available.
+        /// </summary>
         public bool? HasCommandLine
         {
             get
@@ -121,6 +140,10 @@ namespace NvAPIWrapper.DRS
             }
         }
 
+        /// <summary>
+        ///     Gets a boolean value indicating if this application is a metro application; or <see langword="null" /> if this
+        ///     information is not available.
+        /// </summary>
         public bool? IsMetroApplication
         {
             get
@@ -146,6 +169,9 @@ namespace NvAPIWrapper.DRS
             }
         }
 
+        /// <summary>
+        ///     Gets a boolean value indicating if this application is predefined by the NVIDIA driver
+        /// </summary>
         public bool IsPredefined
         {
             get
@@ -161,11 +187,18 @@ namespace NvAPIWrapper.DRS
             }
         }
 
+        /// <summary>
+        ///     Gets a boolean value indicating if this instance of <see cref="ProfileApplication" /> is a valid instance
+        ///     representing an application in a profile
+        /// </summary>
         public bool IsValid
         {
             get => _application != null && Profile.IsValid;
         }
 
+        /// <summary>
+        ///     Gets the application launcher name
+        /// </summary>
         public string LauncherName
         {
             get
@@ -181,8 +214,22 @@ namespace NvAPIWrapper.DRS
             }
         }
 
+        /// <summary>
+        ///     Gets the parent profile instance
+        /// </summary>
         public DriverSettingsProfile Profile { get; }
 
+        /// <summary>
+        ///     Creates a new application
+        /// </summary>
+        /// <param name="profile">The profile to create the new application in.</param>
+        /// <param name="applicationName">The application name (with extension).</param>
+        /// <param name="friendlyName">The application friendly name.</param>
+        /// <param name="launcherName">The application launcher name.</param>
+        /// <param name="fileInFolders">An array of files necessary to be present inside the application parent directory.</param>
+        /// <param name="isMetro">A boolean value indicating if this application is a metro application.</param>
+        /// <param name="commandLine">The application command line string.</param>
+        /// <returns>A new instance of <see cref="ProfileApplication" /> representing the newly created application.</returns>
         // ReSharper disable once TooManyArguments
         // ReSharper disable once FunctionComplexityOverflow
         public static ProfileApplication CreateApplication(
@@ -210,6 +257,7 @@ namespace NvAPIWrapper.DRS
             {
                 try
                 {
+                    // ReSharper disable once EventExceptionNotDocumented
                     application = func(
                         applicationName,
                         friendlyName,
@@ -357,6 +405,9 @@ namespace NvAPIWrapper.DRS
             return ApplicationName;
         }
 
+        /// <summary>
+        ///     Deletes this application and makes this instance invalid
+        /// </summary>
         public void Delete()
         {
             if (!IsValid)

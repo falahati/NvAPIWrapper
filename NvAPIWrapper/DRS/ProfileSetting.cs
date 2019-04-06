@@ -4,6 +4,9 @@ using NvAPIWrapper.Native.DRS.Structures;
 
 namespace NvAPIWrapper.DRS
 {
+    /// <summary>
+    ///     Represents a profile setting and its value
+    /// </summary>
     public class ProfileSetting
     {
         private readonly DRSSettingV1 _setting;
@@ -13,6 +16,9 @@ namespace NvAPIWrapper.DRS
             _setting = setting;
         }
 
+        /// <summary>
+        ///     Gets the current value of the setting
+        /// </summary>
         public object CurrentValue
         {
             get
@@ -26,16 +32,25 @@ namespace NvAPIWrapper.DRS
             }
         }
 
+        /// <summary>
+        ///     Gets a boolean value indicating if the current value is the predefined value.
+        /// </summary>
         public bool IsCurrentValuePredefined
         {
             get => _setting.IsCurrentValuePredefined;
         }
 
+        /// <summary>
+        ///     Gets a boolean value indicating if this setting had a predefined valid value.
+        /// </summary>
         public bool IsPredefinedValueValid
         {
             get => _setting.IsPredefinedValueValid;
         }
 
+        /// <summary>
+        ///     Gets the predefined value of this setting.
+        /// </summary>
         public object PredefinedValue
         {
             get
@@ -49,21 +64,33 @@ namespace NvAPIWrapper.DRS
             }
         }
 
+        /// <summary>
+        ///     Gets the setting identification number
+        /// </summary>
         public uint SettingId
         {
             get => _setting.Id;
         }
 
+        /// <summary>
+        ///     Gets additional information regarding this setting including possible valid values
+        /// </summary>
         public SettingInfo SettingInfo
         {
             get => SettingInfo.FromId(SettingId);
         }
 
+        /// <summary>
+        ///     Gets the profile location of this setting
+        /// </summary>
         public DRSSettingLocation SettingLocation
         {
             get => _setting.SettingLocation;
         }
 
+        /// <summary>
+        ///     Gets the value type of this setting
+        /// </summary>
         public DRSSettingType SettingType
         {
             get => _setting.SettingType;

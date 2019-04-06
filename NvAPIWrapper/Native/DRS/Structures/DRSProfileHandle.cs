@@ -89,8 +89,10 @@ namespace NvAPIWrapper.Native.DRS.Structures
             get => default(DRSProfileHandle);
         }
 
-
-        public static DRSProfileHandle GlobalProfile
+        /// <summary>
+        ///     Gets the default global profile handle
+        /// </summary>
+        public static DRSProfileHandle DefaultGlobalProfileHandle
         {
             get => new DRSProfileHandle(new IntPtr(-1));
         }
