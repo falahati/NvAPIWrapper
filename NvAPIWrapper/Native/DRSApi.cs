@@ -10,6 +10,9 @@ using NvAPIWrapper.Native.Interfaces.DRS;
 
 namespace NvAPIWrapper.Native
 {
+    /// <summary>
+    ///     Contains driver settings static functions
+    /// </summary>
     // ReSharper disable once ClassTooBig
     public static class DRSApi
     {

@@ -13,7 +13,7 @@ namespace NvAPIWrapper.Native.DRS.Structures
     [StructureVersion(3)]
     public struct DRSApplicationV3 : IInitializable, IDRSApplication
     {
-        public const char FileInFolderSeparator = DRSApplicationV2.FileInFolderSeparator;
+        internal const char FileInFolderSeparator = DRSApplicationV2.FileInFolderSeparator;
         internal StructureVersion _Version;
         internal uint _IsPredefined;
         internal UnicodeString _ApplicationName;
