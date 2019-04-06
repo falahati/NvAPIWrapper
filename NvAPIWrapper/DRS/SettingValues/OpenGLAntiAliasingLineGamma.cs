@@ -1,5 +1,6 @@
 namespace NvAPIWrapper.DRS.SettingValues
 {
+#pragma warning disable 1591
     public enum OpenGLAntiAliasingLineGamma : uint
     {
         Disabled = 0x10,
@@ -12,4 +13,5 @@ namespace NvAPIWrapper.DRS.SettingValues
 
         Default = 0x10
     }
+#pragma warning restore 1591
 }

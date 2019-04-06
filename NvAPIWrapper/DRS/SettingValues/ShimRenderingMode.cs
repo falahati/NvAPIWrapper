@@ -1,5 +1,6 @@
 namespace NvAPIWrapper.DRS.SettingValues
 {
+#pragma warning disable 1591
     public enum ShimRenderingMode : uint
     {
         Integrated = 0x0,
@@ -20,4 +21,5 @@ namespace NvAPIWrapper.DRS.SettingValues
 
         Default = 0x10
     }
+#pragma warning restore 1591
 }

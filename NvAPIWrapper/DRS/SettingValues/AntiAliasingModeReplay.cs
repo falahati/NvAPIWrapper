@@ -1,5 +1,6 @@
 namespace NvAPIWrapper.DRS.SettingValues
 {
+#pragma warning disable 1591
     public enum AntiAliasingModeReplay : uint
     {
         SamplesMask = 0x70,
@@ -44,4 +45,5 @@ namespace NvAPIWrapper.DRS.SettingValues
 
         Default = 0x0
     }
+#pragma warning restore 1591
 }

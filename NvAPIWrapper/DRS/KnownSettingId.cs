@@ -2,6 +2,7 @@ using System.ComponentModel;
 
 namespace NvAPIWrapper.DRS
 {
+#pragma warning disable 1591
     public enum KnownSettingId : uint
     {
         /// <summary>
@@ -550,4 +551,5 @@ namespace NvAPIWrapper.DRS
 
         InvalidSetting = 0xFFFFFFFF
     }
+#pragma warning restore 1591
 }

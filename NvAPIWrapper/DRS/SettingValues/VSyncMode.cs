@@ -1,5 +1,6 @@
 namespace NvAPIWrapper.DRS.SettingValues
 {
+#pragma warning disable 1591
     public enum VSyncMode : uint
     {
         Passive = 0x60925292,
@@ -18,4 +19,5 @@ namespace NvAPIWrapper.DRS.SettingValues
 
         Default = 0x60925292
     }
+#pragma warning restore 1591
 }

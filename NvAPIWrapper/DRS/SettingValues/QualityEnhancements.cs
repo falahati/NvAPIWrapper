@@ -1,5 +1,6 @@
 namespace NvAPIWrapper.DRS.SettingValues
 {
+#pragma warning disable 1591
     public enum QualityEnhancements : uint
     {
         HighQuality = 0xFFFFFFF6,
@@ -12,4 +13,5 @@ namespace NvAPIWrapper.DRS.SettingValues
 
         Default = 0x0
     }
+#pragma warning restore 1591
 }

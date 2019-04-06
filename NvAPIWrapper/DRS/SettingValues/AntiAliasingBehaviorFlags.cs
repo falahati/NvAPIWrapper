@@ -1,5 +1,6 @@
 namespace NvAPIWrapper.DRS.SettingValues
 {
+#pragma warning disable 1591
     public enum AntiAliasingBehaviorFlags : uint
     {
         None = 0x0,
@@ -38,4 +39,5 @@ namespace NvAPIWrapper.DRS.SettingValues
 
         Mask = 0xFF1F000F
     }
+#pragma warning restore 1591
 }

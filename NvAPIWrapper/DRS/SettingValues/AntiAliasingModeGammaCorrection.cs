@@ -1,5 +1,6 @@
 namespace NvAPIWrapper.DRS.SettingValues
 {
+#pragma warning disable 1591
     public enum AntiAliasingModeGammaCorrection : uint
     {
         Mask = 0x3,
@@ -18,4 +19,5 @@ namespace NvAPIWrapper.DRS.SettingValues
 
         DefaultFermi = 0x2
     }
+#pragma warning restore 1591
 }

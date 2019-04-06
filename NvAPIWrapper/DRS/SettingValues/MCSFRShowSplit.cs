@@ -1,5 +1,6 @@
 namespace NvAPIWrapper.DRS.SettingValues
 {
+#pragma warning disable 1591
     public enum MCSFRShowSplit : uint
     {
         Disabled = 0x34534064,
@@ -8,4 +9,5 @@ namespace NvAPIWrapper.DRS.SettingValues
 
         Default = 0x34534064
     }
+#pragma warning restore 1591
 }
