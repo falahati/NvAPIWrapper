@@ -115,7 +115,7 @@ namespace NvAPISample
             ConsoleNavigation.Default.PrintNavigation(PhysicalGPU.GetPhysicalGPUs(), (i, gpu) =>
             {
                 ConsoleWriter.Default.PrintCaption("PhysicalGPU.ThermalSensors");
-                ConsoleWriter.Default.WriteObject(gpu.ThermalSensors);
+                ConsoleWriter.Default.WriteObject(gpu.ThermalInformation.ThermalSensors.ToArray());
             }, "Select a GPU to show thermal sensor values");
         }
 
