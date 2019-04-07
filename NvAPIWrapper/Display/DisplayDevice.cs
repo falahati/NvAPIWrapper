@@ -25,6 +25,7 @@ namespace NvAPIWrapper.Display
             if (extraInformation != null)
             {
                 IsAvailable = true;
+                ScanOutInformation = new ScanOutInformation(this);
                 ConnectionType = extraInformation.ConnectionType;
                 IsDynamic = extraInformation.IsDynamic;
                 IsMultiStreamRootNode = extraInformation.IsMultiStreamRootNode;
@@ -45,6 +46,7 @@ namespace NvAPIWrapper.Display
         {
             IsAvailable = true;
             DisplayId = displayIds.DisplayId;
+            ScanOutInformation = new ScanOutInformation(this);
             ConnectionType = displayIds.ConnectionType;
             IsDynamic = displayIds.IsDynamic;
             IsMultiStreamRootNode = displayIds.IsMultiStreamRootNode;
@@ -159,6 +161,11 @@ namespace NvAPIWrapper.Display
                 return Output.PhysicalGPU;
             }
         }
+
+        /// <summary>
+        ///     Gets information regarding the scan-out settings of this display device
+        /// </summary>
+        public ScanOutInformation ScanOutInformation { get; }
 
         /// <inheritdoc />
         public bool Equals(DisplayDevice other)
