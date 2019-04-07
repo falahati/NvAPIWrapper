@@ -81,6 +81,49 @@ namespace NvAPIWrapper.Native.Delegates
                 gpuHandles,
             [Out] out uint gpuCount);
 
+        [FunctionId(FunctionId.NvAPI_GPU_ClientIllumDevicesGetControl)]
+        public delegate Status NvAPI_GPU_ClientIlluminationDevicesGetControl(
+            [In] PhysicalGPUHandle gpu,
+            [Accepts(typeof(IlluminationDeviceControlParametersV1))] [In]
+            ValueTypeReference illuminationDeviceControlInfo
+        );
+
+        [FunctionId(FunctionId.NvAPI_GPU_ClientIllumDevicesGetInfo)]
+        public delegate Status NvAPI_GPU_ClientIlluminationDevicesGetInfo(
+            [In] PhysicalGPUHandle gpu,
+            [Accepts(typeof(IlluminationDeviceInfoParametersV1))] [In]
+            ValueTypeReference illuminationDevicesInfo
+        );
+
+
+        [FunctionId(FunctionId.NvAPI_GPU_ClientIllumDevicesSetControl)]
+        public delegate Status NvAPI_GPU_ClientIlluminationDevicesSetControl(
+            [In] PhysicalGPUHandle gpu,
+            [Accepts(typeof(IlluminationDeviceControlParametersV1))] [In]
+            ValueTypeReference illuminationDeviceControlInfo
+        );
+
+        [FunctionId(FunctionId.NvAPI_GPU_ClientIllumZonesGetControl)]
+        public delegate Status NvAPI_GPU_ClientIlluminationZonesGetControl(
+            [In] PhysicalGPUHandle gpu,
+            [Accepts(typeof(IlluminationZoneControlParametersV1))] [In]
+            ValueTypeReference illuminationZoneControlInfo
+        );
+
+        [FunctionId(FunctionId.NvAPI_GPU_ClientIllumZonesGetInfo)]
+        public delegate Status NvAPI_GPU_ClientIlluminationZonesGetInfo(
+            [In] PhysicalGPUHandle gpu,
+            [Accepts(typeof(IlluminationZoneInfoParametersV1))] [In]
+            ValueTypeReference illuminationZoneInfo
+        );
+
+        [FunctionId(FunctionId.NvAPI_GPU_ClientIllumZonesSetControl)]
+        public delegate Status NvAPI_GPU_ClientIlluminationZonesSetControl(
+            [In] PhysicalGPUHandle gpu,
+            [Accepts(typeof(IlluminationZoneControlParametersV1))] [In]
+            ValueTypeReference illuminationZoneControlInfo
+        );
+
         [FunctionId(FunctionId.NvAPI_GPU_ClientPowerPoliciesGetInfo)]
         public delegate Status NvAPI_GPU_ClientPowerPoliciesGetInfo(
             [In] PhysicalGPUHandle physicalGpu,
@@ -300,6 +343,11 @@ namespace NvAPIWrapper.Native.Delegates
             [In] PhysicalGPUHandle physicalGpu,
             [Out] out GPUType gpuType);
 
+        [FunctionId(FunctionId.NvAPI_GPU_GetIllumination)]
+        public delegate Status NvAPI_GPU_GetIllumination(
+            [Accepts(typeof(GetIlluminationParameterV1))] [In]
+            ValueTypeReference illuminationInfo);
+
         [FunctionId(FunctionId.NvAPI_GPU_GetIRQ)]
         public delegate Status NvAPI_GPU_GetIRQ(
             [In] PhysicalGPUHandle physicalGpu,
@@ -516,6 +564,12 @@ namespace NvAPIWrapper.Native.Delegates
             [In] [Accepts(typeof(PrivatePerformanceStatusV1))]
             ValueTypeReference performanceStatus);
 
+
+        [FunctionId(FunctionId.NvAPI_GPU_QueryIlluminationSupport)]
+        public delegate Status NvAPI_GPU_QueryIlluminationSupport(
+            [Accepts(typeof(QueryIlluminationSupportParameterV1))] [In]
+            ValueTypeReference illuminationSupportInfo);
+
         [FunctionId(FunctionId.NvAPI_GPU_ResetECCErrorInfo)]
         public delegate Status NvAPI_GPU_ResetECCErrorInfo(
             [In] PhysicalGPUHandle physicalGpu,
@@ -583,6 +637,12 @@ namespace NvAPIWrapper.Native.Delegates
             [In] uint outputId,
             [Accepts(typeof(EDIDV3), typeof(EDIDV2), typeof(EDIDV1))] [In]
             ValueTypeReference edid);
+
+
+        [FunctionId(FunctionId.NvAPI_GPU_SetIllumination)]
+        public delegate Status NvAPI_GPU_SetIllumination(
+            [Accepts(typeof(SetIlluminationParameterV1))] [In]
+            ValueTypeReference illuminationInfo);
 
         [FunctionId(FunctionId.NvAPI_GPU_SetPstates20)]
         public delegate Status NvAPI_GPU_SetPStates20(
