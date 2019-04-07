@@ -3,7 +3,7 @@
     /// <summary>
     ///     Possible rotate modes
     /// </summary>
-    public enum Rotate
+    public enum Rotate : uint
     {
         /// <summary>
         ///     No rotation

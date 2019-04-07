@@ -66,6 +66,20 @@ namespace NvAPIWrapper.Native.Delegates
             [In] DisplayHandle display,
             [Out] out ShortString displayName);
 
+
+        [FunctionId(FunctionId.NvAPI_GetDisplayDriverBuildTitle)]
+        public delegate Status NvAPI_GetDisplayDriverBuildTitle(
+            [In] DisplayHandle displayHandle,
+            [Out] out ShortString name);
+        
+        [FunctionId(FunctionId.NvAPI_GetDisplayDriverMemoryInfo)]
+        public delegate Status NvAPI_GetDisplayDriverMemoryInfo(
+            [In] DisplayHandle displayHandle,
+            [In]
+            [Accepts(typeof(DisplayDriverMemoryInfoV3), typeof(DisplayDriverMemoryInfoV2),
+                typeof(DisplayDriverMemoryInfoV1))]
+            ValueTypeReference memoryInfo);
+
         [FunctionId(FunctionId.NvAPI_GetSupportedViews)]
         public delegate Status NvAPI_GetSupportedViews(
             [In] DisplayHandle display,
@@ -77,19 +91,57 @@ namespace NvAPIWrapper.Native.Delegates
             [In] UnAttachedDisplayHandle display,
             [Out] out ShortString displayName);
 
+        [FunctionId(FunctionId.NvAPI_GPU_GetScanoutCompositionParameter)]
+        public delegate Status NvAPI_GPU_GetScanOutCompositionParameter(
+            [In] uint displayId,
+            [In] ScanOutCompositionParameter parameter,
+            [Out] out ScanOutCompositionParameterValue parameterValue,
+            [Out] out float container);
 
-        [FunctionId(FunctionId.NvAPI_GetDisplayDriverBuildTitle)]
-        public delegate Status NvAPI_GetDisplayDriverBuildTitle(
-            [In] DisplayHandle displayHandle,
-            [Out] out ShortString name);
+        [FunctionId(FunctionId.NvAPI_GPU_GetScanoutConfiguration)]
+        public delegate Status NvAPI_GPU_GetScanOutConfiguration(
+            [In] uint displayId,
+            [In] [Accepts(typeof(Rectangle))] ValueTypeReference desktopRectangle,
+            [In] [Accepts(typeof(Rectangle))] ValueTypeReference scanOutRectangle);
 
+        [FunctionId(FunctionId.NvAPI_GPU_GetScanoutConfigurationEx)]
+        public delegate Status NvAPI_GPU_GetScanOutConfigurationEx(
+            [In] uint displayId,
+            [In] [Accepts(typeof(ScanOutInformationV1))]
+            ValueTypeReference scanOutInformation);
 
-        [FunctionId(FunctionId.NvAPI_GetDisplayDriverMemoryInfo)]
-        public delegate Status NvAPI_GetDisplayDriverMemoryInfo(
-            [In] DisplayHandle displayHandle,
-            [In]
-            [Accepts(typeof(DisplayDriverMemoryInfoV3), typeof(DisplayDriverMemoryInfoV2),
-                typeof(DisplayDriverMemoryInfoV1))]
-            ValueTypeReference memoryInfo);
+        [FunctionId(FunctionId.NvAPI_GPU_GetScanoutIntensityState)]
+        public delegate Status NvAPI_GPU_GetScanOutIntensityState(
+            [In] uint displayId,
+            [In] [Accepts(typeof(ScanOutIntensityStateV1))]
+            ValueTypeReference scanOutIntensityState);
+
+        [FunctionId(FunctionId.NvAPI_GPU_GetScanoutWarpingState)]
+        public delegate Status NvAPI_GPU_GetScanOutWarpingState(
+            [In] uint displayId,
+            [In] [Accepts(typeof(ScanOutWarpingStateV1))]
+            ValueTypeReference scanOutWarpingState);
+
+        [FunctionId(FunctionId.NvAPI_GPU_SetScanoutCompositionParameter)]
+        public delegate Status NvAPI_GPU_SetScanOutCompositionParameter(
+            [In] uint displayId,
+            [In] ScanOutCompositionParameter parameter,
+            [In] ScanOutCompositionParameterValue parameterValue,
+            [In] ref float container);
+
+        [FunctionId(FunctionId.NvAPI_GPU_SetScanoutIntensity)]
+        public delegate Status NvAPI_GPU_SetScanOutIntensity(
+            [In] uint displayId,
+            [In] [Accepts(typeof(ScanOutIntensityV2), typeof(ScanOutIntensityV1))]
+            ValueTypeReference scanOutIntensityData,
+            [Out] out int isSticky);
+
+        [FunctionId(FunctionId.NvAPI_GPU_SetScanoutWarping)]
+        public delegate Status NvAPI_GPU_SetScanOutWarping(
+            [In] uint displayId,
+            [In] [Accepts(typeof(ScanOutWarpingV1))]
+            ValueTypeReference scanOutWarping,
+            [In] [Out] ref int maximumNumberOfVertices,
+            [Out] out int isSticky);
     }
 }

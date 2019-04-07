@@ -5,6 +5,7 @@ using NvAPIWrapper.Native.Display;
 using NvAPIWrapper.Native.Display.Structures;
 using NvAPIWrapper.Native.Exceptions;
 using NvAPIWrapper.Native.General;
+using NvAPIWrapper.Native.General.Structures;
 using NvAPIWrapper.Native.GPU;
 using NvAPIWrapper.Native.Helpers;
 using NvAPIWrapper.Native.Helpers.Structures;
@@ -359,6 +360,143 @@ namespace NvAPIWrapper.Native
         }
 
         /// <summary>
+        ///     This API queries current state of one of the various scan-out composition parameters on the specified display.
+        /// </summary>
+        /// <param name="displayId">Combined physical display and GPU identifier of the display to query the configuration.</param>
+        /// <param name="parameter">Scan-out composition parameter to by queried.</param>
+        /// <param name="container">Additional container containing the returning data associated with the specified parameter.</param>
+        /// <returns>Scan-out composition parameter value.</returns>
+        public static ScanOutCompositionParameterValue GetScanOutCompositionParameter(
+            uint displayId,
+            ScanOutCompositionParameter parameter,
+            out float container)
+        {
+            var status = DelegateFactory.GetDelegate<Delegates.Display.NvAPI_GPU_GetScanOutCompositionParameter>()(
+                displayId,
+                parameter,
+                out var parameterValue,
+                out container
+            );
+
+            if (status != Status.Ok)
+            {
+                throw new NVIDIAApiException(status);
+            }
+
+            return parameterValue;
+        }
+
+        /// <summary>
+        ///     This API queries the desktop and scan-out portion of the specified display.
+        /// </summary>
+        /// <param name="displayId">Combined physical display and GPU identifier of the display to query the configuration.</param>
+        /// <returns>Desktop area to displayId mapping information.</returns>
+        public static ScanOutInformationV1 GetScanOutConfiguration(uint displayId)
+        {
+            var instance = typeof(ScanOutInformationV1).Instantiate<ScanOutInformationV1>();
+
+            using (var scanOutInformationReference = ValueTypeReference.FromValueType(instance))
+            {
+                var status = DelegateFactory.GetDelegate<Delegates.Display.NvAPI_GPU_GetScanOutConfigurationEx>()(
+                    displayId,
+                    scanOutInformationReference
+                );
+
+                if (status != Status.Ok)
+                {
+                    throw new NVIDIAApiException(status);
+                }
+
+                return scanOutInformationReference.ToValueType<ScanOutInformationV1>().GetValueOrDefault();
+            }
+        }
+
+        /// <summary>
+        ///     This API queries the desktop and scan-out portion of the specified display.
+        /// </summary>
+        /// <param name="displayId">Combined physical display and GPU identifier of the display to query the configuration.</param>
+        /// <param name="desktopRectangle">Desktop area of the display in desktop coordinates.</param>
+        /// <param name="scanOutRectangle">Scan-out area of the display relative to desktopRect.</param>
+        public static void GetScanOutConfiguration(
+            uint displayId,
+            out Rectangle desktopRectangle,
+            out Rectangle scanOutRectangle)
+        {
+            var instance1 = typeof(Rectangle).Instantiate<Rectangle>();
+            var instance2 = typeof(Rectangle).Instantiate<Rectangle>();
+
+            using (var desktopRectangleReference = ValueTypeReference.FromValueType(instance1))
+            {
+                using (var scanOutRectangleReference = ValueTypeReference.FromValueType(instance2))
+                {
+                    var status = DelegateFactory.GetDelegate<Delegates.Display.NvAPI_GPU_GetScanOutConfiguration>()(
+                        displayId,
+                        desktopRectangleReference,
+                        scanOutRectangleReference
+                    );
+
+                    if (status != Status.Ok)
+                    {
+                        throw new NVIDIAApiException(status);
+                    }
+
+                    desktopRectangle = desktopRectangleReference.ToValueType<Rectangle>().GetValueOrDefault();
+                    scanOutRectangle = scanOutRectangleReference.ToValueType<Rectangle>().GetValueOrDefault();
+                }
+            }
+        }
+
+        /// <summary>
+        ///     This API queries current state of the intensity feature on the specified display.
+        /// </summary>
+        /// <param name="displayId">Combined physical display and GPU identifier of the display to query the configuration.</param>
+        /// <returns>Intensity state data.</returns>
+        public static ScanOutIntensityStateV1 GetScanOutIntensityState(uint displayId)
+        {
+            var instance = typeof(ScanOutIntensityStateV1).Instantiate<ScanOutIntensityStateV1>();
+
+            using (var scanOutIntensityReference = ValueTypeReference.FromValueType(instance))
+            {
+                var status = DelegateFactory.GetDelegate<Delegates.Display.NvAPI_GPU_GetScanOutIntensityState>()(
+                    displayId,
+                    scanOutIntensityReference
+                );
+
+                if (status != Status.Ok)
+                {
+                    throw new NVIDIAApiException(status);
+                }
+
+                return scanOutIntensityReference.ToValueType<ScanOutIntensityStateV1>().GetValueOrDefault();
+            }
+        }
+
+        /// <summary>
+        ///     This API queries current state of the warping feature on the specified display.
+        /// </summary>
+        /// <param name="displayId">Combined physical display and GPU identifier of the display to query the configuration.</param>
+        /// <returns>The warping state data.</returns>
+        public static ScanOutWarpingStateV1 GetScanOutWarpingState(uint displayId)
+        {
+            var instance = typeof(ScanOutWarpingStateV1).Instantiate<ScanOutWarpingStateV1>();
+
+            using (var scanOutWarpingReference = ValueTypeReference.FromValueType(instance))
+            {
+                var status = DelegateFactory.GetDelegate<Delegates.Display.NvAPI_GPU_GetScanOutWarpingState>()(
+                    displayId,
+                    scanOutWarpingReference
+                );
+
+                if (status != Status.Ok)
+                {
+                    throw new NVIDIAApiException(status);
+                }
+
+                return scanOutWarpingReference.ToValueType<ScanOutWarpingStateV1>().GetValueOrDefault();
+            }
+        }
+
+        /// <summary>
         ///     This API lets caller enumerate all the supported NVIDIA display views - nView and DualView modes.
         /// </summary>
         /// <param name="display">
@@ -464,6 +602,121 @@ namespace NvAPIWrapper.Native
                     throw new NVIDIAApiException(status);
                 }
             }
+        }
+
+        /// <summary>
+        ///     This API sets various parameters that configure the scan-out composition feature on the specified display.
+        /// </summary>
+        /// <param name="displayId">Combined physical display and GPU identifier of the display to apply the intensity control.</param>
+        /// <param name="parameter">The scan-out composition parameter to be set.</param>
+        /// <param name="parameterValue">The value to be set for the specified parameter.</param>
+        /// <param name="container">Additional container for data associated with the specified parameter.</param>
+        // ReSharper disable once TooManyArguments
+        public static void SetScanOutCompositionParameter(
+            uint displayId,
+            ScanOutCompositionParameter parameter,
+            ScanOutCompositionParameterValue parameterValue,
+            ref float container)
+        {
+            var status = DelegateFactory.GetDelegate<Delegates.Display.NvAPI_GPU_SetScanOutCompositionParameter>()(
+                displayId,
+                parameter,
+                parameterValue,
+                ref container
+            );
+
+            if (status != Status.Ok)
+            {
+                throw new NVIDIAApiException(status);
+            }
+        }
+
+        /// <summary>
+        ///     This API enables and sets up per-pixel intensity feature on the specified display.
+        /// </summary>
+        /// <param name="displayId">Combined physical display and GPU identifier of the display to apply the intensity control.</param>
+        /// <param name="scanOutIntensity">The intensity texture info.</param>
+        /// <param name="isSticky">Indicates whether the settings will be kept over a reboot.</param>
+        public static void SetScanOutIntensity(uint displayId, IScanOutIntensity scanOutIntensity, out bool isSticky)
+        {
+            Status status;
+            int isStickyInt;
+
+            if (scanOutIntensity == null)
+            {
+                status = DelegateFactory.GetDelegate<Delegates.Display.NvAPI_GPU_SetScanOutIntensity>()(
+                    displayId,
+                    ValueTypeReference.Null,
+                    out isStickyInt
+                );
+            }
+            else
+            {
+                using (var scanOutWarpingReference =
+                    ValueTypeReference.FromValueType(scanOutIntensity, scanOutIntensity.GetType()))
+                {
+                    status = DelegateFactory.GetDelegate<Delegates.Display.NvAPI_GPU_SetScanOutIntensity>()(
+                        displayId,
+                        scanOutWarpingReference,
+                        out isStickyInt
+                    );
+                }
+            }
+
+            if (status != Status.Ok)
+            {
+                throw new NVIDIAApiException(status);
+            }
+
+            isSticky = isStickyInt > 0;
+        }
+
+        /// <summary>
+        ///     This API enables and sets up the warping feature on the specified display.
+        /// </summary>
+        /// <param name="displayId">Combined physical display and GPU identifier of the display to apply the intensity control.</param>
+        /// <param name="scanOutWarping">The warping data info.</param>
+        /// <param name="maximumNumberOfVertices">The maximum number of vertices.</param>
+        /// <param name="isSticky">Indicates whether the settings will be kept over a reboot.</param>
+        // ReSharper disable once TooManyArguments
+        public static void SetScanOutWarping(
+            uint displayId,
+            ScanOutWarpingV1? scanOutWarping,
+            ref int maximumNumberOfVertices,
+            out bool isSticky)
+        {
+            Status status;
+            int isStickyInt;
+
+            if (scanOutWarping == null || maximumNumberOfVertices == 0)
+            {
+                maximumNumberOfVertices = 0;
+                status = DelegateFactory.GetDelegate<Delegates.Display.NvAPI_GPU_SetScanOutWarping>()(
+                    displayId,
+                    ValueTypeReference.Null,
+                    ref maximumNumberOfVertices,
+                    out isStickyInt
+                );
+            }
+            else
+            {
+                using (var scanOutWarpingReference = ValueTypeReference.FromValueType(scanOutWarping.Value))
+                {
+                    status = DelegateFactory.GetDelegate<Delegates.Display.NvAPI_GPU_SetScanOutWarping>()(
+                        displayId,
+                        scanOutWarpingReference,
+                        ref maximumNumberOfVertices,
+                        out isStickyInt
+                    );
+                }
+            }
+
+            if (status != Status.Ok)
+            {
+                throw new NVIDIAApiException(status);
+            }
+
+            isSticky = isStickyInt > 0;
         }
     }
 }
