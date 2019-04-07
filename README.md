@@ -27,7 +27,7 @@ You can always donate your time by contributing to the project or by introducing
 ## WHAT PARTS ARE INCLUDED
 NvAPIWrapper is not a complete wrapper of NVAPI; at least, not yet. Following is the list of NVAPI features and their status:
 
-- [X] General: Full Support &#x1F4D7;
+- [X] General: Full Support
 - [X] Mosaic (Surround): Full Support (including scan-out configurations (warping, color intensity)
 - [X] Display: Full Support
 - [X] Display Control: Partial Support (no color control, HUE control, etc)
