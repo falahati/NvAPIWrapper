@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.Runtime.InteropServices;
 using NvAPIWrapper.Native.Helpers;
 using NvAPIWrapper.Native.Interfaces;
 
@@ -7,20 +8,15 @@ namespace NvAPIWrapper.Native.GPU.Structures
     /// <summary>
     ///     Holds information regarding a RGB control data
     /// </summary>
-    [StructLayout(LayoutKind.Explicit, Pack = 8)]
+    [StructLayout(LayoutKind.Sequential, Pack = 8)]
     public struct IlluminationZoneControlDataRGB : IInitializable
     {
         private const int MaximumNumberOfDataBytes = 64;
         private const int MaximumNumberOfReservedBytes = 64;
 
-        [FieldOffset(0)] internal IlluminationZoneControlDataManualRGB _ManualRGB;
-
-        [FieldOffset(0)] internal IlluminationZoneControlDataPiecewiseLinearRGB _PiecewiseLinearRGB;
-
-        [FieldOffset(0)] [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaximumNumberOfDataBytes)]
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaximumNumberOfDataBytes)]
         internal byte[] _Data;
 
-        [FieldOffset(MaximumNumberOfDataBytes)]
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaximumNumberOfReservedBytes)]
         internal byte[] _Reserved;
 
@@ -29,9 +25,8 @@ namespace NvAPIWrapper.Native.GPU.Structures
         /// </summary>
         /// <param name="manualRGB">The zone manual control data.</param>
         public IlluminationZoneControlDataRGB(IlluminationZoneControlDataManualRGB manualRGB)
+            : this(manualRGB.ToByteArray())
         {
-            this = typeof(IlluminationZoneControlDataRGB).Instantiate<IlluminationZoneControlDataRGB>();
-            _ManualRGB = manualRGB;
         }
 
         /// <summary>
@@ -39,9 +34,19 @@ namespace NvAPIWrapper.Native.GPU.Structures
         /// </summary>
         /// <param name="piecewiseLinearRGB">The zone piecewise linear control data.</param>
         public IlluminationZoneControlDataRGB(IlluminationZoneControlDataPiecewiseLinearRGB piecewiseLinearRGB)
+            : this(piecewiseLinearRGB.ToByteArray())
         {
+        }
+
+        private IlluminationZoneControlDataRGB(byte[] data)
+        {
+            if (!(data?.Length > 0) || data.Length > MaximumNumberOfDataBytes)
+            {
+                throw new ArgumentOutOfRangeException(nameof(data));
+            }
+
             this = typeof(IlluminationZoneControlDataRGB).Instantiate<IlluminationZoneControlDataRGB>();
-            _PiecewiseLinearRGB = piecewiseLinearRGB;
+            Array.Copy(data, 0, _Data, 0, data.Length);
         }
 
         /// <summary>
@@ -50,7 +55,7 @@ namespace NvAPIWrapper.Native.GPU.Structures
         /// <returns>An instance of <see cref="IlluminationZoneControlDataManualRGB" /> containing manual settings.</returns>
         public IlluminationZoneControlDataManualRGB AsManual()
         {
-            return _ManualRGB;
+            return _Data.ToStructure<IlluminationZoneControlDataManualRGB>();
         }
 
         /// <summary>
@@ -62,7 +67,7 @@ namespace NvAPIWrapper.Native.GPU.Structures
         /// </returns>
         public IlluminationZoneControlDataPiecewiseLinearRGB AsPiecewise()
         {
-            return _PiecewiseLinearRGB;
+            return _Data.ToStructure<IlluminationZoneControlDataPiecewiseLinearRGB>();
         }
     }
 }

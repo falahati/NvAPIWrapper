@@ -16,7 +16,7 @@ namespace NvAPIWrapper.Native.GPU.Structures
     public struct IlluminationDeviceControlParametersV1 : IInitializable
     {
         private const int MaximumNumberOfReserved = 64;
-        private const int MaximumNumberOfDevices = 64;
+        private const int MaximumNumberOfDevices = 32;
         internal StructureVersion _Version;
         internal uint _NumberOfDevices;
 

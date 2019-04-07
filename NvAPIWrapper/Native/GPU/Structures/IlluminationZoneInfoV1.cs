@@ -11,6 +11,8 @@ namespace NvAPIWrapper.Native.GPU.Structures
     {
         private const int MaximumNumberOfReserved = 64;
         private const int MaximumNumberOfDataBytes = 64;
+
+        internal IlluminationZoneType _ZoneType;
         internal byte _DeviceIndex;
         internal byte _ProviderIndex;
         internal IlluminationZoneLocation _ZoneLocation;
@@ -43,6 +45,14 @@ namespace NvAPIWrapper.Native.GPU.Structures
         public IlluminationZoneLocation ZoneLocation
         {
             get => _ZoneLocation;
+        }
+
+        /// <summary>
+        ///     Gets the zone type.
+        /// </summary>
+        internal IlluminationZoneType ZoneType
+        {
+            get => _ZoneType;
         }
     }
 }

@@ -248,5 +248,41 @@ namespace NvAPIWrapper.Native.Helpers
 
             return BitWiseConvert<T, ulong>(newInteger);
         }
+
+        public static byte[] ToByteArray<T>(this T structure) where T : struct
+        {
+            var size = Marshal.SizeOf(typeof(T));
+            var array = new byte[size];
+            var pointer = Marshal.AllocHGlobal(size);
+
+            try
+            {
+                Marshal.StructureToPtr(structure, pointer, true);
+                Marshal.Copy(pointer, array, 0, size);
+
+                return array;
+            }
+            finally
+            {
+                Marshal.FreeHGlobal(pointer);
+            }
+        }
+
+        public static T ToStructure<T>(this byte[] byteArray) where T : struct
+        {
+            var size = Marshal.SizeOf(typeof(T));
+            var pointer = Marshal.AllocHGlobal(size);
+
+            try
+            {
+                Marshal.Copy(byteArray, 0, pointer, Math.Min(byteArray.Length, size));
+
+                return (T)Marshal.PtrToStructure(pointer, typeof(T));
+            }
+            finally
+            {
+                Marshal.FreeHGlobal(pointer);
+            }
+        }
     }
 }

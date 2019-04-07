@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.Runtime.InteropServices;
 using NvAPIWrapper.Native.Helpers;
 using NvAPIWrapper.Native.Interfaces;
 
@@ -7,20 +8,15 @@ namespace NvAPIWrapper.Native.GPU.Structures
     /// <summary>
     ///     Holds information regarding a fixed color control data
     /// </summary>
-    [StructLayout(LayoutKind.Explicit, Pack = 8)]
+    [StructLayout(LayoutKind.Sequential, Pack = 8)]
     public struct IlluminationZoneControlDataFixedColor : IInitializable
     {
         private const int MaximumNumberOfDataBytes = 64;
         private const int MaximumNumberOfReservedBytes = 64;
 
-        [FieldOffset(0)] internal IlluminationZoneControlDataManualFixedColor _ManualFixedColor;
-
-        [FieldOffset(0)] internal IlluminationZoneControlDataPiecewiseLinearFixedColor _PiecewiseLinearFixedColor;
-
-        [FieldOffset(0)] [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaximumNumberOfDataBytes)]
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaximumNumberOfDataBytes)]
         internal byte[] _Data;
 
-        [FieldOffset(MaximumNumberOfDataBytes)]
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaximumNumberOfReservedBytes)]
         internal byte[] _Reserved;
 
@@ -29,9 +25,8 @@ namespace NvAPIWrapper.Native.GPU.Structures
         /// </summary>
         /// <param name="manualFixedColor">The zone manual control data.</param>
         public IlluminationZoneControlDataFixedColor(IlluminationZoneControlDataManualFixedColor manualFixedColor)
+            : this(manualFixedColor.ToByteArray())
         {
-            this = typeof(IlluminationZoneControlDataFixedColor).Instantiate<IlluminationZoneControlDataFixedColor>();
-            _ManualFixedColor = manualFixedColor;
         }
 
         /// <summary>
@@ -40,9 +35,19 @@ namespace NvAPIWrapper.Native.GPU.Structures
         /// <param name="piecewiseLinearFixedColor">The zone piecewise linear control data.</param>
         public IlluminationZoneControlDataFixedColor(
             IlluminationZoneControlDataPiecewiseLinearFixedColor piecewiseLinearFixedColor)
+            : this(piecewiseLinearFixedColor.ToByteArray())
         {
+        }
+
+        private IlluminationZoneControlDataFixedColor(byte[] data)
+        {
+            if (!(data?.Length > 0) || data.Length > MaximumNumberOfDataBytes)
+            {
+                throw new ArgumentOutOfRangeException(nameof(data));
+            }
+
             this = typeof(IlluminationZoneControlDataFixedColor).Instantiate<IlluminationZoneControlDataFixedColor>();
-            _PiecewiseLinearFixedColor = piecewiseLinearFixedColor;
+            Array.Copy(data, 0, _Data, 0, data.Length);
         }
 
         /// <summary>
@@ -51,7 +56,7 @@ namespace NvAPIWrapper.Native.GPU.Structures
         /// <returns>An instance of <see cref="IlluminationZoneControlDataManualFixedColor" /> containing manual settings.</returns>
         public IlluminationZoneControlDataManualFixedColor AsManual()
         {
-            return _ManualFixedColor;
+            return _Data.ToStructure<IlluminationZoneControlDataManualFixedColor>();
         }
 
         /// <summary>
@@ -63,7 +68,7 @@ namespace NvAPIWrapper.Native.GPU.Structures
         /// </returns>
         public IlluminationZoneControlDataPiecewiseLinearFixedColor AsPiecewise()
         {
-            return _PiecewiseLinearFixedColor;
+            return _Data.ToStructure<IlluminationZoneControlDataPiecewiseLinearFixedColor>();
         }
     }
 }

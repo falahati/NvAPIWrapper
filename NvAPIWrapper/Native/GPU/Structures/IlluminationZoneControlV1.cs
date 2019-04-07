@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.Runtime.InteropServices;
 using NvAPIWrapper.Native.Helpers;
 using NvAPIWrapper.Native.Interfaces;
 
@@ -7,24 +8,19 @@ namespace NvAPIWrapper.Native.GPU.Structures
     /// <summary>
     ///     Holds information regarding a zone control status
     /// </summary>
-    [StructLayout(LayoutKind.Explicit, Pack = 8)]
+    [StructLayout(LayoutKind.Sequential, Pack = 8)]
     public struct IlluminationZoneControlV1 : IInitializable
     {
-        private const int MaximumNumberOfDataBytes = 64;
+        private const int MaximumNumberOfDataBytes = 128;
         private const int MaximumNumberOfReservedBytes = 64;
 
-        [FieldOffset(0)] internal IlluminationZoneType _ZoneType;
+        internal IlluminationZoneType _ZoneType;
 
-        [FieldOffset(4)] internal IlluminationZoneControlMode _ControlMode;
+        internal IlluminationZoneControlMode _ControlMode;
 
-        [FieldOffset(8)] internal IlluminationZoneControlDataRGB _RGBData;
-
-        [FieldOffset(8)] internal IlluminationZoneControlDataFixedColor _FixedColorData;
-
-        [FieldOffset(8)] [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaximumNumberOfDataBytes)]
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaximumNumberOfDataBytes)]
         internal byte[] _Data;
 
-        [FieldOffset(MaximumNumberOfDataBytes + 8)]
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaximumNumberOfReservedBytes)]
         internal byte[] _Reserved;
 
@@ -36,11 +32,8 @@ namespace NvAPIWrapper.Native.GPU.Structures
         public IlluminationZoneControlV1(
             IlluminationZoneControlMode controlMode,
             IlluminationZoneControlDataRGB rgbData)
+            : this(controlMode, IlluminationZoneType.RGB, rgbData.ToByteArray())
         {
-            this = typeof(IlluminationZoneControlV1).Instantiate<IlluminationZoneControlV1>();
-            _ControlMode = controlMode;
-            _ZoneType = IlluminationZoneType.RGB;
-            _RGBData = rgbData;
         }
 
         /// <summary>
@@ -51,11 +44,24 @@ namespace NvAPIWrapper.Native.GPU.Structures
         public IlluminationZoneControlV1(
             IlluminationZoneControlMode controlMode,
             IlluminationZoneControlDataFixedColor fixedColorData)
+            : this(controlMode, IlluminationZoneType.FixedColor, fixedColorData.ToByteArray())
         {
+        }
+
+        private IlluminationZoneControlV1(
+            IlluminationZoneControlMode controlMode,
+            IlluminationZoneType zoneType,
+            byte[] data)
+        {
+            if (!(data?.Length > 0) || data.Length > MaximumNumberOfDataBytes)
+            {
+                throw new ArgumentOutOfRangeException(nameof(data));
+            }
+
             this = typeof(IlluminationZoneControlV1).Instantiate<IlluminationZoneControlV1>();
             _ControlMode = controlMode;
-            _ZoneType = IlluminationZoneType.FixedColor;
-            _FixedColorData = fixedColorData;
+            _ZoneType = zoneType;
+            Array.Copy(data, 0, _Data, 0, data.Length);
         }
 
         /// <summary>
@@ -80,7 +86,7 @@ namespace NvAPIWrapper.Native.GPU.Structures
         /// <returns>An instance of <see cref="IlluminationZoneControlDataRGB" /> containing RGB settings.</returns>
         public IlluminationZoneControlDataRGB AsRGBData()
         {
-            return _RGBData;
+            return _Data.ToStructure<IlluminationZoneControlDataRGB>();
         }
 
         /// <summary>
@@ -89,7 +95,7 @@ namespace NvAPIWrapper.Native.GPU.Structures
         /// <returns>An instance of <see cref="IlluminationZoneControlDataFixedColor" /> containing fixed color settings.</returns>
         public IlluminationZoneControlDataFixedColor AsFixedColorData()
         {
-            return _FixedColorData;
+            return _Data.ToStructure<IlluminationZoneControlDataFixedColor>();
         }
     }
 }
