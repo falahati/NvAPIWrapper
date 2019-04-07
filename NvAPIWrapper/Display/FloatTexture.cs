@@ -8,6 +8,9 @@ namespace NvAPIWrapper.Display
     /// </summary>
     public class FloatTexture : IEquatable<FloatTexture>
     {
+        /// <summary>
+        ///     Underlying float array containing the values of all channels in all pixels
+        /// </summary>
         protected readonly float[] UnderlyingArray;
 
         /// <summary>
@@ -96,11 +99,23 @@ namespace NvAPIWrapper.Display
             return new FloatTexture(width, height, channels, floats.ToArray());
         }
 
+        /// <summary>
+        ///     Compares two instance of <see cref="FloatTexture" /> for equality.
+        /// </summary>
+        /// <param name="left">The first instance.</param>
+        /// <param name="right">The second instance.</param>
+        /// <returns><see langword="true" /> if both instances are equal, otherwise <see langword="false" /></returns>
         public static bool operator ==(FloatTexture left, FloatTexture right)
         {
             return Equals(left, right) || left?.Equals(right) == true;
         }
 
+        /// <summary>
+        ///     Compares two instance of <see cref="FloatTexture" /> for in-equality.
+        /// </summary>
+        /// <param name="left">The first instance.</param>
+        /// <param name="right">The second instance.</param>
+        /// <returns><see langword="true" /> if both instances are not equal, otherwise <see langword="false" /></returns>
         public static bool operator !=(FloatTexture left, FloatTexture right)
         {
             return !(left == right);
