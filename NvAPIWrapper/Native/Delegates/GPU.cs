@@ -679,5 +679,12 @@ namespace NvAPIWrapper.Native.Delegates
         public delegate Status NvAPI_SYS_GetPhysicalGpuFromDisplayId(
             [In] uint displayId,
             [Out] out PhysicalGPUHandle gpu);
+
+        [FunctionId(FunctionId.NvAPI_GPU_QueryActiveApps)]
+        public delegate Status NvAPI_GPU_QueryActiveApps(
+            [In] PhysicalGPUHandle gpu,
+            [In] [Accepts(typeof(PrivateActiveApplicationV2))] ValueTypeArray applicaitons,
+            [In] [Out] ref uint numberOfApplications
+        );
     }
 }
