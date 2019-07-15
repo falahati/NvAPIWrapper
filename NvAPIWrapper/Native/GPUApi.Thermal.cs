@@ -1,6 +1,7 @@
 ﻿using System;
 using NvAPIWrapper.Native.Exceptions;
 using NvAPIWrapper.Native.General;
+using NvAPIWrapper.Native.General.Structures;
 using NvAPIWrapper.Native.GPU;
 using NvAPIWrapper.Native.GPU.Structures;
 using NvAPIWrapper.Native.Helpers;
@@ -360,6 +361,83 @@ namespace NvAPIWrapper.Native
                 var status = DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_SetThermalPoliciesStatus>()(
                     gpuHandle,
                     policiesStatusReference
+                );
+
+                if (status != Status.Ok)
+                {
+                    throw new NVIDIAApiException(status);
+                }
+            }
+        }
+
+        public static PrivateFanCoolersInfoV1 GetClientFanCoolersInfo(PhysicalGPUHandle gpuHandle)
+        {
+            var instance = typeof(PrivateFanCoolersInfoV1).Instantiate<PrivateFanCoolersInfoV1>();
+
+            using (var policiesInfoReference = ValueTypeReference.FromValueType(instance))
+            {
+                var status =
+                    DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_ClientFanCoolersGetInfo>()(gpuHandle,
+                        policiesInfoReference);
+
+                if (status != Status.Ok)
+                {
+                    throw new NVIDIAApiException(status);
+                }
+
+                return policiesInfoReference.ToValueType<PrivateFanCoolersInfoV1>(
+                    typeof(PrivateFanCoolersInfoV1));
+            }
+        }
+
+        public static PrivateFanCoolersStatusV1 GetClientFanCoolersStatus(PhysicalGPUHandle gpuHandle)
+        {
+            var instance = typeof(PrivateFanCoolersStatusV1).Instantiate<PrivateFanCoolersStatusV1>();
+
+            using (var policiesStatusReference = ValueTypeReference.FromValueType(instance))
+            {
+                var status = DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_ClientFanCoolersGetStatus>()(
+                    gpuHandle,
+                    policiesStatusReference
+                );
+
+                if (status != Status.Ok)
+                {
+                    throw new NVIDIAApiException(status);
+                }
+
+                return policiesStatusReference.ToValueType<PrivateFanCoolersStatusV1>(
+                    typeof(PrivateFanCoolersStatusV1));
+            }
+        }
+
+        public static PrivateFanCoolersControlV1 GetClientFanCoolersControl(PhysicalGPUHandle gpuHandle)
+        {
+            var instance = typeof(PrivateFanCoolersControlV1).Instantiate<PrivateFanCoolersControlV1>();
+            using (var policiesStatusReference = ValueTypeReference.FromValueType(instance))
+            {
+                var status = DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_ClientFanCoolersGetControl>()(
+                    gpuHandle,
+                    policiesStatusReference
+                );
+
+                if (status != Status.Ok)
+                {
+                    throw new NVIDIAApiException(status);
+                }
+
+                return policiesStatusReference.ToValueType<PrivateFanCoolersControlV1>(
+                    typeof(PrivateFanCoolersControlV1));
+            }
+        }
+
+        public static void SetClientFanCoolersControl(PhysicalGPUHandle gpuHandle, PrivateFanCoolersControlV1 control)
+        {
+            using (var coolerLevelsReference = ValueTypeReference.FromValueType(control))
+            {
+                var status = DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_ClientFanCoolersSetControl>()(
+                    gpuHandle,
+                    coolerLevelsReference
                 );
 
                 if (status != Status.Ok)
