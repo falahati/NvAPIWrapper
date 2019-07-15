@@ -27,17 +27,17 @@ You can always donate your time by contributing to the project or by introducing
 ## WHAT PARTS ARE INCLUDED
 NvAPIWrapper is not a complete wrapper of NVAPI; at least, not yet. Following is the list of NVAPI features and their status:
 
-* General: Full Support
-* Mosaic (Surround): Full Support
-* Display: Full Support
-* Display Control: Partial Support (no color control, HUE control, etc)
-* GPU: Partial Support (Complete retrieval of Sensor, Performance States and Clock frequency; but missing other features)
-* D3D: No Support
-* DRS: No Support
-* GSync: No Support
-* OpenGL: No Support
-* Stereo (3D): No Support
-* Vidio: No Support
+- [X] General: Full Support
+- [X] Mosaic (Surround): Full Support (including scan-out configurations - warping, color intensity)
+- [X] Display: Full Support
+- [X] Display Control: Partial Support (no color control, HUE control, etc)
+- [X] GPU: Full support via low-level APIs and almost full support via high-level set of APIs
+- [X] DRS: Full Support
+- [X] Stereo (3D): Full Support
+- [ ] D3D: No Support
+- [ ] GSync: No Support
+- [ ] OpenGL: No Support
+- [ ] Vidio: No Support
 
 ## HOW TO USE
 NvAPIWrappr allows you to use the NVAPI functions directly using the `NvAPIWrapper.Native` namespace. However, there is also a .Net friendly implementation of the NVAPI features that can be used to minimize the complexity of the code and make it more compatible with later releases of the library, therefore, we strongly recommend using these .Net friendly classes instead of using the native functions directly.
@@ -47,6 +47,8 @@ Currently, you can access different parts of the library as follow:
 * Namespace `NvAPIWrapper.Display`: Display and Display Control API
 * Namespace `NvAPIWrapper.GPU`: GPU specific API
 * Namespace `NvAPIWrapper.Mosaic`: Mosaic API Phase 1 and Phase 2 - Surround
+* Namespace `NvAPIWrapper.DRS`: NVIDIA Driver settings and application profiles
+* Namespace `NvAPIWrapper.Stereo`: Stereo specific settings and configurations
 * Class `NvAPIWrapper.NVIDIA`: General Information And Methods
 
 Please also take a look at the `NvAPISample` project for a number of simple examples.
