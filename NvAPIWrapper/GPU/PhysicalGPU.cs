@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using NvAPIWrapper.Display;
 using NvAPIWrapper.Native;
@@ -357,6 +358,15 @@ namespace NvAPIWrapper.GPU
         public override string ToString()
         {
             return FullName;
+        }
+
+        /// <summary>
+        ///     Get a list of all active applications for this GPU
+        /// </summary>
+        /// <returns>An array of processes</returns>
+        public Process[] GetActiveApplications()
+        {
+            return GPUApi.QueryActiveApps(Handle).Select(app => Process.GetProcessById(app.ProcessId)).ToArray();
         }
 
         /// <summary>

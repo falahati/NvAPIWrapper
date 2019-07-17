@@ -576,8 +576,8 @@ namespace NvAPIWrapper.Native.Helpers
         NvAPI_GPU_GetShortName = 0xD988F0F3,
         NvAPI_GPU_GetSMMask = 0x0EB7AF173,
         NvAPI_GPU_GetTargetID = 0x35B5FD2F,
-        NvAPI_GPU_GetThermalPoliciesInfo = 0x00D258BB5, // NvAPI_GPU_ClientThermalPoliciesGetInfo?
-        NvAPI_GPU_GetThermalPoliciesStatus = 0x0E9C425A1, // NvAPI_GPU_ClientThermalPoliciesGetLimit?
+        NvAPI_GPU_GetThermalPoliciesInfo = 0x00D258BB5, // NvAPI_GPU_ClientThermalPoliciesGetInfo
+        NvAPI_GPU_GetThermalPoliciesStatus = 0x0E9C425A1,
         NvAPI_GPU_GetThermalTable = 0xC729203C,
         NvAPI_GPU_GetTotalSMCount = 0x0AE5FBCFE,
         NvAPI_GPU_GetTotalSPCount = 0x0B6D62591,
@@ -621,7 +621,7 @@ namespace NvAPIWrapper.Native.Helpers
         NvAPI_GPU_SetPstateClientLimits = 0x0FDFC7D49,
         NvAPI_GPU_SetPstates20 = 0x0F4DAE6B,
         NvAPI_GPU_SetPstatesInfo = 0x0CDF27911,
-        NvAPI_GPU_SetThermalPoliciesStatus = 0x034C0B13D, // NvAPI_GPU_ClientThermalPoliciesSetLimit?
+        NvAPI_GPU_SetThermalPoliciesStatus = 0x034C0B13D,
         NvAPI_Hybrid_IsAppMigrationStateChangeable = 0x584CB0B6,
         NvAPI_Hybrid_QueryBlockedMigratableApps = 0x0F4C2F8CC,
         NvAPI_Hybrid_QueryUnblockedNonMigratableApps = 0x5F35BCB5,
@@ -692,6 +692,10 @@ namespace NvAPIWrapper.Native.Helpers
         NvAPI_TryCustomDisplay = 0x0BF6C1762,
         NvAPI_VideoGetStereoInfo = 0x8E1F8CFE,
         NvAPI_VideoSetStereoInfo = 0x97063269,
+        NvAPI_GPU_ClientFanCoolersGetInfo = 0xfb85b01e,
+        NvAPI_GPU_ClientFanCoolersGetStatus = 0x35aed5e8,
+        NvAPI_GPU_ClientFanCoolersGetControl = 0x814b209f,
+        NvAPI_GPU_ClientFanCoolersSetControl = 0xa58971a5,
         Unknown_1629A173 = 0x1629a173, // `Unknown(*mut { version = 0x00030038, count, .. })`
         Unknown_36E39E6B = 0x36e39e6b, // `Unknown(*mut { version = 0x0002000c, count, ... })` might be handles?
         Unknown_B7BCF50D = 0xb7bcf50d, // `Unknown(hGpu, *mut { version = 0x00010008, value })` seen `value = 0x703`
