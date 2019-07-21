@@ -22,6 +22,7 @@ namespace NvAPISample
                 {"Display Configurations", PrintDisplayPathInformation},
                 {"Physical GPUs", PrintPhysicalGPUs},
                 {"GPU Temperatures", PrintGPUSensors},
+                {"GPU Coolers", PrintGPUCoolers},
                 {"GPU Performance States", PrintGPUPerformanceStates},
                 {"TCC GPUs", PrintTCCGPUs},
                 {"Grid Topologies (Mosaic - NVIDIA Surround)", PrintGridTopologies},
@@ -29,6 +30,7 @@ namespace NvAPISample
                 {"System Chipset Information", PrintChipsetInformation},
                 {"Lid and Dock Information", PrintDockInformation}
             };
+
             ConsoleNavigation.Default.PrintNavigation(
                 navigation.Keys.ToArray(),
                 (i, o) => navigation[o](),
@@ -97,6 +99,16 @@ namespace NvAPISample
                 NVIDIA.DriverBranchVersion,
                 NVIDIA.InterfaceVersionString
             });
+        }
+
+        private static void PrintGPUCoolers()
+        {
+            ConsoleWriter.Default.PrintCaption("PhysicalGPU.GetPhysicalGPUs()");
+            ConsoleNavigation.Default.PrintNavigation(PhysicalGPU.GetPhysicalGPUs(), (i, gpu) =>
+            {
+                ConsoleWriter.Default.PrintCaption("PhysicalGPU.CoolerInformation");
+                ConsoleWriter.Default.WriteObject(gpu.CoolerInformation.Coolers.ToArray());
+            }, "Select a GPU to show cooler values");
         }
 
         private static void PrintGPUPerformanceStates()
