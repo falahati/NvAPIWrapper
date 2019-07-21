@@ -1,7 +1,6 @@
 ﻿using System;
 using NvAPIWrapper.Native.Exceptions;
 using NvAPIWrapper.Native.General;
-using NvAPIWrapper.Native.General.Structures;
 using NvAPIWrapper.Native.GPU;
 using NvAPIWrapper.Native.GPU.Structures;
 using NvAPIWrapper.Native.Helpers;

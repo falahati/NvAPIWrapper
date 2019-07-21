@@ -28,12 +28,41 @@ namespace NvAPIWrapper.Native.GPU.Structures
         [StructLayout(LayoutKind.Sequential, Pack = 8)]
         public struct FanCoolersStatusEntry
         {
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 141, ArraySubType = UnmanagedType.U4)]
-            internal readonly uint[] _Unknown;
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 8, ArraySubType = UnmanagedType.U4)]
+            internal readonly uint[] _UnknownBinary1;
 
-            public uint[] RawData
+            internal readonly uint _UnknownUInt1;
+            internal readonly uint _CurrentRPM;
+            internal readonly uint _CurrentMinimumLevel;
+            internal readonly uint _CurrentMaximumLevel;
+            internal readonly uint _CurrentLevel;
+
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 128, ArraySubType = UnmanagedType.U4)]
+            internal readonly uint[] _UnknownBinary2;
+
+            public uint UnknownUInt1
             {
-                get => _Unknown;
+                get => _UnknownUInt1;
+            }
+
+            public uint CurrentRPM
+            {
+                get => _CurrentRPM;
+            }
+
+            public uint CurrentMinimumLevel
+            {
+                get => _CurrentMinimumLevel;
+            }
+
+            public uint CurrentMaximumLevel
+            {
+                get => _CurrentMaximumLevel;
+            }
+
+            public uint CurrentLevel
+            {
+                get => _CurrentLevel;
             }
         }
     }

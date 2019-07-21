@@ -8,7 +8,7 @@ namespace NvAPIWrapper.GPU
     /// </summary>
     public class GPUCooler
     {
-        internal GPUCooler(int coolerId, PrivateCoolerSettingsV1.CoolerSetting coolerSetting)
+        internal GPUCooler(int coolerId, PrivateCoolerSettingsV1.CoolerSetting coolerSetting, int currentRPM)
         {
             CoolerId = coolerId;
             CurrentLevel = (int) coolerSetting.CurrentLevel;
@@ -22,6 +22,29 @@ namespace NvAPIWrapper.GPU
             CurrentPolicy = coolerSetting.CurrentPolicy;
             Target = coolerSetting.Target;
             ControlMode = coolerSetting.ControlMode;
+            CurrentFanSpeedInRPM = currentRPM;
+        }
+
+        // ReSharper disable once TooManyDependencies
+        internal GPUCooler(
+            int coolerId,
+            PrivateFanCoolersInfoV1.FanCoolersInfoEntry infoEntry,
+            PrivateFanCoolersStatusV1.FanCoolersStatusEntry statusEntry,
+            PrivateFanCoolersControlV1.FanCoolersControlEntry controlEntry)
+        {
+            CoolerId = coolerId;
+            CurrentLevel = (int) statusEntry.CurrentLevel;
+            DefaultMinimumLevel = (int) statusEntry.CurrentMinimumLevel;
+            DefaultMaximumLevel = (int) statusEntry.CurrentMaximumLevel;
+            CurrentMinimumLevel = (int) statusEntry.CurrentMinimumLevel;
+            CurrentMaximumLevel = (int) statusEntry.CurrentMaximumLevel;
+            CoolerType = CoolerType.None;
+            CoolerController = CoolerController.None;
+            DefaultPolicy = CoolerPolicy.None;
+            CurrentPolicy = controlEntry.Policy;
+            Target = CoolerTarget.All;
+            ControlMode = CoolerControlMode.None;
+            CurrentFanSpeedInRPM = (int) statusEntry.CurrentRPM;
         }
 
         /// <summary>
@@ -43,6 +66,11 @@ namespace NvAPIWrapper.GPU
         ///     Gets the cooler type
         /// </summary>
         public CoolerType CoolerType { get; }
+
+        /// <summary>
+        ///     Gets the GPU fan speed in revolutions per minute
+        /// </summary>
+        public int CurrentFanSpeedInRPM { get; }
 
         /// <summary>
         ///     Gets the cooler current level in percentage

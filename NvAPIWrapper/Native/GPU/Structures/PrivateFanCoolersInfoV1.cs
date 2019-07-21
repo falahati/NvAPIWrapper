@@ -26,13 +26,18 @@ namespace NvAPIWrapper.Native.GPU.Structures
         [StructLayout(LayoutKind.Sequential, Pack = 8)]
         public struct FanCoolersInfoEntry
         {
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 131, ArraySubType = UnmanagedType.U4)]
-            internal readonly uint[] _Unknown;
+            internal readonly uint _UnknownUInt1;
 
-            public uint[] RawData
-            {
-                get => _Unknown;
-            }
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 8, ArraySubType = UnmanagedType.U4)]
+            internal readonly uint[] _UnknownBinary1;
+
+            internal readonly uint _UnknownUInt2;
+            internal readonly uint _UnknownUInt3;
+            internal readonly uint _UnknownUInt4;
+            internal readonly uint _UnknownUInt5;
+
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 118, ArraySubType = UnmanagedType.U4)]
+            internal readonly uint[] _UnknownBinary2;
         }
     }
 }

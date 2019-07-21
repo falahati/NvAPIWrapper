@@ -13,12 +13,14 @@ namespace NvAPIWrapper.Native.GPU.Structures
         internal const int MaxNumberOfFanCoolerControlEntries = 3;
 
         internal StructureVersion _Version;
+
+        internal readonly uint _Unknown;
+
         internal readonly uint _FanCoolersControlCount;
 
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxNumberOfFanCoolerControlEntries)]
         internal readonly FanCoolersControlEntry[] _FanCoolersControlEntries;
 
-        internal readonly uint _Unknown;
 
         public FanCoolersControlEntry[] FanCoolersControlEntries
         {
@@ -28,12 +30,26 @@ namespace NvAPIWrapper.Native.GPU.Structures
         [StructLayout(LayoutKind.Sequential, Pack = 8)]
         public struct FanCoolersControlEntry
         {
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 120, ArraySubType = UnmanagedType.U4)]
-            internal readonly uint[] _Unknown;
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 8, ArraySubType = UnmanagedType.U4)]
+            internal readonly uint[] _UnknownBinary1;
 
-            public uint[] RawData
+            internal readonly uint _UnknownUInt1;
+            internal uint _Level;
+            internal CoolerPolicy _Policy;
+
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 109, ArraySubType = UnmanagedType.U4)]
+            internal readonly uint[] _UnknownBinary2;
+
+            public uint Level
             {
-                get => _Unknown;
+                get => _Level;
+                internal set => _Level = value;
+            }
+
+            public CoolerPolicy Policy
+            {
+                get => _Policy;
+                internal set => _Policy = value;
             }
         }
     }
