@@ -10,17 +10,16 @@ namespace NvAPIWrapper.Native.GPU.Structures
     [StructureVersion(1)]
     public struct PrivateFanCoolersControlV1 : IInitializable
     {
-        internal const int MaxNumberOfFanCoolerControlEntries = 3;
-
+        internal const int MaxNumberOfFanCoolerControlEntries = 32;
         internal StructureVersion _Version;
-
-        internal readonly uint _Unknown;
-
+        internal readonly uint _UnknownUInt;
         internal readonly uint _FanCoolersControlCount;
+
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 8, ArraySubType = UnmanagedType.U4)]
+        internal readonly uint[] _Reserved;
 
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxNumberOfFanCoolerControlEntries)]
         internal readonly FanCoolersControlEntry[] _FanCoolersControlEntries;
-
 
         public FanCoolersControlEntry[] FanCoolersControlEntries
         {
@@ -30,15 +29,18 @@ namespace NvAPIWrapper.Native.GPU.Structures
         [StructLayout(LayoutKind.Sequential, Pack = 8)]
         public struct FanCoolersControlEntry
         {
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 8, ArraySubType = UnmanagedType.U4)]
-            internal readonly uint[] _UnknownBinary1;
-
-            internal readonly uint _UnknownUInt1;
+            internal uint _CoolerId;
             internal uint _Level;
-            internal CoolerPolicy _Policy;
+            internal FanCoolersControlMode _ControlMode;
 
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 109, ArraySubType = UnmanagedType.U4)]
-            internal readonly uint[] _UnknownBinary2;
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 8, ArraySubType = UnmanagedType.U4)]
+            internal readonly uint[] _Reserved;
+
+            public uint CoolerId
+            {
+                get => _CoolerId;
+                internal set => _CoolerId = value;
+            }
 
             public uint Level
             {
@@ -46,10 +48,10 @@ namespace NvAPIWrapper.Native.GPU.Structures
                 internal set => _Level = value;
             }
 
-            public CoolerPolicy Policy
+            public FanCoolersControlMode ControlMode
             {
-                get => _Policy;
-                internal set => _Policy = value;
+                get => _ControlMode;
+                internal set => _ControlMode = value;
             }
         }
     }

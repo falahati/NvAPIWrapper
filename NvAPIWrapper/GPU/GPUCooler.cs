@@ -1,4 +1,5 @@
-﻿using NvAPIWrapper.Native.GPU;
+﻿using System;
+using NvAPIWrapper.Native.GPU;
 using NvAPIWrapper.Native.GPU.Structures;
 
 namespace NvAPIWrapper.GPU
@@ -27,23 +28,29 @@ namespace NvAPIWrapper.GPU
 
         // ReSharper disable once TooManyDependencies
         internal GPUCooler(
-            int coolerId,
             PrivateFanCoolersInfoV1.FanCoolersInfoEntry infoEntry,
             PrivateFanCoolersStatusV1.FanCoolersStatusEntry statusEntry,
             PrivateFanCoolersControlV1.FanCoolersControlEntry controlEntry)
         {
-            CoolerId = coolerId;
+            if (infoEntry.CoolerId != statusEntry.CoolerId || statusEntry.CoolerId != controlEntry.CoolerId)
+            {
+                throw new ArgumentException("Passed arguments are meant to be for different coolers.");
+            }
+
+            CoolerId = (int) statusEntry.CoolerId;
             CurrentLevel = (int) statusEntry.CurrentLevel;
             DefaultMinimumLevel = (int) statusEntry.CurrentMinimumLevel;
             DefaultMaximumLevel = (int) statusEntry.CurrentMaximumLevel;
             CurrentMinimumLevel = (int) statusEntry.CurrentMinimumLevel;
             CurrentMaximumLevel = (int) statusEntry.CurrentMaximumLevel;
-            CoolerType = CoolerType.None;
-            CoolerController = CoolerController.None;
+            CoolerType = CoolerType.Fan;
+            CoolerController = CoolerController.Internal;
             DefaultPolicy = CoolerPolicy.None;
-            CurrentPolicy = controlEntry.Policy;
+            CurrentPolicy = controlEntry.ControlMode == FanCoolersControlMode.Manual
+                ? CoolerPolicy.Manual
+                : CoolerPolicy.None;
             Target = CoolerTarget.All;
-            ControlMode = CoolerControlMode.None;
+            ControlMode = CoolerControlMode.Variable;
             CurrentFanSpeedInRPM = (int) statusEntry.CurrentRPM;
         }
 

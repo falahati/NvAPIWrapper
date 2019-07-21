@@ -29,6 +29,34 @@ namespace NvAPIWrapper.GPU
         {
             get
             {
+                PrivateCoolerSettingsV1? settings = null;
+
+                try
+                {
+                    settings = GPUApi.GetCoolerSettings(PhysicalGPU.Handle);
+                }
+                catch (NVIDIAApiException e)
+                {
+                    if (e.Status != Status.NotSupported)
+                    {
+                        throw;
+                    }
+                }
+
+                if (settings != null)
+                {
+                    for (var i = 0; i < settings.Value.CoolerSettings.Length; i++)
+                    {
+                        yield return new GPUCooler(
+                            i,
+                            settings.Value.CoolerSettings[i],
+                            i == 0 ? (int) GPUApi.GetTachReading(PhysicalGPU.Handle) : -1
+                        );
+                    }
+
+                    yield break;
+                }
+
                 PrivateFanCoolersStatusV1? status = null;
                 PrivateFanCoolersInfoV1? info = null;
                 PrivateFanCoolersControlV1? control = null;
@@ -55,40 +83,17 @@ namespace NvAPIWrapper.GPU
                             control.Value.FanCoolersControlEntries.Length > i)
                         {
                             yield return new GPUCooler(
-                                i,
                                 info.Value.FanCoolersInfoEntries[i],
                                 status.Value.FanCoolersStatusEntries[i],
                                 control.Value.FanCoolersControlEntries[i]
                             );
                         }
                     }
+
+                    yield break;
                 }
 
-                PrivateCoolerSettingsV1? settings = null;
-
-                try
-                {
-                    settings = GPUApi.GetCoolerSettings(PhysicalGPU.Handle);
-                }
-                catch (NVIDIAApiException e)
-                {
-                    if (e.Status != Status.NotSupported)
-                    {
-                        throw;
-                    }
-                }
-
-                if (settings != null)
-                {
-                    for (var i = 0; i < settings.Value.CoolerSettings.Length; i++)
-                    {
-                        yield return new GPUCooler(
-                            i,
-                            settings.Value.CoolerSettings[i],
-                            i == 0 ? (int) GPUApi.GetTachReading(PhysicalGPU.Handle) : -1
-                        );
-                    }
-                }
+                throw new NVIDIAApiException(Status.NotSupported);
             }
         }
 
@@ -159,11 +164,16 @@ namespace NvAPIWrapper.GPU
         {
             try
             {
-                var currentControl = GPUApi.GetClientFanCoolersControl(PhysicalGPU.Handle);
-                currentControl.FanCoolersControlEntries[coolerId].Policy =
-                    policy == CoolerPolicy.Manual ? CoolerPolicy.Manual : CoolerPolicy.None;
-                currentControl.FanCoolersControlEntries[coolerId].Level = (uint) newLevel;
-                GPUApi.SetClientFanCoolersControl(PhysicalGPU.Handle, currentControl);
+                GPUApi.SetCoolerLevels(
+                    PhysicalGPU.Handle,
+                    (uint) coolerId,
+                    new PrivateCoolerLevelsV1(new[]
+                        {
+                            new PrivateCoolerLevelsV1.CoolerLevel(policy, (uint) newLevel)
+                        }
+                    ),
+                    1
+                );
 
                 return;
             }
@@ -175,16 +185,22 @@ namespace NvAPIWrapper.GPU
                 }
             }
 
-            GPUApi.SetCoolerLevels(
-                PhysicalGPU.Handle,
-                (uint) coolerId,
-                new PrivateCoolerLevelsV1(new[]
-                    {
-                        new PrivateCoolerLevelsV1.CoolerLevel(policy, (uint) newLevel)
-                    }
-                ),
-                1
-            );
+            var currentControl = GPUApi.GetClientFanCoolersControl(PhysicalGPU.Handle);
+
+            for (var i = 0; i < currentControl.FanCoolersControlEntries.Length; i++)
+            {
+                if (currentControl.FanCoolersControlEntries[i].CoolerId == coolerId)
+                {
+                    currentControl.FanCoolersControlEntries[i].ControlMode =
+                        policy == CoolerPolicy.Manual ? FanCoolersControlMode.Manual : FanCoolersControlMode.Auto;
+                    currentControl.FanCoolersControlEntries[i].Level =
+                        policy == CoolerPolicy.Manual ? (uint) newLevel : 0u;
+
+                    break;
+                }
+            }
+
+            GPUApi.SetClientFanCoolersControl(PhysicalGPU.Handle, currentControl);
         }
 
         /// <summary>
@@ -196,11 +212,16 @@ namespace NvAPIWrapper.GPU
         {
             try
             {
-                var currentControl = GPUApi.GetClientFanCoolersControl(PhysicalGPU.Handle);
-                currentControl.FanCoolersControlEntries[coolerId].Policy =
-                    policy == CoolerPolicy.Manual ? CoolerPolicy.Manual : CoolerPolicy.None;
-                currentControl.FanCoolersControlEntries[coolerId].Level = policy == CoolerPolicy.Manual ? 100u : 0u;
-                GPUApi.SetClientFanCoolersControl(PhysicalGPU.Handle, currentControl);
+                GPUApi.SetCoolerLevels(
+                    PhysicalGPU.Handle,
+                    (uint) coolerId,
+                    new PrivateCoolerLevelsV1(new[]
+                        {
+                            new PrivateCoolerLevelsV1.CoolerLevel(policy)
+                        }
+                    ),
+                    1
+                );
 
                 return;
             }
@@ -212,16 +233,22 @@ namespace NvAPIWrapper.GPU
                 }
             }
 
-            GPUApi.SetCoolerLevels(
-                PhysicalGPU.Handle,
-                (uint) coolerId,
-                new PrivateCoolerLevelsV1(new[]
-                    {
-                        new PrivateCoolerLevelsV1.CoolerLevel(policy)
-                    }
-                ),
-                1
-            );
+            var currentControl = GPUApi.GetClientFanCoolersControl(PhysicalGPU.Handle);
+
+            for (var i = 0; i < currentControl.FanCoolersControlEntries.Length; i++)
+            {
+                if (currentControl.FanCoolersControlEntries[i].CoolerId == coolerId)
+                {
+                    currentControl.FanCoolersControlEntries[i].ControlMode =
+                        policy == CoolerPolicy.Manual ? FanCoolersControlMode.Manual : FanCoolersControlMode.Auto;
+                    currentControl.FanCoolersControlEntries[i].Level =
+                        policy == CoolerPolicy.Manual ? 100u : 0u;
+
+                    break;
+                }
+            }
+
+            GPUApi.SetClientFanCoolersControl(PhysicalGPU.Handle, currentControl);
         }
 
         /// <summary>
