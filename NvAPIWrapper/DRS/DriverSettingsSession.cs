@@ -45,7 +45,7 @@ namespace NvAPIWrapper.DRS
         {
             get
             {
-                var profileHandle = DRSApi.GetBaseProfile(Handle);
+                var profileHandle = DRSApi.GetCurrentGlobalProfile(Handle);
 
                 if (profileHandle.IsNull)
                 {
