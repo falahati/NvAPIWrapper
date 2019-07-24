@@ -152,7 +152,41 @@ namespace NvAPIWrapper.GPU
         /// <param name="coolerIds">The cooler identification numbers (indexes) to reset their settings to default.</param>
         public void RestoreCoolerSettingsToDefault(params int[] coolerIds)
         {
-            GPUApi.RestoreCoolerSettings(PhysicalGPU.Handle, coolerIds.Select(i => (uint) i).ToArray());
+            var availableCoolerIds = Coolers.Select(cooler => cooler.CoolerId).ToArray();
+
+            if (coolerIds.Any(i => !availableCoolerIds.Contains(i)))
+            {
+                throw new ArgumentException("Invalid cooler identification number provided.", nameof(coolerIds));
+            }
+
+            try
+            {
+                GPUApi.RestoreCoolerSettings(PhysicalGPU.Handle, coolerIds.Select(i => (uint) i).ToArray());
+
+                return;
+            }
+            catch (NVIDIAApiException e)
+            {
+                if (e.Status != Status.NotSupported)
+                {
+                    throw;
+                }
+            }
+
+            var currentControl = GPUApi.GetClientFanCoolersControl(PhysicalGPU.Handle);
+            var newControl = new PrivateFanCoolersControlV1(
+                currentControl.FanCoolersControlEntries.Select(
+                        entry => coolerIds.Contains((int) entry.CoolerId)
+                            ? new PrivateFanCoolersControlV1.FanCoolersControlEntry(
+                                entry.CoolerId,
+                                FanCoolersControlMode.Auto
+                            )
+                            : entry
+                    )
+                    .ToArray(),
+                currentControl.UnknownUInt
+            );
+            GPUApi.SetClientFanCoolersControl(PhysicalGPU.Handle, newControl);
         }
 
         /// <summary>
