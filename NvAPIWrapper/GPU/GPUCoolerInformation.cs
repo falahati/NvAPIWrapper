@@ -162,6 +162,11 @@ namespace NvAPIWrapper.GPU
         /// <param name="newLevel">The new cooler level. Valid only if policy is set to manual.</param>
         public void SetCoolerSettings(int coolerId, CoolerPolicy policy, int newLevel)
         {
+            if (Coolers.All(cooler => cooler.CoolerId != coolerId))
+            {
+                throw new ArgumentException("Invalid cooler identification number provided.", nameof(coolerId));
+            }
+
             try
             {
                 GPUApi.SetCoolerLevels(
@@ -210,6 +215,11 @@ namespace NvAPIWrapper.GPU
         /// <param name="policy">The new cooler policy.</param>
         public void SetCoolerSettings(int coolerId, CoolerPolicy policy)
         {
+            if (Coolers.All(cooler => cooler.CoolerId != coolerId))
+            {
+                throw new ArgumentException("Invalid cooler identification number provided.", nameof(coolerId));
+            }
+
             try
             {
                 GPUApi.SetCoolerLevels(
