@@ -147,6 +147,14 @@ namespace NvAPIWrapper.GPU
         }
 
         /// <summary>
+        ///     Resets all cooler settings to default.
+        /// </summary>
+        public void RestoreCoolerSettingsToDefault()
+        {
+            RestoreCoolerSettingsToDefault(Coolers.Select(cooler => cooler.CoolerId).ToArray());
+        }
+
+        /// <summary>
         ///     Resets one or more cooler settings to default.
         /// </summary>
         /// <param name="coolerIds">The cooler identification numbers (indexes) to reset their settings to default.</param>
