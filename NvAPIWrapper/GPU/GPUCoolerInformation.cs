@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using NvAPIWrapper.Native;
 using NvAPIWrapper.Native.Exceptions;
@@ -160,6 +161,7 @@ namespace NvAPIWrapper.GPU
         /// <param name="coolerId">The cooler identification number (index) to change the settings.</param>
         /// <param name="policy">The new cooler policy.</param>
         /// <param name="newLevel">The new cooler level. Valid only if policy is set to manual.</param>
+        // ReSharper disable once TooManyDeclarations
         public void SetCoolerSettings(int coolerId, CoolerPolicy policy, int newLevel)
         {
             if (Coolers.All(cooler => cooler.CoolerId != coolerId))
@@ -191,21 +193,21 @@ namespace NvAPIWrapper.GPU
             }
 
             var currentControl = GPUApi.GetClientFanCoolersControl(PhysicalGPU.Handle);
-
-            for (var i = 0; i < currentControl.FanCoolersControlEntries.Length; i++)
-            {
-                if (currentControl.FanCoolersControlEntries[i].CoolerId == coolerId)
-                {
-                    currentControl.FanCoolersControlEntries[i].ControlMode =
-                        policy == CoolerPolicy.Manual ? FanCoolersControlMode.Manual : FanCoolersControlMode.Auto;
-                    currentControl.FanCoolersControlEntries[i].Level =
-                        policy == CoolerPolicy.Manual ? (uint) newLevel : 0u;
-
-                    break;
-                }
-            }
-
-            GPUApi.SetClientFanCoolersControl(PhysicalGPU.Handle, currentControl);
+            var newControl = new PrivateFanCoolersControlV1(
+                currentControl.FanCoolersControlEntries.Select(
+                        entry => entry.CoolerId == coolerId
+                            ? new PrivateFanCoolersControlV1.FanCoolersControlEntry(
+                                entry.CoolerId,
+                                policy == CoolerPolicy.Manual
+                                    ? FanCoolersControlMode.Manual
+                                    : FanCoolersControlMode.Auto,
+                                policy == CoolerPolicy.Manual ? 100u : 0u)
+                            : entry
+                    )
+                    .ToArray(),
+                currentControl.UnknownUInt
+            );
+            GPUApi.SetClientFanCoolersControl(PhysicalGPU.Handle, newControl);
         }
 
         /// <summary>
@@ -213,6 +215,7 @@ namespace NvAPIWrapper.GPU
         /// </summary>
         /// <param name="coolerId">The cooler identification number (index) to change the settings.</param>
         /// <param name="policy">The new cooler policy.</param>
+        // ReSharper disable once TooManyDeclarations
         public void SetCoolerSettings(int coolerId, CoolerPolicy policy)
         {
             if (Coolers.All(cooler => cooler.CoolerId != coolerId))
@@ -244,21 +247,20 @@ namespace NvAPIWrapper.GPU
             }
 
             var currentControl = GPUApi.GetClientFanCoolersControl(PhysicalGPU.Handle);
-
-            for (var i = 0; i < currentControl.FanCoolersControlEntries.Length; i++)
-            {
-                if (currentControl.FanCoolersControlEntries[i].CoolerId == coolerId)
-                {
-                    currentControl.FanCoolersControlEntries[i].ControlMode =
-                        policy == CoolerPolicy.Manual ? FanCoolersControlMode.Manual : FanCoolersControlMode.Auto;
-                    currentControl.FanCoolersControlEntries[i].Level =
-                        policy == CoolerPolicy.Manual ? 100u : 0u;
-
-                    break;
-                }
-            }
-
-            GPUApi.SetClientFanCoolersControl(PhysicalGPU.Handle, currentControl);
+            var newControl = new PrivateFanCoolersControlV1(
+                currentControl.FanCoolersControlEntries.Select(
+                        entry => entry.CoolerId == coolerId
+                            ? new PrivateFanCoolersControlV1.FanCoolersControlEntry(
+                                entry.CoolerId,
+                                policy == CoolerPolicy.Manual
+                                    ? FanCoolersControlMode.Manual
+                                    : FanCoolersControlMode.Auto)
+                            : entry
+                    )
+                    .ToArray(),
+                currentControl.UnknownUInt
+            );
+            GPUApi.SetClientFanCoolersControl(PhysicalGPU.Handle, newControl);
         }
 
         /// <summary>
