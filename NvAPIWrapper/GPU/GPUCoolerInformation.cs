@@ -243,7 +243,7 @@ namespace NvAPIWrapper.GPU
                                 policy == CoolerPolicy.Manual
                                     ? FanCoolersControlMode.Manual
                                     : FanCoolersControlMode.Auto,
-                                policy == CoolerPolicy.Manual ? 100u : 0u)
+                                policy == CoolerPolicy.Manual ? (uint)newLevel : 0u)
                             : entry
                     )
                     .ToArray(),
