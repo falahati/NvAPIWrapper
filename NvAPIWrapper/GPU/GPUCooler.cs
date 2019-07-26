@@ -9,7 +9,7 @@ namespace NvAPIWrapper.GPU
     /// </summary>
     public class GPUCooler
     {
-        internal GPUCooler(int coolerId, PrivateCoolerSettingsV1.CoolerSetting coolerSetting, int currentRPM)
+        internal GPUCooler(int coolerId, PrivateCoolerSettingsV1.CoolerSetting coolerSetting, int currentRPM = -1)
         {
             CoolerId = coolerId;
             CurrentLevel = (int) coolerSetting.CurrentLevel;

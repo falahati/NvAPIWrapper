@@ -48,10 +48,32 @@ namespace NvAPIWrapper.GPU
                 {
                     for (var i = 0; i < settings.Value.CoolerSettings.Length; i++)
                     {
+                        if (i == 0)
+                        {
+                            var currentRPM = -1;
+                            try
+                            {
+                                currentRPM = (int)GPUApi.GetTachReading(PhysicalGPU.Handle);
+                            }
+                            catch (NVIDIAApiException)
+                            {
+                                // ignored
+                            }
+
+                            if (currentRPM >= 0)
+                            {
+                                yield return new GPUCooler(
+                                    i,
+                                    settings.Value.CoolerSettings[i],
+                                    currentRPM
+                                );
+                                continue;
+                            }
+                        }
+
                         yield return new GPUCooler(
                             i,
-                            settings.Value.CoolerSettings[i],
-                            i == 0 ? (int) GPUApi.GetTachReading(PhysicalGPU.Handle) : -1
+                            settings.Value.CoolerSettings[i]
                         );
                     }
 
