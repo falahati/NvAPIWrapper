@@ -8,6 +8,7 @@ using NvAPIWrapper.Native.Exceptions;
 using NvAPIWrapper.Native.General;
 using NvAPIWrapper.Native.GPU;
 using NvAPIWrapper.Native.GPU.Structures;
+using NvAPIWrapper.Native.Helpers;
 using NvAPIWrapper.Native.Interfaces.GPU;
 
 namespace NvAPIWrapper.GPU
@@ -472,6 +473,11 @@ namespace NvAPIWrapper.GPU
         {
             try
             {
+                if (edidData.Length == 0)
+                {
+                    var instance = typeof(EDIDV3).Instantiate<EDIDV3>();
+                    GPUApi.SetEDID(Handle, displayOutputId, instance);
+                }
                 for (var offset = 0; offset < edidData.Length; offset += EDIDV3.MaxDataSize)
                 {
                     var array = new byte[Math.Min(EDIDV3.MaxDataSize, edidData.Length - offset)];
@@ -496,6 +502,11 @@ namespace NvAPIWrapper.GPU
 
             try
             {
+                if (edidData.Length == 0)
+                {
+                    var instance = typeof(EDIDV2).Instantiate<EDIDV2>();
+                    GPUApi.SetEDID(Handle, displayOutputId, instance);
+                }
                 for (var offset = 0; offset < edidData.Length; offset += EDIDV2.MaxDataSize)
                 {
                     var array = new byte[Math.Min(EDIDV2.MaxDataSize, edidData.Length - offset)];
