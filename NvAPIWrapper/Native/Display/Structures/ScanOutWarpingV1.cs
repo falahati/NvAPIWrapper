@@ -18,7 +18,7 @@ namespace NvAPIWrapper.Native.Display.Structures
         internal IntPtr _Vertices;
         internal WarpingVerticeFormat _VertexFormat;
         internal uint _NumberOfVertices;
-        [MarshalAs(UnmanagedType.LPStruct)] internal Rectangle _TextureRectangle;
+        internal IntPtr _TextureRectangle;
 
         /// <summary>
         ///     Creates a new instance of <see cref="ScanOutWarpingV1" />.
@@ -34,11 +34,13 @@ namespace NvAPIWrapper.Native.Display.Structures
             }
 
             this = typeof(ScanOutWarpingV1).Instantiate<ScanOutWarpingV1>();
-            _TextureRectangle = textureRectangle;
             _VertexFormat = vertexFormat;
             _NumberOfVertices = (uint) (vertices.Length / 6);
             _Vertices = Marshal.AllocHGlobal(vertices.Length * sizeof(float));
             Marshal.Copy(vertices, 0, _Vertices, vertices.Length);
+
+            _TextureRectangle = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(Rectangle)));
+            Marshal.StructureToPtr(textureRectangle, _TextureRectangle, true);
         }
 
         /// <summary>
@@ -54,7 +56,7 @@ namespace NvAPIWrapper.Native.Display.Structures
         /// </summary>
         public Rectangle TextureRectangle
         {
-            get => _TextureRectangle;
+            get => (Rectangle)Marshal.PtrToStructure(_TextureRectangle, typeof(Rectangle));
         }
 
         /// <summary>
@@ -75,6 +77,7 @@ namespace NvAPIWrapper.Native.Display.Structures
         public void Dispose()
         {
             Marshal.FreeHGlobal(_Vertices);
+            Marshal.FreeHGlobal(_TextureRectangle);
         }
     }
 }
