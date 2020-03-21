@@ -37,9 +37,9 @@ namespace NvAPIWrapper.GPU
         /// <summary>
         ///     Gets the corresponding Digital Vibrance Control information
         /// </summary>
-        public DVIInformation DigitalVibranceControl
+        public DVCInformation DigitalVibranceControl
         {
-            get => new DVIInformation(OutputId);
+            get => new DVCInformation(OutputId);
         }
 
         /// <summary>

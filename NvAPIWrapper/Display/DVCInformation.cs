@@ -10,7 +10,7 @@ namespace NvAPIWrapper.Display
     ///     This class contains and provides a way to modify the Digital Vibrance Control information regarding the
     ///     saturation level of the display or the output
     /// </summary>
-    public class DVIInformation : IDisplayDVCInfo
+    public class DVCInformation : IDisplayDVCInfo
     {
         private readonly DisplayHandle _displayHandle = DisplayHandle.DefaultHandle;
         private readonly OutputId _outputId = OutputId.Invalid;
@@ -20,7 +20,7 @@ namespace NvAPIWrapper.Display
         ///     Creates a new instance of the class using a DisplayHandle
         /// </summary>
         /// <param name="displayHandle">The handle of the display.</param>
-        public DVIInformation(DisplayHandle displayHandle)
+        public DVCInformation(DisplayHandle displayHandle)
         {
             _displayHandle = displayHandle;
         }
@@ -29,7 +29,7 @@ namespace NvAPIWrapper.Display
         ///     Creates a new instance of this class using a OutputId
         /// </summary>
         /// <param name="outputId">The output identification of a display or an output</param>
-        public DVIInformation(OutputId outputId)
+        public DVCInformation(OutputId outputId)
         {
             _outputId = outputId;
         }

@@ -41,9 +41,9 @@ namespace NvAPIWrapper.Display
         /// <summary>
         ///     Gets the corresponding Digital Vibrance Control information
         /// </summary>
-        public DVIInformation DigitalVibranceControl
+        public DVCInformation DigitalVibranceControl
         {
-            get => new DVIInformation(Handle);
+            get => new DVCInformation(Handle);
         }
 
         /// <summary>
