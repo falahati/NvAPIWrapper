@@ -1,4 +1,5 @@
 ﻿using System;
+using NvAPIWrapper.Display;
 using NvAPIWrapper.Native;
 using NvAPIWrapper.Native.GPU;
 using NvAPIWrapper.Native.GPU.Structures;
@@ -32,6 +33,14 @@ namespace NvAPIWrapper.GPU
         ///     Gets the output type
         /// </summary>
         public OutputType OutputType { get; }
+
+        /// <summary>
+        ///     Gets the corresponding Digital Vibrance Control information
+        /// </summary>
+        public DVIInformation DigitalVibranceControl
+        {
+            get => new DVIInformation(OutputId);
+        }
 
         /// <summary>
         ///     Gets the corresponding physical GPU

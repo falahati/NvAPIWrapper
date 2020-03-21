@@ -39,6 +39,14 @@ namespace NvAPIWrapper.Display
         }
 
         /// <summary>
+        ///     Gets the corresponding Digital Vibrance Control information
+        /// </summary>
+        public DVIInformation DigitalVibranceControl
+        {
+            get => new DVIInformation(Handle);
+        }
+
+        /// <summary>
         ///     Gets display driver build title
         /// </summary>
         public string DriverBuildTitle

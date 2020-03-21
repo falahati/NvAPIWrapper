@@ -71,7 +71,7 @@ namespace NvAPIWrapper.Native.Delegates
         public delegate Status NvAPI_GetDisplayDriverBuildTitle(
             [In] DisplayHandle displayHandle,
             [Out] out ShortString name);
-        
+
         [FunctionId(FunctionId.NvAPI_GetDisplayDriverMemoryInfo)]
         public delegate Status NvAPI_GetDisplayDriverMemoryInfo(
             [In] DisplayHandle displayHandle,
@@ -79,6 +79,22 @@ namespace NvAPIWrapper.Native.Delegates
             [Accepts(typeof(DisplayDriverMemoryInfoV3), typeof(DisplayDriverMemoryInfoV2),
                 typeof(DisplayDriverMemoryInfoV1))]
             ValueTypeReference memoryInfo);
+
+        [FunctionId(FunctionId.NvAPI_GetDVCInfo)]
+        public delegate Status NvAPI_GetDVCInfo(
+            [In] DisplayHandle displayHandle,
+            [In] OutputId displayId,
+            [In] [Accepts(typeof(PrivateDisplayDVCInfo))]
+            ValueTypeReference memoryInfo
+        );
+
+        [FunctionId(FunctionId.NvAPI_GetDVCInfoEx)]
+        public delegate Status NvAPI_GetDVCInfoEx(
+            [In] DisplayHandle displayHandle,
+            [In] OutputId displayId,
+            [In] [Accepts(typeof(PrivateDisplayDVCInfoEx))]
+            ValueTypeReference memoryInfo
+        );
 
         [FunctionId(FunctionId.NvAPI_GetSupportedViews)]
         public delegate Status NvAPI_GetSupportedViews(
@@ -143,5 +159,20 @@ namespace NvAPIWrapper.Native.Delegates
             ValueTypeReference scanOutWarping,
             [In] [Out] ref int maximumNumberOfVertices,
             [Out] out int isSticky);
+
+        [FunctionId(FunctionId.NvAPI_SetDVCLevel)]
+        public delegate Status NvAPI_SetDVCLevel(
+            [In] DisplayHandle displayHandle,
+            [In] OutputId displayId,
+            [In] int dvcLevel
+        );
+
+        [FunctionId(FunctionId.NvAPI_SetDVCLevelEx)]
+        public delegate Status NvAPI_SetDVCLevelEx(
+            [In] DisplayHandle displayHandle,
+            [In] OutputId displayId,
+            [In] [Accepts(typeof(PrivateDisplayDVCInfoEx))]
+            ValueTypeReference memoryInfo
+        );
     }
 }

@@ -359,6 +359,126 @@ namespace NvAPIWrapper.Native
             return display;
         }
 
+        /// [PRIVATE]
+        /// <summary>
+        ///     This API returns the current saturation level from the Digital Vibrance Control
+        /// </summary>
+        /// <param name="display">
+        ///     The targeted display's handle.
+        /// </param>
+        /// <returns>An instance of the PrivateDisplayDVCInfo structure containing requested information.</returns>
+        public static PrivateDisplayDVCInfo GetDVCInfo(DisplayHandle display)
+        {
+            var instance = typeof(PrivateDisplayDVCInfo).Instantiate<PrivateDisplayDVCInfo>();
+
+            using (var displayDVCInfoReference = ValueTypeReference.FromValueType(instance))
+            {
+                var status = DelegateFactory.GetDelegate<Delegates.Display.NvAPI_GetDVCInfo>()(
+                    display,
+                    OutputId.Invalid,
+                    displayDVCInfoReference
+                );
+
+                if (status != Status.Ok)
+                {
+                    throw new NVIDIAApiException(status);
+                }
+
+                return displayDVCInfoReference.ToValueType<PrivateDisplayDVCInfo>().GetValueOrDefault();
+            }
+        }
+
+        /// [PRIVATE]
+        /// <summary>
+        ///     This API returns the current saturation level from the Digital Vibrance Control
+        /// </summary>
+        /// <param name="displayId">
+        ///     The targeted display output id.
+        /// </param>
+        /// <returns>An instance of the PrivateDisplayDVCInfo structure containing requested information.</returns>
+        public static PrivateDisplayDVCInfo GetDVCInfo(OutputId displayId)
+        {
+            var instance = typeof(PrivateDisplayDVCInfo).Instantiate<PrivateDisplayDVCInfo>();
+
+            using (var displayDVCInfoReference = ValueTypeReference.FromValueType(instance))
+            {
+                var status = DelegateFactory.GetDelegate<Delegates.Display.NvAPI_GetDVCInfo>()(
+                    DisplayHandle.DefaultHandle,
+                    displayId,
+                    displayDVCInfoReference
+                );
+
+                if (status != Status.Ok)
+                {
+                    throw new NVIDIAApiException(status);
+                }
+
+                return displayDVCInfoReference.ToValueType<PrivateDisplayDVCInfo>().GetValueOrDefault();
+            }
+        }
+
+        /// [PRIVATE]
+        /// <summary>
+        ///     This API returns the current and the default saturation level from the Digital Vibrance Control.
+        ///     The difference between this API and the 'GetDVCInfo()' includes the possibility to get the default
+        ///     saturation level as well as to query under saturated configurations.
+        /// </summary>
+        /// <param name="display">
+        ///     The targeted display's handle.
+        /// </param>
+        /// <returns>An instance of the PrivateDisplayDVCInfoEx structure containing requested information.</returns>
+        public static PrivateDisplayDVCInfoEx GetDVCInfoEx(DisplayHandle display)
+        {
+            var instance = typeof(PrivateDisplayDVCInfoEx).Instantiate<PrivateDisplayDVCInfoEx>();
+
+            using (var displayDVCInfoReference = ValueTypeReference.FromValueType(instance))
+            {
+                var status = DelegateFactory.GetDelegate<Delegates.Display.NvAPI_GetDVCInfoEx>()(
+                    display,
+                    OutputId.Invalid,
+                    displayDVCInfoReference
+                );
+
+                if (status != Status.Ok)
+                {
+                    throw new NVIDIAApiException(status);
+                }
+
+                return displayDVCInfoReference.ToValueType<PrivateDisplayDVCInfoEx>().GetValueOrDefault();
+            }
+        }
+
+        /// [PRIVATE]
+        /// <summary>
+        ///     This API returns the current and the default saturation level from the Digital Vibrance Control.
+        ///     The difference between this API and the 'GetDVCInfo()' includes the possibility to get the default
+        ///     saturation level as well as to query under saturated configurations.
+        /// </summary>
+        /// <param name="displayId">
+        ///     The targeted display output id.
+        /// </param>
+        /// <returns>An instance of the PrivateDisplayDVCInfoEx structure containing requested information.</returns>
+        public static PrivateDisplayDVCInfoEx GetDVCInfoEx(OutputId displayId)
+        {
+            var instance = typeof(PrivateDisplayDVCInfoEx).Instantiate<PrivateDisplayDVCInfoEx>();
+
+            using (var displayDVCInfoReference = ValueTypeReference.FromValueType(instance))
+            {
+                var status = DelegateFactory.GetDelegate<Delegates.Display.NvAPI_GetDVCInfoEx>()(
+                    DisplayHandle.DefaultHandle,
+                    displayId,
+                    displayDVCInfoReference
+                );
+
+                if (status != Status.Ok)
+                {
+                    throw new NVIDIAApiException(status);
+                }
+
+                return displayDVCInfoReference.ToValueType<PrivateDisplayDVCInfoEx>().GetValueOrDefault();
+            }
+        }
+
         /// <summary>
         ///     This API queries current state of one of the various scan-out composition parameters on the specified display.
         /// </summary>
@@ -593,9 +713,119 @@ namespace NvAPIWrapper.Native
                 throw new NVIDIANotSupportedException("This operation is not supported.");
             }
 
-            using (var arrayReference = ValueTypeArray.FromArray(pathInfos.Cast<object>()))
+            using (var arrayReference = ValueTypeArray.FromArray(pathInfos))
             {
                 var status = setDisplayConfig((uint) pathInfos.Length, arrayReference, flags);
+
+                if (status != Status.Ok)
+                {
+                    throw new NVIDIAApiException(status);
+                }
+            }
+        }
+
+        /// [PRIVATE]
+        /// <summary>
+        ///     This API sets the current saturation level for the Digital Vibrance Control
+        /// </summary>
+        /// <param name="display">
+        ///     The targeted display's handle.
+        /// </param>
+        /// <param name="currentLevel">
+        ///     The saturation level to be set.
+        /// </param>
+        public static void SetDVCLevel(DisplayHandle display, int currentLevel)
+        {
+            var status = DelegateFactory.GetDelegate<Delegates.Display.NvAPI_SetDVCLevel>()(
+                display,
+                OutputId.Invalid,
+                currentLevel
+            );
+
+            if (status != Status.Ok)
+            {
+                throw new NVIDIAApiException(status);
+            }
+        }
+
+        /// [PRIVATE]
+        /// <summary>
+        ///     This API sets the current saturation level for the Digital Vibrance Control
+        /// </summary>
+        /// <param name="displayId">
+        ///     The targeted display output id.
+        /// </param>
+        /// <param name="currentLevel">
+        ///     The saturation level to be set.
+        /// </param>
+        public static void SetDVCLevel(OutputId displayId, int currentLevel)
+        {
+            var status = DelegateFactory.GetDelegate<Delegates.Display.NvAPI_SetDVCLevel>()(
+                DisplayHandle.DefaultHandle,
+                displayId,
+                currentLevel
+            );
+
+            if (status != Status.Ok)
+            {
+                throw new NVIDIAApiException(status);
+            }
+        }
+
+        /// [PRIVATE]
+        /// <summary>
+        ///     This API sets the current saturation level for the Digital Vibrance Control.
+        ///     The difference between this API and the 'SetDVCLevel()' includes the possibility to set under saturated
+        ///     levels.
+        /// </summary>
+        /// <param name="display">
+        ///     The targeted display's handle.
+        /// </param>
+        /// <param name="currentLevel">
+        ///     The saturation level to be set.
+        /// </param>
+        public static void SetDVCLevelEx(DisplayHandle display, int currentLevel)
+        {
+            var instance = new PrivateDisplayDVCInfoEx(currentLevel);
+
+            using (var displayDVCInfoReference = ValueTypeReference.FromValueType(instance))
+            {
+                var status = DelegateFactory.GetDelegate<Delegates.Display.NvAPI_SetDVCLevelEx>()(
+                    display,
+                    OutputId.Invalid,
+                    displayDVCInfoReference
+                );
+
+                if (status != Status.Ok)
+                {
+                    throw new NVIDIAApiException(status);
+                }
+            }
+        }
+
+        /// [PRIVATE]
+        /// <summary>
+        ///     This API sets the current saturation level for the Digital Vibrance Control.
+        ///     The difference between this API and the 'SetDVCLevel()' includes the possibility to set under saturated
+        ///     levels.
+        /// </summary>
+        /// <param name="displayId">
+        ///     The targeted display output id.
+        /// </param>
+        /// <param name="currentLevel">
+        ///     The saturation level to be set.
+        /// </param>
+        public static void SetDVCLevelEx(OutputId displayId, int currentLevel)
+        {
+            var instance = new PrivateDisplayDVCInfoEx(currentLevel);
+
+            using (var displayDVCInfoReference = ValueTypeReference.FromValueType(instance))
+            {
+                var status = DelegateFactory.GetDelegate<Delegates.Display.NvAPI_SetDVCLevelEx>()(
+                    DisplayHandle.DefaultHandle,
+                    displayId,
+                    displayDVCInfoReference
+                );
 
                 if (status != Status.Ok)
                 {
