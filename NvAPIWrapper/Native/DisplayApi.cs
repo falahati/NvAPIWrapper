@@ -531,6 +531,30 @@ namespace NvAPIWrapper.Native
         }
 
         /// <summary>
+        ///     This API gets High Dynamic Range (HDR) capabilities of the display.
+        /// </summary>
+        /// <param name="displayId">The targeted display output id.</param>
+        /// <param name="driverExpandDefaultHDRParameters">If set, driver will expand default (=zero) HDR capabilities parameters contained in display's EDID.</param>
+        /// <returns>HDR capabilities of the display</returns>
+        public static THDRCapabilities GetHDRCapabilities<THDRCapabilities>(uint displayId, bool driverExpandDefaultHDRParameters = false) where THDRCapabilities : struct, IHDRCapabilities
+        {
+            var getHDRCapabilities = DelegateFactory.GetDelegate<Delegates.Display.NvAPI_Disp_GetHdrCapabilities>();
+            var hdrCapabilities = (THDRCapabilities)Activator.CreateInstance(typeof(THDRCapabilities), driverExpandDefaultHDRParameters, StaticMetadataDescriptorId.StaticMetadataType1);
+
+            using (var hdrCapabilitiesReference = ValueTypeReference.FromValueType(hdrCapabilities))
+            {
+                var status = getHDRCapabilities(displayId, hdrCapabilitiesReference);
+
+                if (status != Status.Ok)
+                {
+                    throw new NVIDIAApiException(status);
+                }
+
+                return hdrCapabilitiesReference.ToValueType<THDRCapabilities>().GetValueOrDefault();
+            }
+        }
+
+        /// <summary>
         ///     This function returns HDR configuration data relating to the targeted display id.
         ///     Note: MasteringDisplayData values will be zero if HDRMode is Off.
         /// </summary>
