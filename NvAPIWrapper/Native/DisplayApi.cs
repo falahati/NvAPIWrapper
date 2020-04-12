@@ -488,7 +488,6 @@ namespace NvAPIWrapper.Native
         public static uint GetGDIPrimaryDisplayId()
         {
             var getGDIPrimaryDisplay = DelegateFactory.GetDelegate<Delegates.Display.NvAPI_DISP_GetGDIPrimaryDisplayId>();
-
             var status = getGDIPrimaryDisplay(out var displayId);
 
             if (status != Status.Ok)
