@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using NvAPIWrapper.Native.Display;
@@ -446,6 +446,29 @@ namespace NvAPIWrapper.Native
 
                 return displayDVCInfoReference.ToValueType<PrivateDisplayDVCInfoEx>().GetValueOrDefault();
             }
+        }
+
+        /// <summary>
+        ///     This API returns the Display ID of the GDI Primary.
+        /// </summary>
+        /// <returns>Display ID of the GDI Primary.</returns>
+        /// <exception cref="NVIDIAApiException">Status.NvidiaDeviceNotFound: GDI Primary not on an NVIDIA GPU.</exception>
+        /// <exception cref="NVIDIAApiException">Status.ApiNotInitialized: The NvAPI API needs to be initialized first</exception>
+        /// <exception cref="NVIDIAApiException">Status.NoImplementation: This entry-point not available</exception>
+        /// <exception cref="NVIDIAApiException">Status.Error: Miscellaneous error occurred</exception>
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        public static uint GetGDIPrimaryDisplayId()
+        {
+            var getGDIPrimaryDisplay = DelegateFactory.GetDelegate<Delegates.Display.NvAPI_DISP_GetGDIPrimaryDisplayId>();
+
+            var status = getGDIPrimaryDisplay(out var displayId);
+
+            if (status != Status.Ok)
+            {
+                throw new NVIDIAApiException(status);
+            }
+
+            return displayId;
         }
 
         /// [PRIVATE]

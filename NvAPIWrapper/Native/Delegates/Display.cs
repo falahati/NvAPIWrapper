@@ -1,4 +1,4 @@
-﻿using System.Runtime.InteropServices;
+using System.Runtime.InteropServices;
 using NvAPIWrapper.Native.Attributes;
 using NvAPIWrapper.Native.Display;
 using NvAPIWrapper.Native.Display.Structures;
@@ -33,6 +33,9 @@ namespace NvAPIWrapper.Native.Delegates
 
         [FunctionId(FunctionId.NvAPI_DISP_GetDisplayIdByDisplayName)]
         public delegate Status NvAPI_DISP_GetDisplayIdByDisplayName([In] string displayName, [Out] out uint displayId);
+
+        [FunctionId(FunctionId.NvAPI_DISP_GetGDIPrimaryDisplayId)]
+        public delegate Status NvAPI_DISP_GetGDIPrimaryDisplayId([Out] out uint displayId);
 
         [FunctionId(FunctionId.NvAPI_DISP_SetDisplayConfig)]
         public delegate Status NvAPI_DISP_SetDisplayConfig(
