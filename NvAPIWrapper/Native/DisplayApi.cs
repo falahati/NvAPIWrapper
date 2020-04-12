@@ -531,6 +531,19 @@ namespace NvAPIWrapper.Native
         }
 
         /// <summary>
+        ///     This function returns HDR configuration data relating to the targeted display id.
+        ///     Note: MasteringDisplayData values will be zero if HDRMode is Off.
+        /// </summary>
+        /// <param name="displayId">The targeted display output id.</param>
+        /// <returns>HDR configuration data</returns>
+        public static THDRColorData GetHDRColorData<THDRColorData>(uint displayId) where THDRColorData : struct, IHDRColorData
+        {
+            var hdrColorData = (THDRColorData)Activator.CreateInstance(typeof(THDRColorData), HDRCommand.Get);
+
+            return HDRColorControl(displayId, hdrColorData);
+        }
+
+        /// <summary>
         ///     This API queries current state of one of the various scan-out composition parameters on the specified display.
         /// </summary>
         /// <param name="displayId">Combined physical display and GPU identifier of the display to query the configuration.</param>
@@ -924,6 +937,25 @@ namespace NvAPIWrapper.Native
         }
 
         /// <summary>
+        ///     This function applies HDR configuration to the targeted display id.
+        ///     Note: As of NVAPI R410:
+        ///       - setting the DynamicRange does not appear to not take effect
+        ///       - setting the ColorFormat does not appear to not take effect
+        ///       - setting the BPC only takes effect when switching HDRMode to On from Off, and only if
+        ///         the ColorSelectionPolicy is not set to User (use the GetColorData function to determine the active ColorSelectionPolicy)
+        ///     Note: Filling MasteringDisplayData values is not required for enabling HDRMode.
+        ///     Note: Use the SetColorData function to better control BPC, and to control DynamicRange and ColorFormat.
+        /// </summary>
+        /// <param name="displayId">The targeted display output id.</param>
+        /// <param name="hdrColorData">HDR configuration data</param>
+        public static void SetHDRColorData<THDRColorData>(uint displayId, THDRColorData hdrColorData) where THDRColorData : struct, IHDRColorData
+        {
+            hdrColorData.HDRCommand = HDRCommand.Set;
+
+            HDRColorControl(displayId, hdrColorData);
+        }
+
+        /// <summary>
         ///     This API sets various parameters that configure the scan-out composition feature on the specified display.
         /// </summary>
         /// <param name="displayId">Combined physical display and GPU identifier of the display to apply the intensity control.</param>
@@ -1060,6 +1092,29 @@ namespace NvAPIWrapper.Native
                 }
 
                 return colorDataReference.ToValueType<TColorData>().GetValueOrDefault();
+            }
+        }
+
+        /// <summary>
+        ///     This API configures High Dynamic Range (HDR) and Extended Dynamic Range (EDR) output.
+        /// </summary>
+        /// <param name="displayId">The targeted display output id.</param>
+        /// <param name="hdrColorData">HDR configuration data</param>
+        /// <returns>HDR configuration data</returns>
+        public static THDRColorData HDRColorControl<THDRColorData>(uint displayId, THDRColorData hdrColorData) where THDRColorData : struct, IHDRColorData
+        {
+            var hdrColorControl = DelegateFactory.GetDelegate<Delegates.Display.NvAPI_Disp_HdrColorControl>();
+
+            using (var hdrColorDataReference = ValueTypeReference.FromValueType(hdrColorData))
+            {
+                var status = hdrColorControl(displayId, hdrColorDataReference);
+
+                if (status != Status.Ok)
+                {
+                    throw new NVIDIAApiException(status);
+                }
+
+                return hdrColorDataReference.ToValueType<THDRColorData>().GetValueOrDefault();
             }
         }
     }

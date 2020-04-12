@@ -43,6 +43,12 @@ namespace NvAPIWrapper.Native.Delegates
         [FunctionId(FunctionId.NvAPI_DISP_GetGDIPrimaryDisplayId)]
         public delegate Status NvAPI_DISP_GetGDIPrimaryDisplayId([Out] out uint displayId);
 
+        [FunctionId(FunctionId.NvAPI_Disp_HdrColorControl)]
+        public delegate Status NvAPI_Disp_HdrColorControl(
+            [In] uint displayId,
+            [In] [Out] [Accepts(typeof(HDRColorDataV1), typeof(HDRColorDataV2))]
+            ValueTypeReference hdrColorData);
+
         [FunctionId(FunctionId.NvAPI_DISP_SetDisplayConfig)]
         public delegate Status NvAPI_DISP_SetDisplayConfig(
             [In] uint pathInfoCount,
