@@ -20,6 +20,12 @@ namespace NvAPIWrapper.Native.Delegates
             [In] UnAttachedDisplayHandle display,
             [Out] out DisplayHandle newDisplay);
 
+        [FunctionId(FunctionId.NvAPI_Disp_ColorControl)]
+        public delegate Status NvAPI_Disp_ColorControl(
+            [In] uint displayId,
+            [In] [Out] [Accepts(typeof(ColorDataV1), typeof(ColorDataV2), typeof(ColorDataV3), typeof(ColorDataV4), typeof(ColorDataV5))]
+            ValueTypeReference colorData);
+
         [FunctionId(FunctionId.NvAPI_DISP_GetAssociatedUnAttachedNvidiaDisplayHandle)]
         public delegate Status NvAPI_DISP_GetAssociatedUnAttachedNvidiaDisplayHandle(
             [In] [MarshalAs(UnmanagedType.LPStr)] string displayName,

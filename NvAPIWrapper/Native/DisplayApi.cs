@@ -212,6 +212,34 @@ namespace NvAPIWrapper.Native
         }
 
         /// <summary>
+        ///     This function returns color information relating to the targeted display id.
+        /// </summary>
+        /// <param name="displayId">The targeted display output id.</param>
+        /// <returns>Data corresponding to color information</returns>
+        /// <exception cref="NVIDIAApiException">Status.Error: Miscellaneous error occurred</exception>
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        public static TColorData GetColorData<TColorData>(uint displayId) where TColorData : struct, IColorData
+        {
+            var colorData = (TColorData)Activator.CreateInstance(typeof(TColorData), ColorCommand.Get);
+
+            return ColorControl(displayId, colorData);
+        }
+
+        /// <summary>
+        ///     This function returns the default color information of the targeted display id.
+        /// </summary>
+        /// <param name="displayId">The targeted display output id.</param>
+        /// <returns>Data corresponding to default color information</returns>
+        /// <exception cref="NVIDIAApiException">Status.Error: Miscellaneous error occurred</exception>
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        public static TColorData GetDefaultColorData<TColorData>(uint displayId) where TColorData : struct, IColorData
+        {
+            var colorData = (TColorData)Activator.CreateInstance(typeof(TColorData), ColorCommand.GetDefault);
+
+            return ColorControl(displayId, colorData);
+        }
+
+        /// <summary>
         ///     This API lets caller retrieve the current global display configuration.
         ///     Note: User should dispose all returned PathInfo objects
         /// </summary>
@@ -712,6 +740,45 @@ namespace NvAPIWrapper.Native
         }
 
         /// <summary>
+        ///     This function returns a boolean indicating if the targeted display supports the provided color settings.
+        /// </summary>
+        /// <param name="displayId">The targeted display output id.</param>
+        /// <returns>true, if the color settings are supported, otherwise false</returns>
+        /// <exception cref="NVIDIAApiException">Status.Error: Miscellaneous error occurred</exception>
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        public static bool IsSupportedColor<TColorData>(uint displayId, TColorData colorData) where TColorData : struct, IColorData
+        {
+            try
+            {
+                colorData.ColorCommand = ColorCommand.IsSupportedColor;
+                _ = ColorControl(displayId, colorData);
+
+                return true;
+            }
+            catch (NVIDIAApiException ex)
+            {
+                if (ex.Status == Status.NotSupported)
+                    return false;
+
+                throw;
+            }
+        }
+
+        /// <summary>
+        ///     This function applies color settings to the targeted display.
+        /// </summary>
+        /// <param name="displayId">The targeted display output id.</param>
+        /// <returns>Data corresponding to color information</returns>
+        /// <exception cref="NVIDIAApiException">Status.Error: Miscellaneous error occurred</exception>
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        public static void SetColorData<TColorData>(uint displayId, TColorData colorData) where TColorData : struct, IColorData
+        {
+            colorData.ColorCommand = ColorCommand.Set;
+
+            ColorControl(displayId, colorData);
+        }
+
+        /// <summary>
         ///     This API lets caller apply a global display configuration across multiple GPUs.
         ///     If all sourceIds are zero, then NvAPI will pick up sourceId's based on the following criteria :
         ///     - If user provides SourceModeInfo then we are trying to assign 0th SourceId always to GDIPrimary.
@@ -970,6 +1037,31 @@ namespace NvAPIWrapper.Native
             }
 
             isSticky = isStickyInt > 0;
+        }
+
+        /// <summary>
+        ///     This API controls the Color values.
+        /// </summary>
+        /// <param name="displayId">The targeted display output id.</param>
+        /// <param name="colorData">Contains data corresponding to color information</param>
+        /// <returns>Data corresponding to color information</returns>
+        /// <exception cref="NVIDIAApiException">Status.Error: Miscellaneous error occurred</exception>
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        private static TColorData ColorControl<TColorData>(uint displayId, TColorData colorData) where TColorData : struct, IColorData
+        {
+            var colorControl = DelegateFactory.GetDelegate<Delegates.Display.NvAPI_Disp_ColorControl>();
+
+            using (var colorDataReference = ValueTypeReference.FromValueType(colorData))
+            {
+                var status = colorControl(displayId, colorDataReference);
+
+                if (status != Status.Ok)
+                {
+                    throw new NVIDIAApiException(status);
+                }
+
+                return colorDataReference.ToValueType<TColorData>().GetValueOrDefault();
+            }
         }
     }
 }
