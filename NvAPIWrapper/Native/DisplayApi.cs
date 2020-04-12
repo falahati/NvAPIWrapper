@@ -768,7 +768,6 @@ namespace NvAPIWrapper.Native
         ///     This function applies color settings to the targeted display.
         /// </summary>
         /// <param name="displayId">The targeted display output id.</param>
-        /// <returns>Data corresponding to color information</returns>
         /// <exception cref="NVIDIAApiException">Status.Error: Miscellaneous error occurred</exception>
         /// <exception cref="Exception">A delegate callback throws an exception.</exception>
         public static void SetColorData<TColorData>(uint displayId, TColorData colorData) where TColorData : struct, IColorData
