@@ -1,4 +1,4 @@
-﻿using System.Runtime.InteropServices;
+using System.Runtime.InteropServices;
 using NvAPIWrapper.Native.Attributes;
 using NvAPIWrapper.Native.Display;
 using NvAPIWrapper.Native.Display.Structures;
@@ -20,6 +20,12 @@ namespace NvAPIWrapper.Native.Delegates
             [In] UnAttachedDisplayHandle display,
             [Out] out DisplayHandle newDisplay);
 
+        [FunctionId(FunctionId.NvAPI_Disp_ColorControl)]
+        public delegate Status NvAPI_Disp_ColorControl(
+            [In] uint displayId,
+            [In] [Out] [Accepts(typeof(ColorDataV1), typeof(ColorDataV2), typeof(ColorDataV3), typeof(ColorDataV4), typeof(ColorDataV5))]
+            ValueTypeReference colorData);
+
         [FunctionId(FunctionId.NvAPI_DISP_GetAssociatedUnAttachedNvidiaDisplayHandle)]
         public delegate Status NvAPI_DISP_GetAssociatedUnAttachedNvidiaDisplayHandle(
             [In] [MarshalAs(UnmanagedType.LPStr)] string displayName,
@@ -33,6 +39,21 @@ namespace NvAPIWrapper.Native.Delegates
 
         [FunctionId(FunctionId.NvAPI_DISP_GetDisplayIdByDisplayName)]
         public delegate Status NvAPI_DISP_GetDisplayIdByDisplayName([In] string displayName, [Out] out uint displayId);
+
+        [FunctionId(FunctionId.NvAPI_DISP_GetGDIPrimaryDisplayId)]
+        public delegate Status NvAPI_DISP_GetGDIPrimaryDisplayId([Out] out uint displayId);
+
+        [FunctionId(FunctionId.NvAPI_Disp_GetHdrCapabilities)]
+        public delegate Status NvAPI_Disp_GetHdrCapabilities(
+            [In] uint displayId,
+            [In] [Out] [Accepts(typeof(HDRCapabilitiesV1))]
+            ValueTypeReference hdrCapabilities);
+
+        [FunctionId(FunctionId.NvAPI_Disp_HdrColorControl)]
+        public delegate Status NvAPI_Disp_HdrColorControl(
+            [In] uint displayId,
+            [In] [Out] [Accepts(typeof(HDRColorDataV1), typeof(HDRColorDataV2))]
+            ValueTypeReference hdrColorData);
 
         [FunctionId(FunctionId.NvAPI_DISP_SetDisplayConfig)]
         public delegate Status NvAPI_DISP_SetDisplayConfig(

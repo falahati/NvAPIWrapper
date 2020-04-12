@@ -21,7 +21,7 @@ namespace NvAPIWrapper.Display
         /// <param name="resolution">Display resolution</param>
         /// <param name="colorFormat">Display color format</param>
         /// <param name="targetInfos">Target configuration informations</param>
-        public PathInfo(Resolution resolution, ColorFormat colorFormat, PathTargetInfo[] targetInfos)
+        public PathInfo(Resolution resolution, Format colorFormat, PathTargetInfo[] targetInfos)
         {
             Resolution = resolution;
             ColorFormat = colorFormat;
@@ -53,7 +53,7 @@ namespace NvAPIWrapper.Display
         /// <summary>
         ///     Gets or sets the display color format
         /// </summary>
-        public ColorFormat ColorFormat { get; set; }
+        public Format ColorFormat { get; set; }
 
         /// <summary>
         ///     Gets or sets a boolean value indicating if the this is the primary GDI display
