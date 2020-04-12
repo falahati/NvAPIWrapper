@@ -1124,7 +1124,7 @@ namespace NvAPIWrapper.Native
         /// <param name="displayId">The targeted display output id.</param>
         /// <param name="hdrColorData">HDR configuration data</param>
         /// <returns>HDR configuration data</returns>
-        public static THDRColorData HDRColorControl<THDRColorData>(uint displayId, THDRColorData hdrColorData) where THDRColorData : struct, IHDRColorData
+        private static THDRColorData HDRColorControl<THDRColorData>(uint displayId, THDRColorData hdrColorData) where THDRColorData : struct, IHDRColorData
         {
             var hdrColorControl = DelegateFactory.GetDelegate<Delegates.Display.NvAPI_Disp_HdrColorControl>();
 
