@@ -31,11 +31,6 @@ namespace NvAPIWrapper.Native.Display.Structures
         {
         }
 
-        public ushort Size
-        {
-            get => _Size;
-        }
-
         public ColorCommand ColorCommand
         {
             get => _ColorCommand;

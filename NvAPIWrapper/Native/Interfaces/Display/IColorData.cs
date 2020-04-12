@@ -8,6 +8,5 @@ namespace NvAPIWrapper.Native.Interfaces.Display
     public interface IColorData
     {
         ColorCommand ColorCommand { get; set; }
-        ushort Size { get; }
     }
 }
