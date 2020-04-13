@@ -54,21 +54,18 @@ namespace NvAPIWrapper.Native.Display.Structures
         public bool IsST2084EOTFSupported
         {
             get => _RawReserved.GetBit(0);
-            private set => _RawReserved = _RawReserved.SetBit(0, value);
         }
 
         /// <inheritdoc />
         public bool IsTraditionalHDRGammaSupported
         {
             get => _RawReserved.GetBit(1);
-            private set => _RawReserved = _RawReserved.SetBit(1, value);
         }
 
         /// <inheritdoc />
         public bool IsEDRSupported
         {
             get => _RawReserved.GetBit(2);
-            private set => _RawReserved = _RawReserved.SetBit(2, value);
         }
 
         /// <inheritdoc />
@@ -82,7 +79,6 @@ namespace NvAPIWrapper.Native.Display.Structures
         public bool IsTraditionalSDRGammaSupported
         {
             get => _RawReserved.GetBit(4);
-            private set => _RawReserved = _RawReserved.SetBit(4, value);
         }
     }
 }
