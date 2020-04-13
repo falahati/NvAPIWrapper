@@ -85,7 +85,7 @@ namespace NvAPIWrapper.Native.Delegates
             [In] DisplayHandle displayHandle,
             [In] OutputId displayId,
             [In] [Accepts(typeof(PrivateDisplayDVCInfo))]
-            ValueTypeReference memoryInfo
+            ValueTypeReference dvcInfo
         );
 
         [FunctionId(FunctionId.NvAPI_GetDVCInfoEx)]
@@ -93,7 +93,15 @@ namespace NvAPIWrapper.Native.Delegates
             [In] DisplayHandle displayHandle,
             [In] OutputId displayId,
             [In] [Accepts(typeof(PrivateDisplayDVCInfoEx))]
-            ValueTypeReference memoryInfo
+            ValueTypeReference dvcInfo
+        );
+
+        [FunctionId(FunctionId.NvAPI_GetHUEInfo)]
+        public delegate Status NvAPI_GetHUEInfo(
+            [In] DisplayHandle displayHandle,
+            [In] OutputId displayId,
+            [In] [Accepts(typeof(PrivateDisplayHUEInfo))]
+            ValueTypeReference hueInfo
         );
 
         [FunctionId(FunctionId.NvAPI_GetSupportedViews)]
@@ -173,6 +181,13 @@ namespace NvAPIWrapper.Native.Delegates
             [In] OutputId displayId,
             [In] [Accepts(typeof(PrivateDisplayDVCInfoEx))]
             ValueTypeReference memoryInfo
+        );
+
+        [FunctionId(FunctionId.NvAPI_SetHUEAngle)]
+        public delegate Status NvAPI_SetHUEAngle(
+            [In] DisplayHandle displayHandle,
+            [In] OutputId displayId,
+            [In] int hueAngle
         );
     }
 }

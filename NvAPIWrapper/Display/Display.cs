@@ -31,19 +31,19 @@ namespace NvAPIWrapper.Display
         }
 
         /// <summary>
-        ///     Gets corresponding DisplayDevice based on display name
-        /// </summary>
-        public DisplayDevice DisplayDevice
-        {
-            get => new DisplayDevice(Name);
-        }
-
-        /// <summary>
         ///     Gets the corresponding Digital Vibrance Control information
         /// </summary>
         public DVCInformation DigitalVibranceControl
         {
             get => new DVCInformation(Handle);
+        }
+
+        /// <summary>
+        ///     Gets corresponding DisplayDevice based on display name
+        /// </summary>
+        public DisplayDevice DisplayDevice
+        {
+            get => new DisplayDevice(Name);
         }
 
         /// <summary>
@@ -58,6 +58,14 @@ namespace NvAPIWrapper.Display
         ///     Gets display handle
         /// </summary>
         public DisplayHandle Handle { get; }
+
+        /// <summary>
+        ///     Gets the corresponding HUE information
+        /// </summary>
+        public HUEInformation HUEControl
+        {
+            get => new HUEInformation(Handle);
+        }
 
         /// <summary>
         ///     Gets the driving logical GPU

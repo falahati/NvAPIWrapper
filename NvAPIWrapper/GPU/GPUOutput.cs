@@ -25,6 +25,22 @@ namespace NvAPIWrapper.GPU
         }
 
         /// <summary>
+        ///     Gets the corresponding Digital Vibrance Control information
+        /// </summary>
+        public DVCInformation DigitalVibranceControl
+        {
+            get => new DVCInformation(OutputId);
+        }
+
+        /// <summary>
+        ///     Gets the corresponding HUE information
+        /// </summary>
+        public HUEInformation HUEControl
+        {
+            get => new HUEInformation(OutputId);
+        }
+
+        /// <summary>
         ///     Gets the output identification as a single bit unsigned integer
         /// </summary>
         public OutputId OutputId { get; }
@@ -33,14 +49,6 @@ namespace NvAPIWrapper.GPU
         ///     Gets the output type
         /// </summary>
         public OutputType OutputType { get; }
-
-        /// <summary>
-        ///     Gets the corresponding Digital Vibrance Control information
-        /// </summary>
-        public DVCInformation DigitalVibranceControl
-        {
-            get => new DVCInformation(OutputId);
-        }
 
         /// <summary>
         ///     Gets the corresponding physical GPU

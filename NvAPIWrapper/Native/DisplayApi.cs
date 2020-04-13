@@ -479,6 +479,65 @@ namespace NvAPIWrapper.Native
             }
         }
 
+
+        /// [PRIVATE]
+        /// <summary>
+        ///     This API returns the current default HUE angle
+        /// </summary>
+        /// <param name="display">
+        ///     The targeted display's handle.
+        /// </param>
+        /// <returns>An instance of the PrivateDisplayHUEInfo structure containing requested information.</returns>
+        public static PrivateDisplayHUEInfo GetHUEInfo(DisplayHandle display)
+        {
+            var instance = typeof(PrivateDisplayHUEInfo).Instantiate<PrivateDisplayHUEInfo>();
+
+            using (var displayDVCInfoReference = ValueTypeReference.FromValueType(instance))
+            {
+                var status = DelegateFactory.GetDelegate<Delegates.Display.NvAPI_GetHUEInfo>()(
+                    display,
+                    OutputId.Invalid,
+                    displayDVCInfoReference
+                );
+
+                if (status != Status.Ok)
+                {
+                    throw new NVIDIAApiException(status);
+                }
+
+                return displayDVCInfoReference.ToValueType<PrivateDisplayHUEInfo>().GetValueOrDefault();
+            }
+        }
+
+        /// [PRIVATE]
+        /// <summary>
+        ///     This API returns the current and default HUE angle
+        /// </summary>
+        /// <param name="displayId">
+        ///     The targeted display output id.
+        /// </param>
+        /// <returns>An instance of the PrivateDisplayHUEInfo structure containing requested information.</returns>
+        public static PrivateDisplayHUEInfo GetHUEInfo(OutputId displayId)
+        {
+            var instance = typeof(PrivateDisplayHUEInfo).Instantiate<PrivateDisplayHUEInfo>();
+
+            using (var displayDVCInfoReference = ValueTypeReference.FromValueType(instance))
+            {
+                var status = DelegateFactory.GetDelegate<Delegates.Display.NvAPI_GetHUEInfo>()(
+                    DisplayHandle.DefaultHandle,
+                    displayId,
+                    displayDVCInfoReference
+                );
+
+                if (status != Status.Ok)
+                {
+                    throw new NVIDIAApiException(status);
+                }
+
+                return displayDVCInfoReference.ToValueType<PrivateDisplayHUEInfo>().GetValueOrDefault();
+            }
+        }
+
         /// <summary>
         ///     This API queries current state of one of the various scan-out composition parameters on the specified display.
         /// </summary>
@@ -831,6 +890,55 @@ namespace NvAPIWrapper.Native
                 {
                     throw new NVIDIAApiException(status);
                 }
+            }
+        }
+
+
+        /// [PRIVATE]
+        /// <summary>
+        ///     This API sets the current HUE angle
+        /// </summary>
+        /// <param name="display">
+        ///     The targeted display's handle.
+        /// </param>
+        /// <param name="currentAngle">
+        ///     The HUE angle to be set.
+        /// </param>
+        public static void SetHUEAngle(DisplayHandle display, int currentAngle)
+        {
+            var status = DelegateFactory.GetDelegate<Delegates.Display.NvAPI_SetHUEAngle>()(
+                display,
+                OutputId.Invalid,
+                currentAngle
+            );
+
+            if (status != Status.Ok)
+            {
+                throw new NVIDIAApiException(status);
+            }
+        }
+
+        /// [PRIVATE]
+        /// <summary>
+        ///     This API sets the current HUE angle
+        /// </summary>
+        /// <param name="displayId">
+        ///     The targeted display output id.
+        /// </param>
+        /// <param name="currentAngle">
+        ///     The HUE angle to be set.
+        /// </param>
+        public static void SetHUEAngle(OutputId displayId, int currentAngle)
+        {
+            var status = DelegateFactory.GetDelegate<Delegates.Display.NvAPI_SetHUEAngle>()(
+                DisplayHandle.DefaultHandle,
+                displayId,
+                currentAngle
+            );
+
+            if (status != Status.Ok)
+            {
+                throw new NVIDIAApiException(status);
             }
         }
 
