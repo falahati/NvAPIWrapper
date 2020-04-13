@@ -23,12 +23,12 @@ namespace NvAPIWrapper.Native.Display.Structures
 
         public HDRColorDataV2(
             HDRCommand hdrCommand,
-            HDRMode hdrMode = HDRMode.Off,
-            StaticMetadataDescriptorId staticMetadataDescriptorId = StaticMetadataDescriptorId.StaticMetadataType1,
-            MasteringDisplayData masteringDisplayData = default,
-            ColorFormat colorFormat = ColorFormat.Auto,
-            HDRDynamicRange hdrDynamicRange = HDRDynamicRange.Auto,
-            BPC bpc = BPC.Default)
+            HDRMode hdrMode,
+            StaticMetadataDescriptorId staticMetadataDescriptorId,
+            MasteringDisplayData masteringDisplayData,
+            ColorFormat colorFormat,
+            HDRDynamicRange hdrDynamicRange,
+            BPC bpc)
         {
             this = typeof(HDRColorDataV2).Instantiate<HDRColorDataV2>();
             _HDRCommand = hdrCommand;
@@ -40,7 +40,48 @@ namespace NvAPIWrapper.Native.Display.Structures
             _BPC = bpc;
         }
 
-        public HDRColorDataV2(HDRCommand hdrCommand) : this(hdrCommand, HDRMode.Off)
+        public HDRColorDataV2(
+            HDRCommand hdrCommand,
+            HDRMode hdrMode,
+            StaticMetadataDescriptorId staticMetadataDescriptorId,
+            MasteringDisplayData masteringDisplayData,
+            ColorFormat colorFormat,
+            HDRDynamicRange hdrDynamicRange)
+            : this(hdrCommand, hdrMode, staticMetadataDescriptorId, masteringDisplayData, colorFormat, hdrDynamicRange, BPC.Default)
+        {
+        }
+
+        public HDRColorDataV2(
+            HDRCommand hdrCommand,
+            HDRMode hdrMode,
+            StaticMetadataDescriptorId staticMetadataDescriptorId,
+            MasteringDisplayData masteringDisplayData,
+            ColorFormat colorFormat)
+            : this(hdrCommand, hdrMode, staticMetadataDescriptorId, masteringDisplayData, colorFormat, HDRDynamicRange.Auto, BPC.Default)
+        {
+        }
+
+        public HDRColorDataV2(
+            HDRCommand hdrCommand,
+            HDRMode hdrMode,
+            StaticMetadataDescriptorId staticMetadataDescriptorId,
+            MasteringDisplayData masteringDisplayData)
+            : this(hdrCommand, hdrMode, staticMetadataDescriptorId, masteringDisplayData, ColorFormat.Default, HDRDynamicRange.Auto, BPC.Default)
+        {
+        }
+
+        public HDRColorDataV2(HDRCommand hdrCommand, HDRMode hdrMode, StaticMetadataDescriptorId staticMetadataDescriptorId)
+            : this(hdrCommand, hdrMode, staticMetadataDescriptorId, default, ColorFormat.Default, HDRDynamicRange.Auto, BPC.Default)
+        {
+        }
+
+        public HDRColorDataV2(HDRCommand hdrCommand, HDRMode hdrMode)
+            : this(hdrCommand, hdrMode, StaticMetadataDescriptorId.StaticMetadataType1, default, ColorFormat.Default, HDRDynamicRange.Auto, BPC.Default)
+        {
+        }
+
+        public HDRColorDataV2(HDRCommand hdrCommand)
+            : this(hdrCommand, HDRMode.Off, StaticMetadataDescriptorId.StaticMetadataType1, default, ColorFormat.Default, HDRDynamicRange.Auto, BPC.Default)
         {
         }
 

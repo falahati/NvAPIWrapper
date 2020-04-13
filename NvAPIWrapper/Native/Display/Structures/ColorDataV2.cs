@@ -19,7 +19,7 @@ namespace NvAPIWrapper.Native.Display.Structures
 
         public ColorDataV2(
             ColorCommand colorCommand,
-            ColorDataBagV2 data = default)
+            ColorDataBagV2 data)
         {
             this = typeof(ColorDataV2).Instantiate<ColorDataV2>();
             _Size = (ushort)_Version.StructureSize;

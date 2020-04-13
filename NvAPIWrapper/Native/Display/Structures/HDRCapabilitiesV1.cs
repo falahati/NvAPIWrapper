@@ -19,8 +19,8 @@ namespace NvAPIWrapper.Native.Display.Structures
 
         public HDRCapabilitiesV1(
             bool driverExpandDefaultHDRParameters,
-            StaticMetadataDescriptorId staticMetadataDescriptorId = StaticMetadataDescriptorId.StaticMetadataType1,
-            DisplayData displayData = default)
+            StaticMetadataDescriptorId staticMetadataDescriptorId,
+            DisplayData displayData)
         {
             this = typeof(HDRCapabilitiesV1).Instantiate<HDRCapabilitiesV1>();
             DriverExpandDefaultHDRParameters = driverExpandDefaultHDRParameters;
@@ -30,6 +30,11 @@ namespace NvAPIWrapper.Native.Display.Structures
 
         public HDRCapabilitiesV1(bool driverExpandDefaultHDRParameters, StaticMetadataDescriptorId staticMetadataDescriptorId)
             : this(driverExpandDefaultHDRParameters, staticMetadataDescriptorId, default)
+        {
+        }
+
+        public HDRCapabilitiesV1(bool driverExpandDefaultHDRParameters)
+            : this(driverExpandDefaultHDRParameters, StaticMetadataDescriptorId.StaticMetadataType1, default)
         {
         }
 

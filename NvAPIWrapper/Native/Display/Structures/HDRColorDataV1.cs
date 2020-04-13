@@ -20,9 +20,9 @@ namespace NvAPIWrapper.Native.Display.Structures
 
         public HDRColorDataV1(
             HDRCommand hdrCommand,
-            HDRMode hdrMode = HDRMode.Off,
-            StaticMetadataDescriptorId staticMetadataDescriptorId = StaticMetadataDescriptorId.StaticMetadataType1,
-            MasteringDisplayData masteringDisplayData = default)
+            HDRMode hdrMode,
+            StaticMetadataDescriptorId staticMetadataDescriptorId,
+            MasteringDisplayData masteringDisplayData)
         {
             this = typeof(HDRColorDataV1).Instantiate<HDRColorDataV1>();
             _HDRCommand = hdrCommand;
@@ -31,7 +31,18 @@ namespace NvAPIWrapper.Native.Display.Structures
             _MasteringDisplayData = masteringDisplayData;
         }
 
-        public HDRColorDataV1(HDRCommand hdrCommand) : this(hdrCommand, HDRMode.Off)
+        public HDRColorDataV1(HDRCommand hdrCommand, HDRMode hdrMode, StaticMetadataDescriptorId staticMetadataDescriptorId)
+            : this(hdrCommand, hdrMode, staticMetadataDescriptorId, default)
+        {
+        }
+
+        public HDRColorDataV1(HDRCommand hdrCommand, HDRMode hdrMode)
+            : this(hdrCommand, hdrMode, StaticMetadataDescriptorId.StaticMetadataType1, default)
+        {
+        }
+
+        public HDRColorDataV1(HDRCommand hdrCommand)
+            : this(hdrCommand, HDRMode.Off, StaticMetadataDescriptorId.StaticMetadataType1, default)
         {
         }
 
