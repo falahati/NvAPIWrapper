@@ -21,7 +21,7 @@ namespace NvAPIWrapper.Native.Display.Structures
         /// <summary>
         /// x coordinate of color primary 0 (e.g. Red) of the display ([0x0000-0xC350] = [0.0 - 1.0])
         /// </summary>
-        public ushort DisplayPrimaryX0
+        public float DisplayPrimaryX0
         {
             get => _DisplayPrimaryX0;
         }
@@ -29,7 +29,7 @@ namespace NvAPIWrapper.Native.Display.Structures
         /// <summary>
         /// y coordinate of color primary 0 (e.g. Red) of the display ([0x0000-0xC350] = [0.0 - 1.0])
         /// </summary>
-        public ushort DisplayPrimaryY0
+        public float DisplayPrimaryY0
         {
             get => _DisplayPrimaryY0;
         }
@@ -37,7 +37,7 @@ namespace NvAPIWrapper.Native.Display.Structures
         /// <summary>
         /// x coordinate of color primary 1 (e.g. Green) of the display ([0x0000-0xC350] = [0.0 - 1.0])
         /// </summary>
-        public ushort DisplayPrimaryX1
+        public float DisplayPrimaryX1
         {
             get => _DisplayPrimaryX1;
         }
@@ -45,7 +45,7 @@ namespace NvAPIWrapper.Native.Display.Structures
         /// <summary>
         /// y coordinate of color primary 1 (e.g. Green) of the display ([0x0000-0xC350] = [0.0 - 1.0])
         /// </summary>
-        public ushort DisplayPrimaryY1
+        public float DisplayPrimaryY1
         {
             get => _DisplayPrimaryY1;
         }
@@ -53,7 +53,7 @@ namespace NvAPIWrapper.Native.Display.Structures
         /// <summary>
         /// x coordinate of color primary 2 (e.g. Blue) of the display ([0x0000-0xC350] = [0.0 - 1.0])
         /// </summary>
-        public ushort DisplayPrimaryX2
+        public float DisplayPrimaryX2
         {
             get => _DisplayPrimaryX2;
         }
@@ -61,7 +61,7 @@ namespace NvAPIWrapper.Native.Display.Structures
         /// <summary>
         /// y coordinate of color primary 2 (e.g. Blue) of the display ([0x0000-0xC350] = [0.0 - 1.0])
         /// </summary>
-        public ushort DisplayPrimaryY2
+        public float DisplayPrimaryY2
         {
             get => _DisplayPrimaryY2;
         }
@@ -69,7 +69,7 @@ namespace NvAPIWrapper.Native.Display.Structures
         /// <summary>
         /// x coordinate of white point of the display ([0x0000-0xC350] = [0.0 - 1.0])
         /// </summary>
-        public ushort DisplayWhitePointX
+        public float DisplayWhitePointX
         {
             get => _DisplayWhitePointX;
         }
@@ -77,7 +77,7 @@ namespace NvAPIWrapper.Native.Display.Structures
         /// <summary>
         /// y coordinate of white point of the display ([0x0000-0xC350] = [0.0 - 1.0])
         /// </summary>
-        public ushort DisplayWhitePointY
+        public float DisplayWhitePointY
         {
             get => _DisplayWhitePointY;
         }
@@ -85,7 +85,7 @@ namespace NvAPIWrapper.Native.Display.Structures
         /// <summary>
         /// Maximum display luminance = desired max luminance of HDR content ([0x0001-0xFFFF] = [1.0 - 65535.0] cd/m^2)
         /// </summary>
-        public ushort DesiredContentMaxLuminance
+        public float DesiredContentMaxLuminance
         {
             get => _DesiredContentMaxLuminance;
         }
@@ -93,7 +93,7 @@ namespace NvAPIWrapper.Native.Display.Structures
         /// <summary>
         /// Minimum display luminance = desired min luminance of HDR content ([0x0001-0xFFFF] = [1.0 - 6.55350] cd/m^2)
         /// </summary>
-        public ushort DesiredContentMinLuminance
+        public float DesiredContentMinLuminance
         {
             get => _DesiredContentMinLuminance;
         }
@@ -101,7 +101,7 @@ namespace NvAPIWrapper.Native.Display.Structures
         /// <summary>
         /// Desired maximum Frame-Average Light Level (MaxFALL) of HDR content ([0x0001-0xFFFF] = [1.0 - 65535.0] cd/m^2)
         /// </summary>
-        public ushort DesiredContentMaxFrameAverageLuminance
+        public float DesiredContentMaxFrameAverageLuminance
         {
             get => _DesiredContentMaxFrameAverageLuminance;
         }
