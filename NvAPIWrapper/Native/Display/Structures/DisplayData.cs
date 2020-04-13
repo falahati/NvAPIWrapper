@@ -23,7 +23,7 @@ namespace NvAPIWrapper.Native.Display.Structures
         /// </summary>
         public float DisplayPrimaryX0
         {
-            get => _DisplayPrimaryX0;
+            get => (float)_DisplayPrimaryX0 / 0xC350;
         }
 
         /// <summary>
@@ -31,7 +31,7 @@ namespace NvAPIWrapper.Native.Display.Structures
         /// </summary>
         public float DisplayPrimaryY0
         {
-            get => _DisplayPrimaryY0;
+            get => (float)_DisplayPrimaryY0 / 0xC350;
         }
 
         /// <summary>
@@ -39,7 +39,7 @@ namespace NvAPIWrapper.Native.Display.Structures
         /// </summary>
         public float DisplayPrimaryX1
         {
-            get => _DisplayPrimaryX1;
+            get => (float)_DisplayPrimaryX1 / 0xC350;
         }
 
         /// <summary>
@@ -47,7 +47,7 @@ namespace NvAPIWrapper.Native.Display.Structures
         /// </summary>
         public float DisplayPrimaryY1
         {
-            get => _DisplayPrimaryY1;
+            get => (float)_DisplayPrimaryY1 / 0xC350;
         }
 
         /// <summary>
@@ -55,7 +55,7 @@ namespace NvAPIWrapper.Native.Display.Structures
         /// </summary>
         public float DisplayPrimaryX2
         {
-            get => _DisplayPrimaryX2;
+            get => (float)_DisplayPrimaryX2 / 0xC350;
         }
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace NvAPIWrapper.Native.Display.Structures
         /// </summary>
         public float DisplayPrimaryY2
         {
-            get => _DisplayPrimaryY2;
+            get => (float)_DisplayPrimaryY2 / 0xC350;
         }
 
         /// <summary>
@@ -71,7 +71,7 @@ namespace NvAPIWrapper.Native.Display.Structures
         /// </summary>
         public float DisplayWhitePointX
         {
-            get => _DisplayWhitePointX;
+            get => (float)_DisplayWhitePointX / 0xC350;
         }
 
         /// <summary>
@@ -79,7 +79,7 @@ namespace NvAPIWrapper.Native.Display.Structures
         /// </summary>
         public float DisplayWhitePointY
         {
-            get => _DisplayWhitePointY;
+            get => (float)_DisplayWhitePointY / 0xC350;
         }
 
         /// <summary>
@@ -87,7 +87,7 @@ namespace NvAPIWrapper.Native.Display.Structures
         /// </summary>
         public float DesiredContentMaxLuminance
         {
-            get => _DesiredContentMaxLuminance;
+            get => (float)_DesiredContentMaxLuminance / 0xC350;
         }
 
         /// <summary>
@@ -95,7 +95,7 @@ namespace NvAPIWrapper.Native.Display.Structures
         /// </summary>
         public float DesiredContentMinLuminance
         {
-            get => _DesiredContentMinLuminance;
+            get => (float)_DesiredContentMinLuminance / 0xC350;
         }
 
         /// <summary>
@@ -103,7 +103,7 @@ namespace NvAPIWrapper.Native.Display.Structures
         /// </summary>
         public float DesiredContentMaxFrameAverageLuminance
         {
-            get => _DesiredContentMaxFrameAverageLuminance;
+            get => (float)_DesiredContentMaxFrameAverageLuminance / 0xC350;
         }
     }
 }
