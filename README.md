@@ -29,7 +29,7 @@ NvAPIWrapper is not a complete wrapper of NVAPI; at least, not yet. Following is
 - [X] General: Full Support
 - [X] Mosaic (Surround): Full Support (including scan-out configurations - warping, color intensity)
 - [X] Display: Full Support
-- [X] Display Control: Partial Support (includes saturation control, but no color control, HUE control, etc)
+- [X] Display Control: Partial Support (includes saturation control, color control and HUE control; not including custom resolution, etc)
 - [X] GPU: Full support via low-level APIs and almost full support via high-level set of APIs
 - [X] DRS: Full Support
 - [X] Stereo (3D): Full Support
