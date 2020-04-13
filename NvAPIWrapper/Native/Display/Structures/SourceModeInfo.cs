@@ -11,7 +11,7 @@ namespace NvAPIWrapper.Native.Display.Structures
     public struct SourceModeInfo : IEquatable<SourceModeInfo>
     {
         internal readonly Resolution _Resolution;
-        internal readonly Format _ColorFormat;
+        internal readonly ColorFormat _ColorFormat;
         internal readonly Position _Position;
         internal readonly SpanningOrientation _SpanningOrientation;
         internal uint _RawReserved;
@@ -27,7 +27,7 @@ namespace NvAPIWrapper.Native.Display.Structures
         /// <param name="isSLIFocus">true if this source represents the SLI focus display, otherwise false</param>
         public SourceModeInfo(
             Resolution resolution,
-            Format colorFormat,
+            ColorFormat colorFormat,
             Position position = default(Position),
             SpanningOrientation spanningOrientation = SpanningOrientation.None,
             bool isGDIPrimary = false,
@@ -95,7 +95,7 @@ namespace NvAPIWrapper.Native.Display.Structures
         /// <summary>
         ///     Ignored at present, must be Format.Unknown
         /// </summary>
-        public Format ColorFormat
+        public ColorFormat ColorFormat
         {
             get => _ColorFormat;
         }

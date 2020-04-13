@@ -965,11 +965,11 @@ namespace NvAPIWrapper.Native
         ///     This function applies HDR configuration to the targeted display id.
         ///     Note: As of NVAPI R410:
         ///       - setting the DynamicRange does not appear to not take effect
-        ///       - setting the ColorFormat does not appear to not take effect
+        ///       - setting the HDRColorFormat does not appear to not take effect
         ///       - setting the BPC only takes effect when switching HDRMode to On from Off, and only if
         ///         the ColorSelectionPolicy is not set to User (use the GetColorData function to determine the active ColorSelectionPolicy)
         ///     Note: Filling MasteringDisplayData values is not required for enabling HDRMode.
-        ///     Note: Use the SetColorData function to better control BPC, and to control DynamicRange and ColorFormat.
+        ///     Note: Use the SetColorData function to better control BPC, and to control DynamicRange and HDRColorFormat.
         /// </summary>
         /// <param name="displayId">The targeted display output id.</param>
         /// <param name="hdrColorData">HDR configuration data</param>

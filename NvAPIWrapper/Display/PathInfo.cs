@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using NvAPIWrapper.Native;
 using NvAPIWrapper.Native.Display;
@@ -21,7 +21,7 @@ namespace NvAPIWrapper.Display
         /// <param name="resolution">Display resolution</param>
         /// <param name="colorFormat">Display color format</param>
         /// <param name="targetInfos">Target configuration informations</param>
-        public PathInfo(Resolution resolution, Format colorFormat, PathTargetInfo[] targetInfos)
+        public PathInfo(Resolution resolution, ColorFormat colorFormat, PathTargetInfo[] targetInfos)
         {
             Resolution = resolution;
             ColorFormat = colorFormat;
@@ -53,7 +53,7 @@ namespace NvAPIWrapper.Display
         /// <summary>
         ///     Gets or sets the display color format
         /// </summary>
-        public Format ColorFormat { get; set; }
+        public ColorFormat ColorFormat { get; set; }
 
         /// <summary>
         ///     Gets or sets a boolean value indicating if the this is the primary GDI display

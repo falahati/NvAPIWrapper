@@ -5,19 +5,19 @@ namespace NvAPIWrapper.Native.Display.Structures
     [StructLayout(LayoutKind.Sequential, Pack = 8)]
     public struct ColorDataBagV4
     {
-        internal ColorFormat _ColorFormat;
+        internal HDRColorFormat _HDRColorFormat;
         internal Colorimetry _Colorimetry;
         internal DynamicRange _DynamicRange;
         internal BPC _BPC;
         internal ColorSelectionPolicy _ColorSelectionPolicy;
 
         /// <summary>
-        ///     One of ColorFormat enum values.
+        ///     One of HDRColorFormat enum values.
         /// </summary>
-        public ColorFormat ColorFormat
+        public HDRColorFormat HDRColorFormat
         {
-            get => _ColorFormat;
-            set => _ColorFormat = value;
+            get => _HDRColorFormat;
+            set => _HDRColorFormat = value;
         }
 
         /// <summary>

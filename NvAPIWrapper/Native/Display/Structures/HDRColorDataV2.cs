@@ -17,7 +17,7 @@ namespace NvAPIWrapper.Native.Display.Structures
         internal HDRMode _HDRMode;
         internal StaticMetadataDescriptorId _StaticMetadataDescriptorId;
         internal MasteringDisplayData _MasteringDisplayData;
-        internal ColorFormat _ColorFormat;
+        internal HDRColorFormat _HDRColorFormat;
         internal HDRDynamicRange _HDRDynamicRange;
         internal BPC _BPC;
 
@@ -26,7 +26,7 @@ namespace NvAPIWrapper.Native.Display.Structures
             HDRMode hdrMode,
             StaticMetadataDescriptorId staticMetadataDescriptorId,
             MasteringDisplayData masteringDisplayData,
-            ColorFormat colorFormat,
+            HDRColorFormat hdrColorFormat,
             HDRDynamicRange hdrDynamicRange,
             BPC bpc)
         {
@@ -35,7 +35,7 @@ namespace NvAPIWrapper.Native.Display.Structures
             _HDRMode = hdrMode;
             _StaticMetadataDescriptorId = staticMetadataDescriptorId;
             _MasteringDisplayData = masteringDisplayData;
-            _ColorFormat = colorFormat;
+            _HDRColorFormat = hdrColorFormat;
             _HDRDynamicRange = hdrDynamicRange;
             _BPC = bpc;
         }
@@ -45,9 +45,9 @@ namespace NvAPIWrapper.Native.Display.Structures
             HDRMode hdrMode,
             StaticMetadataDescriptorId staticMetadataDescriptorId,
             MasteringDisplayData masteringDisplayData,
-            ColorFormat colorFormat,
+            HDRColorFormat hdrColorFormat,
             HDRDynamicRange hdrDynamicRange)
-            : this(hdrCommand, hdrMode, staticMetadataDescriptorId, masteringDisplayData, colorFormat, hdrDynamicRange, BPC.Default)
+            : this(hdrCommand, hdrMode, staticMetadataDescriptorId, masteringDisplayData, hdrColorFormat, hdrDynamicRange, BPC.Default)
         {
         }
 
@@ -56,8 +56,8 @@ namespace NvAPIWrapper.Native.Display.Structures
             HDRMode hdrMode,
             StaticMetadataDescriptorId staticMetadataDescriptorId,
             MasteringDisplayData masteringDisplayData,
-            ColorFormat colorFormat)
-            : this(hdrCommand, hdrMode, staticMetadataDescriptorId, masteringDisplayData, colorFormat, HDRDynamicRange.Auto, BPC.Default)
+            HDRColorFormat hdrColorFormat)
+            : this(hdrCommand, hdrMode, staticMetadataDescriptorId, masteringDisplayData, hdrColorFormat, HDRDynamicRange.Auto, BPC.Default)
         {
         }
 
@@ -66,22 +66,22 @@ namespace NvAPIWrapper.Native.Display.Structures
             HDRMode hdrMode,
             StaticMetadataDescriptorId staticMetadataDescriptorId,
             MasteringDisplayData masteringDisplayData)
-            : this(hdrCommand, hdrMode, staticMetadataDescriptorId, masteringDisplayData, ColorFormat.Default, HDRDynamicRange.Auto, BPC.Default)
+            : this(hdrCommand, hdrMode, staticMetadataDescriptorId, masteringDisplayData, HDRColorFormat.Default, HDRDynamicRange.Auto, BPC.Default)
         {
         }
 
         public HDRColorDataV2(HDRCommand hdrCommand, HDRMode hdrMode, StaticMetadataDescriptorId staticMetadataDescriptorId)
-            : this(hdrCommand, hdrMode, staticMetadataDescriptorId, default, ColorFormat.Default, HDRDynamicRange.Auto, BPC.Default)
+            : this(hdrCommand, hdrMode, staticMetadataDescriptorId, default, HDRColorFormat.Default, HDRDynamicRange.Auto, BPC.Default)
         {
         }
 
         public HDRColorDataV2(HDRCommand hdrCommand, HDRMode hdrMode)
-            : this(hdrCommand, hdrMode, StaticMetadataDescriptorId.StaticMetadataType1, default, ColorFormat.Default, HDRDynamicRange.Auto, BPC.Default)
+            : this(hdrCommand, hdrMode, StaticMetadataDescriptorId.StaticMetadataType1, default, HDRColorFormat.Default, HDRDynamicRange.Auto, BPC.Default)
         {
         }
 
         public HDRColorDataV2(HDRCommand hdrCommand)
-            : this(hdrCommand, HDRMode.Off, StaticMetadataDescriptorId.StaticMetadataType1, default, ColorFormat.Default, HDRDynamicRange.Auto, BPC.Default)
+            : this(hdrCommand, HDRMode.Off, StaticMetadataDescriptorId.StaticMetadataType1, default, HDRColorFormat.Default, HDRDynamicRange.Auto, BPC.Default)
         {
         }
 
@@ -112,11 +112,13 @@ namespace NvAPIWrapper.Native.Display.Structures
             set => _MasteringDisplayData = value;
         }
 
-        /// <inheritdoc />
-        public ColorFormat ColorFormat
+        /// <summary>
+        ///     One of HDRColorFormat enum values.
+        /// </summary>
+        public HDRColorFormat HDRColorFormat
         {
-            get => _ColorFormat;
-            set => _ColorFormat = value;
+            get => _HDRColorFormat;
+            set => _HDRColorFormat = value;
         }
 
         /// <summary>
