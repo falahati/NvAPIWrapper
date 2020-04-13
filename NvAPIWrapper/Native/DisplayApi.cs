@@ -535,7 +535,7 @@ namespace NvAPIWrapper.Native
         /// <param name="displayId">The targeted display output id.</param>
         /// <param name="driverExpandDefaultHDRParameters">If set, driver will expand default (=zero) HDR capabilities parameters contained in display's EDID.</param>
         /// <returns>HDR capabilities of the display</returns>
-        public static THDRCapabilities GetHDRCapabilities<THDRCapabilities>(uint displayId, bool driverExpandDefaultHDRParameters = false) where THDRCapabilities : struct, IHDRCapabilities
+        public static THDRCapabilities GetHDRCapabilities<THDRCapabilities>(uint displayId, bool driverExpandDefaultHDRParameters) where THDRCapabilities : struct, IHDRCapabilities
         {
             var getHDRCapabilities = DelegateFactory.GetDelegate<Delegates.Display.NvAPI_Disp_GetHdrCapabilities>();
             var hdrCapabilities = (THDRCapabilities)Activator.CreateInstance(typeof(THDRCapabilities), driverExpandDefaultHDRParameters, StaticMetadataDescriptorId.StaticMetadataType1);
