@@ -794,7 +794,9 @@ namespace NvAPIWrapper.Native
             catch (NVIDIAApiException ex)
             {
                 if (ex.Status == Status.NotSupported)
+                {
                     return false;
+                }
 
                 throw;
             }
