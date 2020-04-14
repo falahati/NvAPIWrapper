@@ -43,6 +43,71 @@ namespace NvAPIWrapper.Native
         }
 
         /// <summary>
+        ///     This function deletes the custom display configuration, specified from the registry for all the displays whose
+        ///     display IDs are passed.
+        /// </summary>
+        /// <param name="displayIds">Array of display IDs on which custom display configuration should be removed.</param>
+        /// <param name="customDisplay">The custom display to remove.</param>
+        public static void DeleteCustomDisplay(uint[] displayIds, CustomDisplay customDisplay)
+        {
+            if (displayIds.Length == 0)
+            {
+                return;
+            }
+
+            using (var displayIdsReference = ValueTypeArray.FromArray(displayIds))
+            {
+                using (var customDisplayReference = ValueTypeReference.FromValueType(customDisplay))
+                {
+                    var status = DelegateFactory.GetDelegate<Delegates.Display.NvAPI_DISP_DeleteCustomDisplay>()(
+                        displayIdsReference,
+                        (uint) displayIds.Length,
+                        customDisplayReference
+                    );
+
+                    if (status != Status.Ok)
+                    {
+                        throw new NVIDIAApiException(status);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        ///     This API enumerates the custom timing specified by the enum index.
+        /// </summary>
+        /// <param name="displayId">The display id of the display.</param>
+        /// <returns>A list of <see cref="CustomDisplay" /></returns>
+        public static IEnumerable<CustomDisplay> EnumCustomDisplays(uint displayId)
+        {
+            var instance = typeof(CustomDisplay).Instantiate<CustomDisplay>();
+
+            using (var customDisplayReference = ValueTypeReference.FromValueType(instance))
+            {
+                for (uint i = 0; i < uint.MaxValue; i++)
+                {
+                    var status = DelegateFactory.GetDelegate<Delegates.Display.NvAPI_DISP_EnumCustomDisplay>()(
+                        displayId,
+                        i,
+                        customDisplayReference
+                    );
+
+                    if (status == Status.EndEnumeration)
+                    {
+                        yield break;
+                    }
+
+                    if (status != Status.Ok)
+                    {
+                        throw new NVIDIAApiException(status);
+                    }
+
+                    yield return customDisplayReference.ToValueType<CustomDisplay>().GetValueOrDefault();
+                }
+            }
+        }
+
+        /// <summary>
         ///     This function returns the handle of all NVIDIA displays
         ///     Note: Display handles can get invalidated on a mode-set, so the calling applications need to re-enum the handles
         ///     after every mode-set.
@@ -726,6 +791,36 @@ namespace NvAPIWrapper.Native
         }
 
         /// <summary>
+        ///     This function calculates the timing from the visible width/height/refresh-rate and timing type info.
+        /// </summary>
+        /// <param name="displayId">Display ID of the display.</param>
+        /// <param name="timingInput">Inputs used for calculating the timing.</param>
+        /// <returns>An instance of the <see cref="Timing" /> structure.</returns>
+        public static Timing GetTiming(uint displayId, TimingInput timingInput)
+        {
+            var instance = typeof(Timing).Instantiate<Timing>();
+
+            using (var timingInputReference = ValueTypeReference.FromValueType(timingInput))
+            {
+                using (var timingReference = ValueTypeReference.FromValueType(instance))
+                {
+                    var status = DelegateFactory.GetDelegate<Delegates.Display.NvAPI_DISP_GetTiming>()(
+                        displayId,
+                        timingInputReference,
+                        timingReference
+                    );
+
+                    if (status != Status.Ok)
+                    {
+                        throw new NVIDIAApiException(status);
+                    }
+
+                    return timingReference.ToValueType<Timing>().GetValueOrDefault();
+                }
+            }
+        }
+
+        /// <summary>
         ///     This function returns the display name given, for example, "\\DISPLAY1", using the unattached NVIDIA display handle
         /// </summary>
         /// <param name="display">Handle of the associated unattached display</param>
@@ -745,6 +840,74 @@ namespace NvAPIWrapper.Native
             }
 
             return displayName.Value;
+        }
+
+        /// <summary>
+        ///     This API is used to restore the display configuration, that was changed by calling <see cref="TryCustomDisplay" />.
+        ///     This function must be called only after a custom display configuration is tested on the hardware, using
+        ///     <see cref="TryCustomDisplay" />, otherwise no action is taken.
+        ///     On Vista, <see cref="RevertCustomDisplayTrial" /> should be called with an active display that was affected during
+        ///     the <see cref="TryCustomDisplay" /> call, per GPU.
+        /// </summary>
+        /// <param name="displayIds">Array of display ids on which custom display configuration is to be reverted.</param>
+        public static void RevertCustomDisplayTrial(uint[] displayIds)
+        {
+            if (displayIds.Length == 0)
+            {
+                return;
+            }
+
+            using (var displayIdsReference = ValueTypeArray.FromArray(displayIds))
+            {
+                var status = DelegateFactory.GetDelegate<Delegates.Display.NvAPI_DISP_RevertCustomDisplayTrial>()(
+                    displayIdsReference,
+                    (uint) displayIds.Length
+                );
+
+                if (status != Status.Ok)
+                {
+                    throw new NVIDIAApiException(status);
+                }
+            }
+        }
+
+        /// <summary>
+        ///     This function saves the current hardware display configuration on the specified Display IDs as a custom display
+        ///     configuration.
+        ///     This function should be called right after <see cref="TryCustomDisplay" /> to save the custom display from the
+        ///     current hardware context.
+        ///     This function will not do anything if the custom display configuration is not tested on the hardware.
+        /// </summary>
+        /// <param name="displayIds">Array of display ids on which custom display configuration is to be saved.</param>
+        /// <param name="isThisOutputIdOnly">
+        ///     If set, the saved custom display will only be applied on the monitor with the same
+        ///     outputId.
+        /// </param>
+        /// <param name="isThisMonitorOnly">
+        ///     If set, the saved custom display will only be applied on the monitor with the same EDID
+        ///     ID or the same TV connector in case of analog TV.
+        /// </param>
+        public static void SaveCustomDisplay(uint[] displayIds, bool isThisOutputIdOnly, bool isThisMonitorOnly)
+        {
+            if (displayIds.Length == 0)
+            {
+                return;
+            }
+
+            using (var displayIdsReference = ValueTypeArray.FromArray(displayIds))
+            {
+                var status = DelegateFactory.GetDelegate<Delegates.Display.NvAPI_DISP_SaveCustomDisplay>()(
+                    displayIdsReference,
+                    (uint) displayIds.Length,
+                    isThisOutputIdOnly ? 1 : (uint) 0,
+                    isThisMonitorOnly ? 1 : (uint) 0
+                );
+
+                if (status != Status.Ok)
+                {
+                    throw new NVIDIAApiException(status);
+                }
+            }
         }
 
         /// <summary>
@@ -1055,6 +1218,36 @@ namespace NvAPIWrapper.Native
             }
 
             isSticky = isStickyInt > 0;
+        }
+
+        /// <summary>
+        ///     This API is used to set up a custom display without saving the configuration on multiple displays.
+        /// </summary>
+        /// <param name="displayIdCustomDisplayPairs">A list of display ids with corresponding custom display instances.</param>
+        public static void TryCustomDisplay(IDictionary<uint, CustomDisplay> displayIdCustomDisplayPairs)
+        {
+            if (displayIdCustomDisplayPairs.Count == 0)
+            {
+                return;
+            }
+
+            using (var displayIdsReference = ValueTypeArray.FromArray(displayIdCustomDisplayPairs.Keys.ToArray()))
+            {
+                using (var customDisplaysReference =
+                    ValueTypeArray.FromArray(displayIdCustomDisplayPairs.Values.ToArray()))
+                {
+                    var status = DelegateFactory.GetDelegate<Delegates.Display.NvAPI_DISP_TryCustomDisplay>()(
+                        displayIdsReference,
+                        (uint) displayIdCustomDisplayPairs.Count,
+                        customDisplaysReference
+                    );
+
+                    if (status != Status.Ok)
+                    {
+                        throw new NVIDIAApiException(status);
+                    }
+                }
+            }
         }
     }
 }

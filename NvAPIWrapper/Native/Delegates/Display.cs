@@ -20,65 +20,119 @@ namespace NvAPIWrapper.Native.Delegates
             [In] UnAttachedDisplayHandle display,
             [Out] out DisplayHandle newDisplay);
 
+        [FunctionId(FunctionId.NvAPI_DISP_DeleteCustomDisplay)]
+        public delegate Status NvAPI_DISP_DeleteCustomDisplay(
+            [In] [Accepts(typeof(uint))] ValueTypeArray displayIds,
+            [In] uint count,
+            [In] [Accepts(typeof(CustomDisplay))] ValueTypeReference customDisplay
+        );
+
+        [FunctionId(FunctionId.NvAPI_DISP_EnumCustomDisplay)]
+        public delegate Status NvAPI_DISP_EnumCustomDisplay(
+            [In] uint displayId,
+            [In] uint index,
+            [In] [Accepts(typeof(CustomDisplay))] ValueTypeReference customDisplay
+        );
+
         [FunctionId(FunctionId.NvAPI_DISP_GetAssociatedUnAttachedNvidiaDisplayHandle)]
         public delegate Status NvAPI_DISP_GetAssociatedUnAttachedNvidiaDisplayHandle(
             [In] [MarshalAs(UnmanagedType.LPStr)] string displayName,
-            [Out] out UnAttachedDisplayHandle display);
+            [Out] out UnAttachedDisplayHandle display
+        );
 
         [FunctionId(FunctionId.NvAPI_DISP_GetDisplayConfig)]
         public delegate Status NvAPI_DISP_GetDisplayConfig(
             [In] [Out] ref uint pathInfoCount,
             [In] [Accepts(typeof(PathInfoV2), typeof(PathInfoV1))]
-            ValueTypeArray pathInfos);
+            ValueTypeArray pathInfos
+        );
 
         [FunctionId(FunctionId.NvAPI_DISP_GetDisplayIdByDisplayName)]
         public delegate Status NvAPI_DISP_GetDisplayIdByDisplayName([In] string displayName, [Out] out uint displayId);
+
+        [FunctionId(FunctionId.NvAPI_DISP_GetTiming)]
+        public delegate Status NvAPI_DISP_GetTiming(
+            [In] uint displayId,
+            [In] [Accepts(typeof(TimingInput))] ValueTypeReference timingInput,
+            [In] [Accepts(typeof(Timing))] ValueTypeReference timing
+        );
+
+        [FunctionId(FunctionId.NvAPI_DISP_RevertCustomDisplayTrial)]
+        public delegate Status NvAPI_DISP_RevertCustomDisplayTrial(
+            [In] [Accepts(typeof(uint))] ValueTypeArray displayIds,
+            [In] uint count
+        );
+
+        [FunctionId(FunctionId.NvAPI_DISP_SaveCustomDisplay)]
+        public delegate Status NvAPI_DISP_SaveCustomDisplay(
+            [In] [Accepts(typeof(uint))] ValueTypeArray displayIds,
+            [In] uint count,
+            [In] uint isThisOutputIdOnly,
+            [In] uint isThisMonitorIdOnly
+        );
 
         [FunctionId(FunctionId.NvAPI_DISP_SetDisplayConfig)]
         public delegate Status NvAPI_DISP_SetDisplayConfig(
             [In] uint pathInfoCount,
             [In] [Accepts(typeof(PathInfoV2), typeof(PathInfoV1))]
             ValueTypeArray pathInfos,
-            [In] DisplayConfigFlags flags);
+            [In] DisplayConfigFlags flags
+        );
+
+        [FunctionId(FunctionId.NvAPI_DISP_TryCustomDisplay)]
+        public delegate Status NvAPI_DISP_TryCustomDisplay(
+            [In] [Accepts(typeof(uint))] ValueTypeArray displayIds,
+            [In] uint count,
+            [In] [Accepts(typeof(CustomDisplay))] ValueTypeArray customDisplays
+        );
 
         [FunctionId(FunctionId.NvAPI_EnumNvidiaDisplayHandle)]
         public delegate Status NvAPI_EnumNvidiaDisplayHandle(
             [In] uint enumId,
-            [Out] out DisplayHandle display);
+            [Out] out DisplayHandle display
+        );
 
         [FunctionId(FunctionId.NvAPI_EnumNvidiaUnAttachedDisplayHandle)]
         public delegate Status NvAPI_EnumNvidiaUnAttachedDisplayHandle(
             [In] uint enumId,
-            [Out] out UnAttachedDisplayHandle display);
+            [Out] out UnAttachedDisplayHandle display
+        );
 
         [FunctionId(FunctionId.NvAPI_GetAssociatedDisplayOutputId)]
         public delegate Status NvAPI_GetAssociatedDisplayOutputId(
             [In] DisplayHandle display,
-            [Out] out OutputId outputId);
+            [Out] out OutputId outputId
+        );
 
         [FunctionId(FunctionId.NvAPI_GetAssociatedNvidiaDisplayHandle)]
         public delegate Status NvAPI_GetAssociatedNvidiaDisplayHandle(
             [In] [MarshalAs(UnmanagedType.LPStr)] string displayName,
-            [Out] out DisplayHandle display);
+            [Out] out DisplayHandle display
+        );
 
         [FunctionId(FunctionId.NvAPI_GetAssociatedNvidiaDisplayName)]
         public delegate Status NvAPI_GetAssociatedNvidiaDisplayName(
             [In] DisplayHandle display,
-            [Out] out ShortString displayName);
-
+            [Out] out ShortString displayName
+        );
 
         [FunctionId(FunctionId.NvAPI_GetDisplayDriverBuildTitle)]
         public delegate Status NvAPI_GetDisplayDriverBuildTitle(
             [In] DisplayHandle displayHandle,
-            [Out] out ShortString name);
+            [Out] out ShortString name
+        );
 
         [FunctionId(FunctionId.NvAPI_GetDisplayDriverMemoryInfo)]
         public delegate Status NvAPI_GetDisplayDriverMemoryInfo(
             [In] DisplayHandle displayHandle,
             [In]
-            [Accepts(typeof(DisplayDriverMemoryInfoV3), typeof(DisplayDriverMemoryInfoV2),
-                typeof(DisplayDriverMemoryInfoV1))]
-            ValueTypeReference memoryInfo);
+            [Accepts(
+                typeof(DisplayDriverMemoryInfoV3),
+                typeof(DisplayDriverMemoryInfoV2),
+                typeof(DisplayDriverMemoryInfoV1)
+            )]
+            ValueTypeReference memoryInfo
+        );
 
         [FunctionId(FunctionId.NvAPI_GetDVCInfo)]
         public delegate Status NvAPI_GetDVCInfo(
@@ -108,57 +162,66 @@ namespace NvAPIWrapper.Native.Delegates
         public delegate Status NvAPI_GetSupportedViews(
             [In] DisplayHandle display,
             [In] [Accepts(typeof(TargetViewMode))] ValueTypeArray viewModes,
-            [Out] [In] ref uint viewCount);
+            [Out] [In] ref uint viewCount
+        );
 
         [FunctionId(FunctionId.NvAPI_GetUnAttachedAssociatedDisplayName)]
         public delegate Status NvAPI_GetUnAttachedAssociatedDisplayName(
             [In] UnAttachedDisplayHandle display,
-            [Out] out ShortString displayName);
+            [Out] out ShortString displayName
+        );
 
         [FunctionId(FunctionId.NvAPI_GPU_GetScanoutCompositionParameter)]
         public delegate Status NvAPI_GPU_GetScanOutCompositionParameter(
             [In] uint displayId,
             [In] ScanOutCompositionParameter parameter,
             [Out] out ScanOutCompositionParameterValue parameterValue,
-            [Out] out float container);
+            [Out] out float container
+        );
 
         [FunctionId(FunctionId.NvAPI_GPU_GetScanoutConfiguration)]
         public delegate Status NvAPI_GPU_GetScanOutConfiguration(
             [In] uint displayId,
             [In] [Accepts(typeof(Rectangle))] ValueTypeReference desktopRectangle,
-            [In] [Accepts(typeof(Rectangle))] ValueTypeReference scanOutRectangle);
+            [In] [Accepts(typeof(Rectangle))] ValueTypeReference scanOutRectangle
+        );
 
         [FunctionId(FunctionId.NvAPI_GPU_GetScanoutConfigurationEx)]
         public delegate Status NvAPI_GPU_GetScanOutConfigurationEx(
             [In] uint displayId,
             [In] [Accepts(typeof(ScanOutInformationV1))]
-            ValueTypeReference scanOutInformation);
+            ValueTypeReference scanOutInformation
+        );
 
         [FunctionId(FunctionId.NvAPI_GPU_GetScanoutIntensityState)]
         public delegate Status NvAPI_GPU_GetScanOutIntensityState(
             [In] uint displayId,
             [In] [Accepts(typeof(ScanOutIntensityStateV1))]
-            ValueTypeReference scanOutIntensityState);
+            ValueTypeReference scanOutIntensityState
+        );
 
         [FunctionId(FunctionId.NvAPI_GPU_GetScanoutWarpingState)]
         public delegate Status NvAPI_GPU_GetScanOutWarpingState(
             [In] uint displayId,
             [In] [Accepts(typeof(ScanOutWarpingStateV1))]
-            ValueTypeReference scanOutWarpingState);
+            ValueTypeReference scanOutWarpingState
+        );
 
         [FunctionId(FunctionId.NvAPI_GPU_SetScanoutCompositionParameter)]
         public delegate Status NvAPI_GPU_SetScanOutCompositionParameter(
             [In] uint displayId,
             [In] ScanOutCompositionParameter parameter,
             [In] ScanOutCompositionParameterValue parameterValue,
-            [In] ref float container);
+            [In] ref float container
+        );
 
         [FunctionId(FunctionId.NvAPI_GPU_SetScanoutIntensity)]
         public delegate Status NvAPI_GPU_SetScanOutIntensity(
             [In] uint displayId,
             [In] [Accepts(typeof(ScanOutIntensityV2), typeof(ScanOutIntensityV1))]
             ValueTypeReference scanOutIntensityData,
-            [Out] out int isSticky);
+            [Out] out int isSticky
+        );
 
         [FunctionId(FunctionId.NvAPI_GPU_SetScanoutWarping)]
         public delegate Status NvAPI_GPU_SetScanOutWarping(
@@ -166,7 +229,8 @@ namespace NvAPIWrapper.Native.Delegates
             [In] [Accepts(typeof(ScanOutWarpingV1))]
             ValueTypeReference scanOutWarping,
             [In] [Out] ref int maximumNumberOfVertices,
-            [Out] out int isSticky);
+            [Out] out int isSticky
+        );
 
         [FunctionId(FunctionId.NvAPI_SetDVCLevel)]
         public delegate Status NvAPI_SetDVCLevel(
@@ -180,7 +244,7 @@ namespace NvAPIWrapper.Native.Delegates
             [In] DisplayHandle displayHandle,
             [In] OutputId displayId,
             [In] [Accepts(typeof(PrivateDisplayDVCInfoEx))]
-            ValueTypeReference memoryInfo
+            ValueTypeReference dvcInfo
         );
 
         [FunctionId(FunctionId.NvAPI_SetHUEAngle)]

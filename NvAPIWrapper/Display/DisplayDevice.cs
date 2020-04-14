@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using NvAPIWrapper.GPU;
 using NvAPIWrapper.Native;
+using NvAPIWrapper.Native.Display;
+using NvAPIWrapper.Native.Display.Structures;
 using NvAPIWrapper.Native.GPU;
 using NvAPIWrapper.Native.GPU.Structures;
 using NvAPIWrapper.Native.Interfaces.GPU;
@@ -71,6 +74,14 @@ namespace NvAPIWrapper.Display
         ///     Gets the display device connection type
         /// </summary>
         public MonitorConnectionType ConnectionType { get; }
+
+        /// <summary>
+        ///     Gets the current display device timing
+        /// </summary>
+        public Timing CurrentTiming
+        {
+            get => DisplayApi.GetTiming(DisplayId, new TimingInput(TimingOverride.Current));
+        }
 
         /// <summary>
         ///     Gets the NVIDIA display identification
@@ -184,6 +195,17 @@ namespace NvAPIWrapper.Display
         }
 
         /// <summary>
+        ///     Deletes a custom resolution.
+        /// </summary>
+        /// <param name="customResolution">The custom resolution to delete.</param>
+        /// <param name="displayIds">A list of display ids to remove the custom resolution from.</param>
+        public static void DeleteCustomResolution(CustomResolution customResolution, uint[] displayIds)
+        {
+            var customDisplay = customResolution.AsCustomDisplay(false);
+            DisplayApi.DeleteCustomDisplay(displayIds, customDisplay);
+        }
+
+        /// <summary>
         ///     Checks for equality between two objects of same type
         /// </summary>
         /// <param name="left">The first object</param>
@@ -203,6 +225,50 @@ namespace NvAPIWrapper.Display
         public static bool operator !=(DisplayDevice left, DisplayDevice right)
         {
             return !(right == left);
+        }
+
+        /// <summary>
+        ///     Reverts the custom resolution currently on trial.
+        /// </summary>
+        /// <param name="displayIds">A list of display ids to revert the custom resolution from.</param>
+        public static void RevertCustomResolution(uint[] displayIds)
+        {
+            DisplayApi.RevertCustomDisplayTrial(displayIds);
+        }
+
+        /// <summary>
+        ///     Saves the custom resolution currently on trial.
+        /// </summary>
+        /// <param name="displayIds">A list of display ids to save the custom resolution for.</param>
+        /// <param name="isThisOutputIdOnly">
+        ///     If set, the saved custom display will only be applied on the monitor with the same
+        ///     outputId.
+        /// </param>
+        /// <param name="isThisMonitorOnly">
+        ///     If set, the saved custom display will only be applied on the monitor with the same EDID
+        ///     ID or the same TV connector in case of analog TV.
+        /// </param>
+        public static void SaveCustomResolution(uint[] displayIds, bool isThisOutputIdOnly, bool isThisMonitorOnly)
+        {
+            DisplayApi.SaveCustomDisplay(displayIds, isThisOutputIdOnly, isThisMonitorOnly);
+        }
+
+        /// <summary>
+        ///     Applies a custom resolution into trial
+        /// </summary>
+        /// <param name="customResolution">The custom resolution to apply.</param>
+        /// <param name="displayIds">A list of display ids to apply the custom resolution on.</param>
+        /// <param name="hardwareModeSetOnly">
+        ///     A boolean value indicating that a hardware mode-set without OS update should be
+        ///     performed.
+        /// </param>
+        public static void TrialCustomResolution(
+            CustomResolution customResolution,
+            uint[] displayIds,
+            bool hardwareModeSetOnly = true)
+        {
+            var customDisplay = customResolution.AsCustomDisplay(hardwareModeSetOnly);
+            DisplayApi.TryCustomDisplay(displayIds.ToDictionary(u => u, u => customDisplay));
         }
 
         /// <inheritdoc />
@@ -237,6 +303,77 @@ namespace NvAPIWrapper.Display
         public override string ToString()
         {
             return $"Display #{DisplayId}";
+        }
+
+        /// <summary>
+        ///     Calculates a valid timing based on the argument passed
+        /// </summary>
+        /// <param name="width">The preferred width.</param>
+        /// <param name="height">The preferred height.</param>
+        /// <param name="refreshRate">The preferred refresh rate.</param>
+        /// <param name="isInterlaced">The boolean value indicating if the preferred resolution is an interlaced resolution.</param>
+        /// <returns>Returns a valid instance of <see cref="Timing" />.</returns>
+        public Timing CalculateTiming(uint width, uint height, float refreshRate, bool isInterlaced)
+        {
+            return DisplayApi.GetTiming(
+                DisplayId,
+                new TimingInput(width, height, refreshRate, TimingOverride.Auto, isInterlaced)
+            );
+        }
+
+        /// <summary>
+        ///     Deletes a custom resolution.
+        /// </summary>
+        /// <param name="customResolution">The custom resolution to delete.</param>
+        public void DeleteCustomResolution(CustomResolution customResolution)
+        {
+            DeleteCustomResolution(customResolution, new[] {DisplayId});
+        }
+
+        /// <summary>
+        ///     Retrieves the list of custom resolutions saved for this display device
+        /// </summary>
+        /// <returns>A list of <see cref="CustomResolution" /> instances.</returns>
+        public IEnumerable<CustomResolution> GetCustomResolutions()
+        {
+            return DisplayApi.EnumCustomDisplays(DisplayId).Select(custom => new CustomResolution(custom));
+        }
+
+        /// <summary>
+        ///     Reverts the custom resolution currently on trial.
+        /// </summary>
+        public void RevertCustomResolution()
+        {
+            RevertCustomResolution(new[] {DisplayId});
+        }
+
+        /// <summary>
+        ///     Saves the custom resolution currently on trial.
+        /// </summary>
+        /// <param name="isThisOutputIdOnly">
+        ///     If set, the saved custom display will only be applied on the monitor with the same
+        ///     outputId.
+        /// </param>
+        /// <param name="isThisMonitorOnly">
+        ///     If set, the saved custom display will only be applied on the monitor with the same EDID
+        ///     ID or the same TV connector in case of analog TV.
+        /// </param>
+        public void SaveCustomResolution(bool isThisOutputIdOnly = true, bool isThisMonitorOnly = true)
+        {
+            SaveCustomResolution(new[] {DisplayId}, isThisOutputIdOnly, isThisMonitorOnly);
+        }
+
+        /// <summary>
+        ///     Applies a custom resolution into trial.
+        /// </summary>
+        /// <param name="customResolution">The custom resolution to apply.</param>
+        /// <param name="hardwareModeSetOnly">
+        ///     A boolean value indicating that a hardware mode-set without OS update should be
+        ///     performed.
+        /// </param>
+        public void TrialCustomResolution(CustomResolution customResolution, bool hardwareModeSetOnly = true)
+        {
+            TrialCustomResolution(customResolution, new[] {DisplayId}, hardwareModeSetOnly);
         }
     }
 }
