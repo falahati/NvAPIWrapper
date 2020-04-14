@@ -2,8 +2,13 @@
 using System.Linq;
 using NvAPIWrapper.GPU;
 using NvAPIWrapper.Native;
+using NvAPIWrapper.Native.Display;
+using NvAPIWrapper.Native.Display.Structures;
+using NvAPIWrapper.Native.Exceptions;
+using NvAPIWrapper.Native.General;
 using NvAPIWrapper.Native.GPU;
 using NvAPIWrapper.Native.GPU.Structures;
+using NvAPIWrapper.Native.Interfaces.Display;
 using NvAPIWrapper.Native.Interfaces.GPU;
 
 namespace NvAPIWrapper.Display
@@ -73,9 +78,105 @@ namespace NvAPIWrapper.Display
         public MonitorConnectionType ConnectionType { get; }
 
         /// <summary>
+        ///     Gets the current display color data
+        /// </summary>
+        public ColorData CurrentColorData
+        {
+            get
+            {
+                var instances = new IColorData[]
+                {
+                    new ColorDataV5(ColorDataCommand.Get),
+                    new ColorDataV4(ColorDataCommand.Get),
+                    new ColorDataV3(ColorDataCommand.Get),
+                    new ColorDataV2(ColorDataCommand.Get),
+                    new ColorDataV1(ColorDataCommand.Get)
+                };
+
+                var instance = DisplayApi.ColorControl(DisplayId, instances);
+
+                return new ColorData(instance);
+            }
+        }
+
+        /// <summary>
+        ///     Gets the default display color data
+        /// </summary>
+        public ColorData DefaultColorData
+        {
+            get
+            {
+                var instances = new IColorData[]
+                {
+                    new ColorDataV5(ColorDataCommand.GetDefault),
+                    new ColorDataV4(ColorDataCommand.GetDefault),
+                    new ColorDataV3(ColorDataCommand.GetDefault),
+                    new ColorDataV2(ColorDataCommand.GetDefault),
+                    new ColorDataV1(ColorDataCommand.GetDefault)
+                };
+
+                var instance = DisplayApi.ColorControl(DisplayId, instances);
+
+                return new ColorData(instance);
+            }
+        }
+
+        /// <summary>
         ///     Gets the NVIDIA display identification
         /// </summary>
         public uint DisplayId { get; }
+
+        /// <summary>
+        ///     Gets the display driver EDID specified HDR capabilities
+        /// </summary>
+        public HDRCapabilitiesV1 DriverHDRCapabilities
+        {
+            get => DisplayApi.GetHDRCapabilities(DisplayId, true);
+        }
+
+        /// <summary>
+        ///     Gets the display currently effective HDR capabilities
+        /// </summary>
+        public HDRCapabilitiesV1 EffectiveHDRCapabilities
+        {
+            get => DisplayApi.GetHDRCapabilities(DisplayId, false);
+        }
+
+        /// <summary>
+        ///     Gets the HDR color data, or null if the HDR is disabled or unavailable
+        /// </summary>
+        public HDRColorData HDRColorData
+        {
+            get
+            {
+                try
+                {
+                    var instances = new IHDRColorData[]
+                    {
+                        new HDRColorDataV2(ColorDataHDRCommand.Get),
+                        new HDRColorDataV1(ColorDataHDRCommand.Get)
+                    };
+
+                    var instance = DisplayApi.HDRColorControl(DisplayId, instances);
+
+                    if (instance.HDRMode == ColorDataHDRMode.Off)
+                    {
+                        return null;
+                    }
+
+                    return new HDRColorData(instance);
+                }
+                catch (NVIDIAApiException e)
+                {
+                    if (e.Status == Status.NotSupported)
+                    {
+                        return null;
+                    }
+
+                    throw;
+                }
+            }
+        }
 
         /// <summary>
         ///     Indicates if the display is being actively driven
@@ -237,6 +338,72 @@ namespace NvAPIWrapper.Display
         public override string ToString()
         {
             return $"Display #{DisplayId}";
+        }
+
+        /// <summary>
+        ///     Checks if a color data is supported on this display
+        /// </summary>
+        /// <param name="colorData">The color data to be checked.</param>
+        /// <returns>true if the color data passed is supported; otherwise false</returns>
+        public bool IsColorDataSupported(ColorData colorData)
+        {
+            var instances = new IColorData[]
+            {
+                colorData.AsColorDataV5(ColorDataCommand.IsSupportedColor),
+                colorData.AsColorDataV4(ColorDataCommand.IsSupportedColor),
+                colorData.AsColorDataV3(ColorDataCommand.IsSupportedColor),
+                colorData.AsColorDataV2(ColorDataCommand.IsSupportedColor),
+                colorData.AsColorDataV1(ColorDataCommand.IsSupportedColor)
+            };
+
+            try
+            {
+                DisplayApi.ColorControl(DisplayId, instances);
+
+                return true;
+            }
+            catch (NVIDIAApiException e)
+            {
+                if (e.Status == Status.NotSupported)
+                {
+                    return false;
+                }
+
+                throw;
+            }
+        }
+
+        /// <summary>
+        ///     Changes the display current color data configuration
+        /// </summary>
+        /// <param name="colorData">The color data to be set.</param>
+        public void SetColorData(ColorData colorData)
+        {
+            var instances = new IColorData[]
+            {
+                colorData.AsColorDataV5(ColorDataCommand.Set),
+                colorData.AsColorDataV4(ColorDataCommand.Set),
+                colorData.AsColorDataV3(ColorDataCommand.Set),
+                colorData.AsColorDataV2(ColorDataCommand.Set),
+                colorData.AsColorDataV1(ColorDataCommand.Set)
+            };
+
+            DisplayApi.ColorControl(DisplayId, instances);
+        }
+
+        /// <summary>
+        ///     Changes the display HDR color data configuration
+        /// </summary>
+        /// <param name="colorData">The color data to be set.</param>
+        public void SetHDRColorData(HDRColorData colorData)
+        {
+            var instances = new IHDRColorData[]
+            {
+                colorData.AsHDRColorDataV2(ColorDataHDRCommand.Set),
+                colorData.AsHDRColorDataV1(ColorDataHDRCommand.Set)
+            };
+
+            DisplayApi.HDRColorControl(DisplayId, instances);
         }
     }
 }

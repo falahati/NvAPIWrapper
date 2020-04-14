@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using NvAPIWrapper.Native.Display;
@@ -19,6 +19,79 @@ namespace NvAPIWrapper.Native
     /// </summary>
     public static class DisplayApi
     {
+        /// <summary>
+        ///     This API controls the display color configurations.
+        /// </summary>
+        /// <param name="displayId">The targeted display id.</param>
+        /// <param name="colorData">The structure to be filled with information requested or applied on the display.</param>
+        public static void ColorControl<TColorData>(uint displayId, ref TColorData colorData)
+            where TColorData : struct, IColorData
+        {
+            var c = colorData as IColorData;
+            ColorControl(displayId, ref c);
+            colorData = (TColorData) c;
+        }
+
+        /// <summary>
+        ///     This API controls the display color configurations.
+        /// </summary>
+        /// <param name="displayId">The targeted display id.</param>
+        /// <param name="colorData">The structure to be filled with information requested or applied on the display.</param>
+        public static void ColorControl(uint displayId, ref IColorData colorData)
+        {
+            var colorControl = DelegateFactory.GetDelegate<Delegates.Display.NvAPI_Disp_ColorControl>();
+            var type = colorData.GetType();
+
+            if (!colorControl.Accepts().Contains(type))
+            {
+                throw new ArgumentOutOfRangeException(nameof(type));
+            }
+
+            using (var colorDataReference = ValueTypeReference.FromValueType(colorData, type))
+            {
+                var status = colorControl(displayId, colorDataReference);
+
+                if (status != Status.Ok)
+                {
+                    throw new NVIDIAApiException(status);
+                }
+
+                colorData = colorDataReference.ToValueType<IColorData>(type);
+            }
+        }
+
+        /// <summary>
+        ///     This API controls the display color configurations.
+        /// </summary>
+        /// <param name="displayId">The targeted display id.</param>
+        /// <param name="colorDatas">The list of structures to be filled with information requested or applied on the display.</param>
+        /// <returns>The structure that succeed in requesting information or used for applying configuration on the display.</returns>
+        // ReSharper disable once IdentifierTypo
+        public static IColorData ColorControl(uint displayId, IColorData[] colorDatas)
+        {
+            foreach (var colorData in colorDatas)
+            {
+                try
+                {
+                    var c = colorData;
+                    ColorControl(displayId, ref c);
+
+                    return c;
+                }
+                catch (NVIDIAApiException e)
+                {
+                    if (e.Status == Status.IncompatibleStructureVersion)
+                    {
+                        continue;
+                    }
+
+                    throw;
+                }
+            }
+
+            throw new NVIDIANotSupportedException("This operation is not supported.");
+        }
+
         /// <summary>
         ///     This function converts the unattached display handle to an active attached display handle.
         ///     At least one GPU must be present in the system and running an NVIDIA display driver.
@@ -480,6 +553,58 @@ namespace NvAPIWrapper.Native
         }
 
         /// <summary>
+        ///     This API returns the Display ID of the GDI Primary.
+        /// </summary>
+        /// <returns>Display ID of the GDI Primary.</returns>
+        /// <exception cref="NVIDIAApiException">Status.NvidiaDeviceNotFound: GDI Primary not on an NVIDIA GPU.</exception>
+        /// <exception cref="NVIDIAApiException">Status.ApiNotInitialized: The NvAPI API needs to be initialized first</exception>
+        /// <exception cref="NVIDIAApiException">Status.NoImplementation: This entry-point not available</exception>
+        /// <exception cref="NVIDIAApiException">Status.Error: Miscellaneous error occurred</exception>
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        public static uint GetGDIPrimaryDisplayId()
+        {
+            var getGDIPrimaryDisplay =
+                DelegateFactory.GetDelegate<Delegates.Display.NvAPI_DISP_GetGDIPrimaryDisplayId>();
+            var status = getGDIPrimaryDisplay(out var displayId);
+
+            if (status != Status.Ok)
+            {
+                throw new NVIDIAApiException(status);
+            }
+
+            return displayId;
+        }
+
+        /// <summary>
+        ///     This API gets High Dynamic Range (HDR) capabilities of the display.
+        /// </summary>
+        /// <param name="displayId">The targeted display id.</param>
+        /// <param name="driverExpandDefaultHDRParameters">
+        ///     A boolean value indicating if the EDID HDR parameters should be expanded (true) or the actual current HDR
+        ///     parameters should be reported (false).
+        /// </param>
+        /// <returns>HDR capabilities of the display</returns>
+        public static HDRCapabilitiesV1 GetHDRCapabilities(uint displayId, bool driverExpandDefaultHDRParameters)
+        {
+            var hdrCapabilities = new HDRCapabilitiesV1(driverExpandDefaultHDRParameters);
+
+            using (var hdrCapabilitiesReference = ValueTypeReference.FromValueType(hdrCapabilities))
+            {
+                var status = DelegateFactory.GetDelegate<Delegates.Display.NvAPI_Disp_GetHdrCapabilities>()(
+                    displayId,
+                    hdrCapabilitiesReference
+                );
+
+                if (status != Status.Ok)
+                {
+                    throw new NVIDIAApiException(status);
+                }
+
+                return hdrCapabilitiesReference.ToValueType<HDRCapabilitiesV1>().GetValueOrDefault();
+            }
+        }
+
+        /// <summary>
         ///     This API queries current state of one of the various scan-out composition parameters on the specified display.
         /// </summary>
         /// <param name="displayId">Combined physical display and GPU identifier of the display to query the configuration.</param>
@@ -689,6 +814,79 @@ namespace NvAPIWrapper.Native
         }
 
         /// <summary>
+        ///     This API configures High Dynamic Range (HDR) and Extended Dynamic Range (EDR) output.
+        /// </summary>
+        /// <param name="displayId">The targeted display id.</param>
+        /// <param name="hdrColorData">The structure to be filled with information requested or applied on the display.</param>
+        public static void HDRColorControl<THDRColorData>(uint displayId, ref THDRColorData hdrColorData)
+            where THDRColorData : struct, IHDRColorData
+        {
+            var c = hdrColorData as IHDRColorData;
+            HDRColorControl(displayId, ref c);
+            hdrColorData = (THDRColorData) c;
+        }
+
+        /// <summary>
+        ///     This API configures High Dynamic Range (HDR) and Extended Dynamic Range (EDR) output.
+        /// </summary>
+        /// <param name="displayId">The targeted display id.</param>
+        /// <param name="hdrColorData">The structure to be filled with information requested or applied on the display.</param>
+        public static void HDRColorControl(uint displayId, ref IHDRColorData hdrColorData)
+        {
+            var hdrColorControl = DelegateFactory.GetDelegate<Delegates.Display.NvAPI_Disp_HdrColorControl>();
+            var type = hdrColorData.GetType();
+
+            if (!hdrColorControl.Accepts().Contains(type))
+            {
+                throw new ArgumentOutOfRangeException(nameof(type));
+            }
+
+            using (var hdrColorDataReference = ValueTypeReference.FromValueType(hdrColorData, type))
+            {
+                var status = hdrColorControl(displayId, hdrColorDataReference);
+
+                if (status != Status.Ok)
+                {
+                    throw new NVIDIAApiException(status);
+                }
+
+                hdrColorData = hdrColorDataReference.ToValueType<IHDRColorData>(type);
+            }
+        }
+
+        /// <summary>
+        ///     This API configures High Dynamic Range (HDR) and Extended Dynamic Range (EDR) output.
+        /// </summary>
+        /// <param name="displayId">The targeted display id.</param>
+        /// <param name="colorDatas">The list of structures to be filled with information requested or applied on the display.</param>
+        /// <returns>The structure that succeed in requesting information or used for applying configuration on the display.</returns>
+        // ReSharper disable once IdentifierTypo
+        public static IHDRColorData HDRColorControl(uint displayId, IHDRColorData[] colorDatas)
+        {
+            foreach (var colorData in colorDatas)
+            {
+                try
+                {
+                    var c = colorData;
+                    HDRColorControl(displayId, ref c);
+
+                    return c;
+                }
+                catch (NVIDIAApiException e)
+                {
+                    if (e.Status == Status.IncompatibleStructureVersion)
+                    {
+                        continue;
+                    }
+
+                    throw;
+                }
+            }
+
+            throw new NVIDIANotSupportedException("This operation is not supported.");
+        }
+
+        /// <summary>
         ///     This API lets caller apply a global display configuration across multiple GPUs.
         ///     If all sourceIds are zero, then NvAPI will pick up sourceId's based on the following criteria :
         ///     - If user provides SourceModeInfo then we are trying to assign 0th SourceId always to GDIPrimary.
@@ -833,6 +1031,7 @@ namespace NvAPIWrapper.Native
                 }
             }
         }
+
 
         /// <summary>
         ///     This API sets various parameters that configure the scan-out composition feature on the specified display.
