@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using NvAPIWrapper.Native.Display;
@@ -209,6 +209,34 @@ namespace NvAPIWrapper.Native
             }
 
             return display;
+        }
+
+        /// <summary>
+        ///     This function returns color information relating to the targeted display id.
+        /// </summary>
+        /// <param name="displayId">The targeted display output id.</param>
+        /// <returns>Data corresponding to color information</returns>
+        /// <exception cref="NVIDIAApiException">Status.Error: Miscellaneous error occurred</exception>
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        public static TColorData GetColorData<TColorData>(uint displayId) where TColorData : struct, IColorData
+        {
+            var colorData = (TColorData)Activator.CreateInstance(typeof(TColorData), ColorCommand.Get);
+
+            return ColorControl(displayId, colorData);
+        }
+
+        /// <summary>
+        ///     This function returns the default color information of the targeted display id.
+        /// </summary>
+        /// <param name="displayId">The targeted display output id.</param>
+        /// <returns>Data corresponding to default color information</returns>
+        /// <exception cref="NVIDIAApiException">Status.Error: Miscellaneous error occurred</exception>
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        public static TColorData GetDefaultColorData<TColorData>(uint displayId) where TColorData : struct, IColorData
+        {
+            var colorData = (TColorData)Activator.CreateInstance(typeof(TColorData), ColorCommand.GetDefault);
+
+            return ColorControl(displayId, colorData);
         }
 
         /// <summary>
@@ -448,6 +476,28 @@ namespace NvAPIWrapper.Native
             }
         }
 
+        /// <summary>
+        ///     This API returns the Display ID of the GDI Primary.
+        /// </summary>
+        /// <returns>Display ID of the GDI Primary.</returns>
+        /// <exception cref="NVIDIAApiException">Status.NvidiaDeviceNotFound: GDI Primary not on an NVIDIA GPU.</exception>
+        /// <exception cref="NVIDIAApiException">Status.ApiNotInitialized: The NvAPI API needs to be initialized first</exception>
+        /// <exception cref="NVIDIAApiException">Status.NoImplementation: This entry-point not available</exception>
+        /// <exception cref="NVIDIAApiException">Status.Error: Miscellaneous error occurred</exception>
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        public static uint GetGDIPrimaryDisplayId()
+        {
+            var getGDIPrimaryDisplay = DelegateFactory.GetDelegate<Delegates.Display.NvAPI_DISP_GetGDIPrimaryDisplayId>();
+            var status = getGDIPrimaryDisplay(out var displayId);
+
+            if (status != Status.Ok)
+            {
+                throw new NVIDIAApiException(status);
+            }
+
+            return displayId;
+        }
+
         /// [PRIVATE]
         /// <summary>
         ///     This API returns the current and the default saturation level from the Digital Vibrance Control.
@@ -477,6 +527,43 @@ namespace NvAPIWrapper.Native
 
                 return displayDVCInfoReference.ToValueType<PrivateDisplayDVCInfoEx>().GetValueOrDefault();
             }
+        }
+
+        /// <summary>
+        ///     This API gets High Dynamic Range (HDR) capabilities of the display.
+        /// </summary>
+        /// <param name="displayId">The targeted display output id.</param>
+        /// <param name="driverExpandDefaultHDRParameters">If set, driver will expand default (=zero) HDR capabilities parameters contained in display's EDID.</param>
+        /// <returns>HDR capabilities of the display</returns>
+        public static THDRCapabilities GetHDRCapabilities<THDRCapabilities>(uint displayId, bool driverExpandDefaultHDRParameters) where THDRCapabilities : struct, IHDRCapabilities
+        {
+            var getHDRCapabilities = DelegateFactory.GetDelegate<Delegates.Display.NvAPI_Disp_GetHdrCapabilities>();
+            var hdrCapabilities = (THDRCapabilities)Activator.CreateInstance(typeof(THDRCapabilities), driverExpandDefaultHDRParameters, StaticMetadataDescriptorId.StaticMetadataType1);
+
+            using (var hdrCapabilitiesReference = ValueTypeReference.FromValueType(hdrCapabilities))
+            {
+                var status = getHDRCapabilities(displayId, hdrCapabilitiesReference);
+
+                if (status != Status.Ok)
+                {
+                    throw new NVIDIAApiException(status);
+                }
+
+                return hdrCapabilitiesReference.ToValueType<THDRCapabilities>().GetValueOrDefault();
+            }
+        }
+
+        /// <summary>
+        ///     This function returns HDR configuration data relating to the targeted display id.
+        ///     Note: MasteringDisplayData values will be zero if HDRMode is Off.
+        /// </summary>
+        /// <param name="displayId">The targeted display output id.</param>
+        /// <returns>HDR configuration data</returns>
+        public static THDRColorData GetHDRColorData<THDRColorData>(uint displayId) where THDRColorData : struct, IHDRColorData
+        {
+            var hdrColorData = (THDRColorData)Activator.CreateInstance(typeof(THDRColorData), HDRCommand.Get);
+
+            return HDRColorControl(displayId, hdrColorData);
         }
 
         /// <summary>
@@ -689,6 +776,46 @@ namespace NvAPIWrapper.Native
         }
 
         /// <summary>
+        ///     This function returns a boolean indicating if the targeted display supports the provided color settings.
+        /// </summary>
+        /// <param name="displayId">The targeted display output id.</param>
+        /// <returns>true, if the color settings are supported, otherwise false</returns>
+        /// <exception cref="NVIDIAApiException">Status.Error: Miscellaneous error occurred</exception>
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        public static bool IsSupportedColor<TColorData>(uint displayId, TColorData colorData) where TColorData : struct, IColorData
+        {
+            try
+            {
+                colorData.ColorCommand = ColorCommand.IsSupportedColor;
+                _ = ColorControl(displayId, colorData);
+
+                return true;
+            }
+            catch (NVIDIAApiException ex)
+            {
+                if (ex.Status == Status.NotSupported)
+                {
+                    return false;
+                }
+
+                throw;
+            }
+        }
+
+        /// <summary>
+        ///     This function applies color settings to the targeted display.
+        /// </summary>
+        /// <param name="displayId">The targeted display output id.</param>
+        /// <exception cref="NVIDIAApiException">Status.Error: Miscellaneous error occurred</exception>
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        public static void SetColorData<TColorData>(uint displayId, TColorData colorData) where TColorData : struct, IColorData
+        {
+            colorData.ColorCommand = ColorCommand.Set;
+
+            ColorControl(displayId, colorData);
+        }
+
+        /// <summary>
         ///     This API lets caller apply a global display configuration across multiple GPUs.
         ///     If all sourceIds are zero, then NvAPI will pick up sourceId's based on the following criteria :
         ///     - If user provides SourceModeInfo then we are trying to assign 0th SourceId always to GDIPrimary.
@@ -835,6 +962,25 @@ namespace NvAPIWrapper.Native
         }
 
         /// <summary>
+        ///     This function applies HDR configuration to the targeted display id.
+        ///     Note: As of NVAPI R410:
+        ///       - setting the DynamicRange does not appear to not take effect
+        ///       - setting the HDRColorFormat does not appear to not take effect
+        ///       - setting the BPC only takes effect when switching HDRMode to On from Off, and only if
+        ///         the ColorSelectionPolicy is not set to User (use the GetColorData function to determine the active ColorSelectionPolicy)
+        ///     Note: Filling MasteringDisplayData values is not required for enabling HDRMode.
+        ///     Note: Use the SetColorData function to better control BPC, and to control DynamicRange and HDRColorFormat.
+        /// </summary>
+        /// <param name="displayId">The targeted display output id.</param>
+        /// <param name="hdrColorData">HDR configuration data</param>
+        public static void SetHDRColorData<THDRColorData>(uint displayId, THDRColorData hdrColorData) where THDRColorData : struct, IHDRColorData
+        {
+            hdrColorData.HDRCommand = HDRCommand.Set;
+
+            HDRColorControl(displayId, hdrColorData);
+        }
+
+        /// <summary>
         ///     This API sets various parameters that configure the scan-out composition feature on the specified display.
         /// </summary>
         /// <param name="displayId">Combined physical display and GPU identifier of the display to apply the intensity control.</param>
@@ -947,6 +1093,54 @@ namespace NvAPIWrapper.Native
             }
 
             isSticky = isStickyInt > 0;
+        }
+
+        /// <summary>
+        ///     This API controls the Color values.
+        /// </summary>
+        /// <param name="displayId">The targeted display output id.</param>
+        /// <param name="colorData">Contains data corresponding to color information</param>
+        /// <returns>Data corresponding to color information</returns>
+        /// <exception cref="NVIDIAApiException">Status.Error: Miscellaneous error occurred</exception>
+        /// <exception cref="Exception">A delegate callback throws an exception.</exception>
+        private static TColorData ColorControl<TColorData>(uint displayId, TColorData colorData) where TColorData : struct, IColorData
+        {
+            var colorControl = DelegateFactory.GetDelegate<Delegates.Display.NvAPI_Disp_ColorControl>();
+
+            using (var colorDataReference = ValueTypeReference.FromValueType(colorData))
+            {
+                var status = colorControl(displayId, colorDataReference);
+
+                if (status != Status.Ok)
+                {
+                    throw new NVIDIAApiException(status);
+                }
+
+                return colorDataReference.ToValueType<TColorData>().GetValueOrDefault();
+            }
+        }
+
+        /// <summary>
+        ///     This API configures High Dynamic Range (HDR) and Extended Dynamic Range (EDR) output.
+        /// </summary>
+        /// <param name="displayId">The targeted display output id.</param>
+        /// <param name="hdrColorData">HDR configuration data</param>
+        /// <returns>HDR configuration data</returns>
+        private static THDRColorData HDRColorControl<THDRColorData>(uint displayId, THDRColorData hdrColorData) where THDRColorData : struct, IHDRColorData
+        {
+            var hdrColorControl = DelegateFactory.GetDelegate<Delegates.Display.NvAPI_Disp_HdrColorControl>();
+
+            using (var hdrColorDataReference = ValueTypeReference.FromValueType(hdrColorData))
+            {
+                var status = hdrColorControl(displayId, hdrColorDataReference);
+
+                if (status != Status.Ok)
+                {
+                    throw new NVIDIAApiException(status);
+                }
+
+                return hdrColorDataReference.ToValueType<THDRColorData>().GetValueOrDefault();
+            }
         }
     }
 }

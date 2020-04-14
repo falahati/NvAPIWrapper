@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using NvAPIWrapper.Native;
 using NvAPIWrapper.Native.Display;
