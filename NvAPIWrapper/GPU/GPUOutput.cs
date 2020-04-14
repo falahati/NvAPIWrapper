@@ -128,5 +128,21 @@ namespace NvAPIWrapper.GPU
         {
             return $"{OutputId} {OutputType} @ {PhysicalGPU}";
         }
+
+        /// <summary>
+        ///     Overrides the refresh rate on this output.
+        ///     The new refresh rate can be applied right away or deferred to be applied with the next OS
+        ///     mode-set.
+        ///     The override is good for only one mode-set (regardless whether it's deferred or immediate).
+        /// </summary>
+        /// <param name="refreshRate">The refresh rate to be applied.</param>
+        /// <param name="isDeferred">
+        ///     A boolean value indicating if the refresh rate override should be deferred to the next OS
+        ///     mode-set.
+        /// </param>
+        public void OverrideRefreshRate(float refreshRate, bool isDeferred = false)
+        {
+            DisplayApi.SetRefreshRateOverride(OutputId, refreshRate, isDeferred);
+        }
     }
 }

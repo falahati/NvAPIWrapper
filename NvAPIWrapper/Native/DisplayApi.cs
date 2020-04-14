@@ -1106,6 +1106,60 @@ namespace NvAPIWrapper.Native
         }
 
         /// <summary>
+        ///     This function overrides the refresh rate on the given display.
+        ///     The new refresh rate can be applied right away in this API call or deferred to be applied with the next OS
+        ///     mode-set.
+        ///     The override is good for only one mode-set (regardless whether it's deferred or immediate).
+        /// </summary>
+        /// <param name="display">The display handle to override refresh rate of.</param>
+        /// <param name="refreshRate">The override refresh rate.</param>
+        /// <param name="isDeferred">
+        ///     A boolean value indicating if the refresh rate override should be deferred to the next OS
+        ///     mode-set.
+        /// </param>
+        public static void SetRefreshRateOverride(DisplayHandle display, float refreshRate, bool isDeferred)
+        {
+            var status = DelegateFactory.GetDelegate<Delegates.Display.NvAPI_SetRefreshRateOverride>()(
+                display,
+                OutputId.Invalid,
+                refreshRate,
+                isDeferred ? 1u : 0
+            );
+
+            if (status != Status.Ok)
+            {
+                throw new NVIDIAApiException(status);
+            }
+        }
+
+        /// <summary>
+        ///     This function overrides the refresh rate on the given output mask.
+        ///     The new refresh rate can be applied right away in this API call or deferred to be applied with the next OS
+        ///     mode-set.
+        ///     The override is good for only one mode-set (regardless whether it's deferred or immediate).
+        /// </summary>
+        /// <param name="outputMask">The output(s) to override refresh rate of.</param>
+        /// <param name="refreshRate">The override refresh rate.</param>
+        /// <param name="isDeferred">
+        ///     A boolean value indicating if the refresh rate override should be deferred to the next OS
+        ///     mode-set.
+        /// </param>
+        public static void SetRefreshRateOverride(OutputId outputMask, float refreshRate, bool isDeferred)
+        {
+            var status = DelegateFactory.GetDelegate<Delegates.Display.NvAPI_SetRefreshRateOverride>()(
+                DisplayHandle.DefaultHandle,
+                outputMask,
+                refreshRate,
+                isDeferred ? 1u : 0
+            );
+
+            if (status != Status.Ok)
+            {
+                throw new NVIDIAApiException(status);
+            }
+        }
+
+        /// <summary>
         ///     This API sets various parameters that configure the scan-out composition feature on the specified display.
         /// </summary>
         /// <param name="displayId">Combined physical display and GPU identifier of the display to apply the intensity control.</param>

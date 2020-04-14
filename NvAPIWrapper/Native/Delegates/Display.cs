@@ -253,5 +253,14 @@ namespace NvAPIWrapper.Native.Delegates
             [In] OutputId displayId,
             [In] int hueAngle
         );
+
+
+        [FunctionId(FunctionId.NvAPI_SetRefreshRateOverride)]
+        public delegate Status NvAPI_SetRefreshRateOverride(
+            [In] DisplayHandle displayHandle,
+            [In] OutputId outputMask,
+            [In] float refreshRate,
+            [In] uint isDeferred
+        );
     }
 }
