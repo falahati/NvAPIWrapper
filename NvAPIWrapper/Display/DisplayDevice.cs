@@ -285,6 +285,22 @@ namespace NvAPIWrapper.Display
         }
 
         /// <summary>
+        ///     Returns an instance of <see cref="DisplayDevice" /> representing the primary GDI display device.
+        /// </summary>
+        /// <returns>An instance of <see cref="DisplayDevice" />.</returns>
+        public static DisplayDevice GetGDIPrimaryDisplayDevice()
+        {
+            var displayId = DisplayApi.GetGDIPrimaryDisplayId();
+
+            if (displayId == 0)
+            {
+                return null;
+            }
+
+            return new DisplayDevice(displayId);
+        }
+
+        /// <summary>
         ///     Checks for equality between two objects of same type
         /// </summary>
         /// <param name="left">The first object</param>
