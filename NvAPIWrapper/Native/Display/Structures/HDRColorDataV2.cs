@@ -112,7 +112,24 @@ namespace NvAPIWrapper.Native.Display.Structures
         /// <inheritdoc />
         public ColorDataDepth? ColorDepth
         {
-            get => _ColorDepth;
+            get
+            {
+                switch ((uint) _ColorDepth)
+                {
+                    case 6:
+                        return ColorDataDepth.BPC6;
+                    case 8:
+                        return ColorDataDepth.BPC8;
+                    case 10:
+                        return ColorDataDepth.BPC10;
+                    case 12:
+                        return ColorDataDepth.BPC12;
+                    case 16:
+                        return ColorDataDepth.BPC16;
+                    default:
+                        return _ColorDepth;
+                }
+            }
         }
     }
 }

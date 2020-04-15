@@ -5,7 +5,7 @@ namespace NvAPIWrapper.Native.Display
     /// <summary>
     ///     Contains possible color data HDR modes
     /// </summary>
-    public enum ColorDataHDRMode
+    public enum ColorDataHDRMode : uint
     {
         /// <summary>
         ///     Turn off HDR.

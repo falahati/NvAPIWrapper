@@ -3,7 +3,7 @@
     /// <summary>
     ///     Contains possible values for the color data depth
     /// </summary>
-    public enum ColorDataDepth
+    public enum ColorDataDepth : uint
     {
         /// <summary>
         ///     Default color depth meaning that the current setting should be kept

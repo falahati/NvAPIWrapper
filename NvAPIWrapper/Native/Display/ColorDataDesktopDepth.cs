@@ -3,7 +3,7 @@
     /// <summary>
     ///     Contains possible values for the color data desktop color depth
     /// </summary>
-    public enum ColorDataDesktopDepth
+    public enum ColorDataDesktopDepth : uint
     {
         /// <summary>
         ///     Default color depth meaning that the current setting should be kept

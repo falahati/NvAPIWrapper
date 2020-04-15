@@ -14,15 +14,18 @@ namespace NvAPIWrapper.Native.Display.Structures
     public struct ColorDataV4 : IInitializable, IColorData
     {
         internal StructureVersion _Version;
-        private readonly ColorDataCommand _Command;
+        internal ushort _Size;
+
+        // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
+        private readonly byte _Command;
         private readonly ColorDataBag _Data;
 
         [StructLayout(LayoutKind.Sequential, Pack = 8)]
         private struct ColorDataBag
         {
-            public readonly ColorDataFormat ColorFormat;
-            public readonly ColorDataColorimetry Colorimetry;
-            public readonly ColorDataDynamicRange ColorDynamicRange;
+            public readonly byte ColorFormat;
+            public readonly byte Colorimetry;
+            public readonly byte ColorDynamicRange;
             public readonly ColorDataDepth ColorDepth;
             public readonly ColorDataSelectionPolicy ColorSelectionPolicy;
 
@@ -34,9 +37,9 @@ namespace NvAPIWrapper.Native.Display.Structures
                 ColorDataSelectionPolicy colorSelectionPolicy
             )
             {
-                ColorFormat = colorFormat;
-                Colorimetry = colorimetry;
-                ColorDynamicRange = colorDynamicRange;
+                ColorFormat = (byte) colorFormat;
+                Colorimetry = (byte) colorimetry;
+                ColorDynamicRange = (byte) colorDynamicRange;
                 ColorDepth = colorDepth;
                 ColorSelectionPolicy = colorSelectionPolicy;
             }
@@ -49,13 +52,14 @@ namespace NvAPIWrapper.Native.Display.Structures
         public ColorDataV4(ColorDataCommand command)
         {
             this = typeof(ColorDataV4).Instantiate<ColorDataV4>();
+            _Size = (ushort) _Version.StructureSize;
 
             if (command != ColorDataCommand.Get && command != ColorDataCommand.GetDefault)
             {
                 throw new ArgumentOutOfRangeException(nameof(command));
             }
 
-            _Command = command;
+            _Command = (byte) command;
         }
 
         /// <summary>
@@ -77,38 +81,56 @@ namespace NvAPIWrapper.Native.Display.Structures
         )
         {
             this = typeof(ColorDataV4).Instantiate<ColorDataV4>();
+            _Size = (ushort) _Version.StructureSize;
 
             if (command != ColorDataCommand.Set && command != ColorDataCommand.IsSupportedColor)
             {
                 throw new ArgumentOutOfRangeException(nameof(command));
             }
 
-            _Command = command;
+            _Command = (byte) command;
             _Data = new ColorDataBag(colorFormat, colorimetry, colorDynamicRange, colorDepth, colorSelectionPolicy);
         }
 
         /// <inheritdoc />
         public ColorDataFormat ColorFormat
         {
-            get => _Data.ColorFormat;
+            get => (ColorDataFormat) _Data.ColorFormat;
         }
 
         /// <inheritdoc />
         public ColorDataColorimetry Colorimetry
         {
-            get => _Data.Colorimetry;
+            get => (ColorDataColorimetry) _Data.Colorimetry;
         }
 
         /// <inheritdoc />
         public ColorDataDynamicRange? DynamicRange
         {
-            get => _Data.ColorDynamicRange;
+            get => (ColorDataDynamicRange) _Data.ColorDynamicRange;
         }
 
         /// <inheritdoc />
         public ColorDataDepth? ColorDepth
         {
-            get => _Data.ColorDepth;
+            get
+            {
+                switch ((int) _Data.ColorDepth)
+                {
+                    case 6:
+                        return ColorDataDepth.BPC6;
+                    case 8:
+                        return ColorDataDepth.BPC8;
+                    case 10:
+                        return ColorDataDepth.BPC10;
+                    case 12:
+                        return ColorDataDepth.BPC12;
+                    case 16:
+                        return ColorDataDepth.BPC16;
+                    default:
+                        return _Data.ColorDepth;
+                }
+            }
         }
 
         /// <inheritdoc />
@@ -121,15 +143,6 @@ namespace NvAPIWrapper.Native.Display.Structures
         public ColorDataDesktopDepth? DesktopColorDepth
         {
             get => null;
-        }
-
-        /// <summary>
-        ///     Gets the color data command
-        /// </summary>
-        // ReSharper disable once ConvertToAutoProperty
-        public ColorDataCommand Command
-        {
-            get => _Command;
         }
     }
 }

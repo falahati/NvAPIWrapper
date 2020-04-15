@@ -3,7 +3,7 @@
     /// <summary>
     ///     Contains possible values for color data color space
     /// </summary>
-    public enum ColorDataColorimetry : byte
+    public enum ColorDataColorimetry : uint
     {
         /// <summary>
         ///     RGB color space

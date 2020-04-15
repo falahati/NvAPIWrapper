@@ -3,7 +3,7 @@
     /// <summary>
     ///     Contains possible values for the color data command
     /// </summary>
-    public enum ColorDataCommand : byte
+    public enum ColorDataCommand : uint
     {
         /// <summary>
         ///     Get the current color data

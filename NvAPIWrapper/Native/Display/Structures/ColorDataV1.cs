@@ -14,19 +14,22 @@ namespace NvAPIWrapper.Native.Display.Structures
     public struct ColorDataV1 : IInitializable, IColorData
     {
         internal StructureVersion _Version;
-        private readonly ColorDataCommand _Command;
+        internal ushort _Size;
+
+        // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
+        private readonly byte _Command;
         private readonly ColorDataBag _Data;
 
         [StructLayout(LayoutKind.Sequential, Pack = 8)]
         private struct ColorDataBag
         {
-            public readonly ColorDataFormat ColorFormat;
-            public readonly ColorDataColorimetry Colorimetry;
+            public readonly byte ColorFormat;
+            public readonly byte Colorimetry;
 
             public ColorDataBag(ColorDataFormat colorFormat, ColorDataColorimetry colorimetry)
             {
-                ColorFormat = colorFormat;
-                Colorimetry = colorimetry;
+                ColorFormat = (byte)colorFormat;
+                Colorimetry = (byte)colorimetry;
             }
         }
 
@@ -37,13 +40,14 @@ namespace NvAPIWrapper.Native.Display.Structures
         public ColorDataV1(ColorDataCommand command)
         {
             this = typeof(ColorDataV1).Instantiate<ColorDataV1>();
+            _Size = (ushort)_Version.StructureSize;
 
             if (command != ColorDataCommand.Get && command != ColorDataCommand.GetDefault)
             {
                 throw new ArgumentOutOfRangeException(nameof(command));
             }
 
-            _Command = command;
+            _Command = (byte)command;
         }
 
         /// <summary>
@@ -59,35 +63,27 @@ namespace NvAPIWrapper.Native.Display.Structures
         )
         {
             this = typeof(ColorDataV1).Instantiate<ColorDataV1>();
+            _Size = (ushort)_Version.StructureSize;
 
             if (command != ColorDataCommand.Set && command != ColorDataCommand.IsSupportedColor)
             {
                 throw new ArgumentOutOfRangeException(nameof(command));
             }
 
-            _Command = command;
+            _Command = (byte)command;
             _Data = new ColorDataBag(colorFormat, colorimetry);
         }
 
         /// <inheritdoc />
         public ColorDataFormat ColorFormat
         {
-            get => _Data.ColorFormat;
+            get => (ColorDataFormat)_Data.ColorFormat;
         }
 
         /// <inheritdoc />
         public ColorDataColorimetry Colorimetry
         {
-            get => _Data.Colorimetry;
-        }
-
-        /// <summary>
-        ///     Gets the color data command
-        /// </summary>
-        // ReSharper disable once ConvertToAutoProperty
-        public ColorDataCommand Command
-        {
-            get => _Command;
+            get => (ColorDataColorimetry)_Data.Colorimetry;
         }
 
         /// <inheritdoc />

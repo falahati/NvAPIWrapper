@@ -3,7 +3,7 @@
     /// <summary>
     ///     Contains possible values for color data dynamic range
     /// </summary>
-    public enum ColorDataDynamicRange : byte
+    public enum ColorDataDynamicRange : uint
     {
         /// <summary>
         ///     VESA standard progress signal

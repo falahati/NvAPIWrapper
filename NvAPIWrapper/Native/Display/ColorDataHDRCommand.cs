@@ -3,7 +3,7 @@
     /// <summary>
     ///     Contains possible values for the HDR color data command
     /// </summary>
-    public enum ColorDataHDRCommand
+    public enum ColorDataHDRCommand : uint
     {
         /// <summary>
         ///     Get the current HDR color data

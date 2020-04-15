@@ -3,7 +3,7 @@
     /// <summary>
     ///     Possible values for the color data selection policy
     /// </summary>
-    public enum ColorDataSelectionPolicy
+    public enum ColorDataSelectionPolicy : uint
     {
         /// <summary>
         ///     Application or the Nvidia Control Panel user configuration are used to decide the best color format

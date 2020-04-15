@@ -3,7 +3,7 @@
     /// <summary>
     ///     Contains possible color data color format values
     /// </summary>
-    public enum ColorDataFormat : byte
+    public enum ColorDataFormat : uint
     {
         /// <summary>
         ///     RGB color format

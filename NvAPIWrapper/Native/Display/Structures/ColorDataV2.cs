@@ -14,15 +14,18 @@ namespace NvAPIWrapper.Native.Display.Structures
     public struct ColorDataV2 : IInitializable, IColorData
     {
         internal StructureVersion _Version;
-        private readonly ColorDataCommand _Command;
+        internal ushort _Size;
+
+        // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
+        private readonly byte _Command;
         private readonly ColorDataBag _Data;
 
         [StructLayout(LayoutKind.Sequential, Pack = 8)]
         private struct ColorDataBag
         {
-            public readonly ColorDataFormat ColorFormat;
-            public readonly ColorDataColorimetry Colorimetry;
-            public readonly ColorDataDynamicRange ColorDynamicRange;
+            public readonly byte ColorFormat;
+            public readonly byte Colorimetry;
+            public readonly byte ColorDynamicRange;
 
             public ColorDataBag(
                 ColorDataFormat colorFormat,
@@ -30,9 +33,9 @@ namespace NvAPIWrapper.Native.Display.Structures
                 ColorDataDynamicRange colorDynamicRange
             )
             {
-                ColorFormat = colorFormat;
-                Colorimetry = colorimetry;
-                ColorDynamicRange = colorDynamicRange;
+                ColorFormat = (byte) colorFormat;
+                Colorimetry = (byte) colorimetry;
+                ColorDynamicRange = (byte) colorDynamicRange;
             }
         }
 
@@ -43,13 +46,14 @@ namespace NvAPIWrapper.Native.Display.Structures
         public ColorDataV2(ColorDataCommand command)
         {
             this = typeof(ColorDataV2).Instantiate<ColorDataV2>();
+            _Size = (ushort) _Version.StructureSize;
 
             if (command != ColorDataCommand.Get && command != ColorDataCommand.GetDefault)
             {
                 throw new ArgumentOutOfRangeException(nameof(command));
             }
 
-            _Command = command;
+            _Command = (byte) command;
         }
 
         /// <summary>
@@ -67,32 +71,33 @@ namespace NvAPIWrapper.Native.Display.Structures
         )
         {
             this = typeof(ColorDataV2).Instantiate<ColorDataV2>();
+            _Size = (ushort) _Version.StructureSize;
 
             if (command != ColorDataCommand.Set && command != ColorDataCommand.IsSupportedColor)
             {
                 throw new ArgumentOutOfRangeException(nameof(command));
             }
 
-            _Command = command;
+            _Command = (byte) command;
             _Data = new ColorDataBag(colorFormat, colorimetry, colorDynamicRange);
         }
 
         /// <inheritdoc />
         public ColorDataFormat ColorFormat
         {
-            get => _Data.ColorFormat;
+            get => (ColorDataFormat) _Data.ColorFormat;
         }
 
         /// <inheritdoc />
         public ColorDataColorimetry Colorimetry
         {
-            get => _Data.Colorimetry;
+            get => (ColorDataColorimetry) _Data.Colorimetry;
         }
 
         /// <inheritdoc />
         public ColorDataDynamicRange? DynamicRange
         {
-            get => _Data.ColorDynamicRange;
+            get => (ColorDataDynamicRange) _Data.ColorDynamicRange;
         }
 
         /// <inheritdoc />
@@ -111,15 +116,6 @@ namespace NvAPIWrapper.Native.Display.Structures
         public ColorDataDesktopDepth? DesktopColorDepth
         {
             get => null;
-        }
-
-        /// <summary>
-        ///     Gets the color data command
-        /// </summary>
-        // ReSharper disable once ConvertToAutoProperty
-        public ColorDataCommand Command
-        {
-            get => _Command;
         }
     }
 }
