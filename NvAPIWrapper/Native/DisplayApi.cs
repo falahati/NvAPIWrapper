@@ -1303,5 +1303,42 @@ namespace NvAPIWrapper.Native
                 }
             }
         }
+        /// <summary>
+        /// This API returns all the color formats and bit depth values supported by a given DP monitor.
+        /// </summary>
+        /// <param name="displayId">The target display id.</param>
+        /// <returns>A list of <see cref="MonitorColorData"/> instances.</returns>
+        public static MonitorColorData[] GetMonitorColorCapabilities(uint displayId)
+        {
+            var getMonitorColorCapabilities =
+                DelegateFactory.GetDelegate<Delegates.Display.NvAPI_DISP_GetMonitorColorCapabilities>();
+            var count = 0u;
+
+            var status = getMonitorColorCapabilities(displayId, ValueTypeArray.Null, ref count);
+
+            if (status != Status.Ok)
+            {
+                throw new NVIDIAApiException(status);
+            }
+
+            if (count == 0)
+            {
+                return new MonitorColorData[0];
+            }
+
+            var array = typeof(MonitorColorData).Instantiate<MonitorColorData>().Repeat((int)count);
+
+            using (var monitorCapsReference = ValueTypeArray.FromArray(array))
+            {
+                status = getMonitorColorCapabilities(displayId, monitorCapsReference, ref count);
+
+                if (status != Status.Ok)
+                {
+                    throw new NVIDIAApiException(status);
+                }
+
+                return monitorCapsReference.ToArray<MonitorColorData>((int)count);
+            }
+        }
     }
 }

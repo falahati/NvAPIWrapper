@@ -50,6 +50,14 @@ namespace NvAPIWrapper.Native.Delegates
         [FunctionId(FunctionId.NvAPI_DISP_GetDisplayIdByDisplayName)]
         public delegate Status NvAPI_DISP_GetDisplayIdByDisplayName([In] string displayName, [Out] out uint displayId);
 
+        [FunctionId(FunctionId.NvAPI_DISP_GetMonitorColorCapabilities)]
+        public delegate Status NvAPI_DISP_GetMonitorColorCapabilities(
+            [In] uint displayId,
+            [In] [Accepts(typeof(MonitorColorData))]
+            ValueTypeArray capabilities,
+            [In] [Out] ref uint count
+        );
+
         [FunctionId(FunctionId.NvAPI_DISP_GetTiming)]
         public delegate Status NvAPI_DISP_GetTiming(
             [In] uint displayId,
@@ -253,7 +261,6 @@ namespace NvAPIWrapper.Native.Delegates
             [In] OutputId displayId,
             [In] int hueAngle
         );
-
 
         [FunctionId(FunctionId.NvAPI_SetRefreshRateOverride)]
         public delegate Status NvAPI_SetRefreshRateOverride(

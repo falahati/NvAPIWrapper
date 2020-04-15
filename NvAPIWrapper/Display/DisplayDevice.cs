@@ -89,6 +89,22 @@ namespace NvAPIWrapper.Display
         public uint DisplayId { get; }
 
         /// <summary>
+        ///     Gets the monitor Display port capabilities
+        /// </summary>
+        public MonitorColorData[] DisplayPortColorCapabilities
+        {
+            get
+            {
+                if (ConnectionType != MonitorConnectionType.DisplayPort)
+                {
+                    return null;
+                }
+
+                return DisplayApi.GetMonitorColorCapabilities(DisplayId);
+            }
+        }
+
+        /// <summary>
         ///     Indicates if the display is being actively driven
         /// </summary>
         public bool IsActive { get; }
