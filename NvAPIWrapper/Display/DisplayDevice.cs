@@ -194,6 +194,22 @@ namespace NvAPIWrapper.Display
         /// </summary>
         public ScanOutInformation ScanOutInformation { get; }
 
+        /// <summary>
+        ///     Gets monitor capabilities from the Video Capability Data Block if available, otherwise null
+        /// </summary>
+        public MonitorCapabilities? VCDBMonitorCapabilities
+        {
+            get => DisplayApi.GetMonitorCapabilities(DisplayId, MonitorCapabilitiesType.VCDB);
+        }
+
+        /// <summary>
+        ///     Gets monitor capabilities from the Vendor Specific Data Block if available, otherwise null
+        /// </summary>
+        public MonitorCapabilities? VSDBMonitorCapabilities
+        {
+            get => DisplayApi.GetMonitorCapabilities(DisplayId, MonitorCapabilitiesType.VSDB);
+        }
+
         /// <inheritdoc />
         public bool Equals(DisplayDevice other)
         {

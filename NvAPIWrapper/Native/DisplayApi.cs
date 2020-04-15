@@ -604,6 +604,83 @@ namespace NvAPIWrapper.Native
         }
 
         /// <summary>
+        ///     This API returns all the monitor capabilities.
+        /// </summary>
+        /// <param name="displayId">The target display id.</param>
+        /// <param name="capabilitiesType">The type of capabilities requested.</param>
+        /// <returns>An instance of <see cref="MonitorCapabilities" />.</returns>
+        public static MonitorCapabilities? GetMonitorCapabilities(uint displayId, MonitorCapabilitiesType capabilitiesType)
+        {
+            var instance = new MonitorCapabilities(capabilitiesType);
+
+            using (var monitorCapReference = ValueTypeReference.FromValueType(instance))
+            {
+                var status = DelegateFactory.GetDelegate<Delegates.Display.NvAPI_DISP_GetMonitorCapabilities>()(
+                    displayId,
+                    monitorCapReference
+                );
+
+                if (status == Status.Error)
+                {
+                    return null;
+                }
+
+                if (status != Status.Ok)
+                {
+                    throw new NVIDIAApiException(status);
+                }
+
+
+                instance = monitorCapReference.ToValueType<MonitorCapabilities>().GetValueOrDefault();
+
+                if (!instance.IsValid)
+                {
+                    return null;
+                }
+
+                return instance;
+            }
+        }
+
+        /// <summary>
+        ///     This API returns all the color formats and bit depth values supported by a given display port monitor.
+        /// </summary>
+        /// <param name="displayId">The target display id.</param>
+        /// <returns>A list of <see cref="MonitorColorData" /> instances.</returns>
+        public static MonitorColorData[] GetMonitorColorCapabilities(uint displayId)
+        {
+            var getMonitorColorCapabilities =
+                DelegateFactory.GetDelegate<Delegates.Display.NvAPI_DISP_GetMonitorColorCapabilities>();
+            var count = 0u;
+
+            var status = getMonitorColorCapabilities(displayId, ValueTypeArray.Null, ref count);
+
+            if (status != Status.Ok)
+            {
+                throw new NVIDIAApiException(status);
+            }
+
+            if (count == 0)
+            {
+                return new MonitorColorData[0];
+            }
+
+            var array = typeof(MonitorColorData).Instantiate<MonitorColorData>().Repeat((int) count);
+
+            using (var monitorCapsReference = ValueTypeArray.FromArray(array))
+            {
+                status = getMonitorColorCapabilities(displayId, monitorCapsReference, ref count);
+
+                if (status != Status.Ok)
+                {
+                    throw new NVIDIAApiException(status);
+                }
+
+                return monitorCapsReference.ToArray<MonitorColorData>((int) count);
+            }
+        }
+
+        /// <summary>
         ///     This API queries current state of one of the various scan-out composition parameters on the specified display.
         /// </summary>
         /// <param name="displayId">Combined physical display and GPU identifier of the display to query the configuration.</param>
@@ -1301,43 +1378,6 @@ namespace NvAPIWrapper.Native
                         throw new NVIDIAApiException(status);
                     }
                 }
-            }
-        }
-        /// <summary>
-        /// This API returns all the color formats and bit depth values supported by a given DP monitor.
-        /// </summary>
-        /// <param name="displayId">The target display id.</param>
-        /// <returns>A list of <see cref="MonitorColorData"/> instances.</returns>
-        public static MonitorColorData[] GetMonitorColorCapabilities(uint displayId)
-        {
-            var getMonitorColorCapabilities =
-                DelegateFactory.GetDelegate<Delegates.Display.NvAPI_DISP_GetMonitorColorCapabilities>();
-            var count = 0u;
-
-            var status = getMonitorColorCapabilities(displayId, ValueTypeArray.Null, ref count);
-
-            if (status != Status.Ok)
-            {
-                throw new NVIDIAApiException(status);
-            }
-
-            if (count == 0)
-            {
-                return new MonitorColorData[0];
-            }
-
-            var array = typeof(MonitorColorData).Instantiate<MonitorColorData>().Repeat((int)count);
-
-            using (var monitorCapsReference = ValueTypeArray.FromArray(array))
-            {
-                status = getMonitorColorCapabilities(displayId, monitorCapsReference, ref count);
-
-                if (status != Status.Ok)
-                {
-                    throw new NVIDIAApiException(status);
-                }
-
-                return monitorCapsReference.ToArray<MonitorColorData>((int)count);
             }
         }
     }

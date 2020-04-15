@@ -50,6 +50,13 @@ namespace NvAPIWrapper.Native.Delegates
         [FunctionId(FunctionId.NvAPI_DISP_GetDisplayIdByDisplayName)]
         public delegate Status NvAPI_DISP_GetDisplayIdByDisplayName([In] string displayName, [Out] out uint displayId);
 
+        [FunctionId(FunctionId.NvAPI_DISP_GetMonitorCapabilities)]
+        public delegate Status NvAPI_DISP_GetMonitorCapabilities(
+            [In] uint displayId,
+            [In] [Accepts(typeof(MonitorCapabilities))]
+            ValueTypeReference capabilities
+        );
+
         [FunctionId(FunctionId.NvAPI_DISP_GetMonitorColorCapabilities)]
         public delegate Status NvAPI_DISP_GetMonitorColorCapabilities(
             [In] uint displayId,
