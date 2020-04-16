@@ -34,14 +34,6 @@ namespace NvAPIWrapper.GPU
         }
 
         /// <summary>
-        ///     Gets the output HDMI support information
-        /// </summary>
-        public IHDMISupportInfo HDMISupportInfo
-        {
-            get => DisplayApi.GetHDMISupportInfo(OutputId);
-        }
-
-        /// <summary>
         ///     Gets the corresponding HUE information
         /// </summary>
         public HUEInformation HUEControl

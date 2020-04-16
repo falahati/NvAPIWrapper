@@ -548,17 +548,19 @@ namespace NvAPIWrapper.Native
         ///     This API returns the current info-frame data on the specified device (monitor).
         /// </summary>
         /// <param name="displayHandle">The display handle of the device to retrieve HDMI support information for.</param>
+        /// <param name="outputId">The target display's output id, or <see cref="OutputId.Invalid"/> to determine automatically.</param>
         /// <returns>An instance of a type implementing the <see cref="IHDMISupportInfo" /> interface.</returns>
-        public static IHDMISupportInfo GetHDMISupportInfo(DisplayHandle displayHandle)
+        public static IHDMISupportInfo GetHDMISupportInfo(DisplayHandle displayHandle, OutputId outputId = OutputId.Invalid)
         {
             var getHDMISupportInfo = DelegateFactory.GetDelegate<Delegates.Display.NvAPI_GetHDMISupportInfo>();
 
             foreach (var acceptType in getHDMISupportInfo.Accepts())
             {
                 var instance = acceptType.Instantiate<IHDMISupportInfo>();
+
                 using (var supportInfoReference = ValueTypeReference.FromValueType(instance, acceptType))
                 {
-                    var status = getHDMISupportInfo(displayHandle, 0, supportInfoReference);
+                    var status = getHDMISupportInfo(displayHandle, (uint)outputId, supportInfoReference);
 
                     if (status == Status.IncompatibleStructureVersion)
                     {
@@ -590,6 +592,7 @@ namespace NvAPIWrapper.Native
             foreach (var acceptType in getHDMISupportInfo.Accepts())
             {
                 var instance = acceptType.Instantiate<IHDMISupportInfo>();
+
                 using (var supportInfoReference = ValueTypeReference.FromValueType(instance, acceptType))
                 {
                     var status = getHDMISupportInfo(DisplayHandle.DefaultHandle, displayId, supportInfoReference);
@@ -610,40 +613,6 @@ namespace NvAPIWrapper.Native
 
             throw new NVIDIANotSupportedException("This operation is not supported.");
         }
-
-        /// <summary>
-        ///     This API returns the current info-frame data on the specified device (monitor).
-        /// </summary>
-        /// <param name="outputId">The output id of the device to retrieve HDMI support information for.</param>
-        /// <returns>An instance of a type implementing the <see cref="IHDMISupportInfo" /> interface.</returns>
-        public static IHDMISupportInfo GetHDMISupportInfo(OutputId outputId)
-        {
-            var getHDMISupportInfo = DelegateFactory.GetDelegate<Delegates.Display.NvAPI_GetHDMISupportInfo>();
-
-            foreach (var acceptType in getHDMISupportInfo.Accepts())
-            {
-                var instance = acceptType.Instantiate<IHDMISupportInfo>();
-                using (var supportInfoReference = ValueTypeReference.FromValueType(instance, acceptType))
-                {
-                    var status = getHDMISupportInfo(DisplayHandle.DefaultHandle, (uint) outputId, supportInfoReference);
-
-                    if (status == Status.IncompatibleStructureVersion)
-                    {
-                        continue;
-                    }
-
-                    if (status != Status.Ok)
-                    {
-                        throw new NVIDIAApiException(status);
-                    }
-
-                    return supportInfoReference.ToValueType<IHDMISupportInfo>(acceptType);
-                }
-            }
-
-            throw new NVIDIANotSupportedException("This operation is not supported.");
-        }
-
 
         /// [PRIVATE]
         /// <summary>
