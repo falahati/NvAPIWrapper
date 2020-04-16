@@ -517,17 +517,17 @@ namespace NvAPIWrapper.Display
         /// <summary>
         ///     Gets monitor capabilities from the Video Capability Data Block if available, otherwise null
         /// </summary>
-        public MonitorCapabilities? VCDBMonitorCapabilities
+        public MonitorVCDBCapabilities? VCDBMonitorCapabilities
         {
-            get => DisplayApi.GetMonitorCapabilities(DisplayId, MonitorCapabilitiesType.VCDB);
+            get => DisplayApi.GetMonitorCapabilities(DisplayId, MonitorCapabilitiesType.VCDB)?.VCDBCapabilities;
         }
 
         /// <summary>
         ///     Gets monitor capabilities from the Vendor Specific Data Block if available, otherwise null
         /// </summary>
-        public MonitorCapabilities? VSDBMonitorCapabilities
+        public MonitorVSDBCapabilities? VSDBMonitorCapabilities
         {
-            get => DisplayApi.GetMonitorCapabilities(DisplayId, MonitorCapabilitiesType.VSDB);
+            get => DisplayApi.GetMonitorCapabilities(DisplayId, MonitorCapabilitiesType.VSDB)?.VSDBCapabilities;
         }
 
         /// <inheritdoc />
