@@ -84,6 +84,7 @@ namespace NvAPIWrapper.Native.Display.Structures
             get => _Flags.GetBit(10);
         }
 
+        /// <inheritdoc />
         // ReSharper disable once ConvertToAutoProperty
         public uint EDID861ExtensionRevision
         {

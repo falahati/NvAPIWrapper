@@ -3,6 +3,7 @@ using NvAPIWrapper.Native.Interfaces.Display;
 
 namespace NvAPIWrapper.Native.Display.Structures
 {
+    /// <inheritdoc />
     [StructLayout(LayoutKind.Sequential, Pack = 8)]
     public struct DisplayColorData : IDisplayColorData
     {

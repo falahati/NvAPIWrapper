@@ -24,6 +24,10 @@ namespace NvAPIWrapper.Native.Display.Structures
         [FieldOffset(16)] [MarshalAs(UnmanagedType.ByValArray, SizeConst = 50)]
         private readonly byte[] _Data;
 
+        /// <summary>
+        ///     Creates a new instance of <see cref="MonitorCapabilities" />.
+        /// </summary>
+        /// <param name="type">The type of information to be retrieved.</param>
         public MonitorCapabilities(MonitorCapabilitiesType type)
         {
             this = typeof(MonitorCapabilities).Instantiate<MonitorCapabilities>();
