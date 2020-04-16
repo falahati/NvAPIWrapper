@@ -4,6 +4,8 @@ using NvAPIWrapper.GPU;
 using NvAPIWrapper.Native;
 using NvAPIWrapper.Native.Display;
 using NvAPIWrapper.Native.Display.Structures;
+using NvAPIWrapper.Native.Exceptions;
+using NvAPIWrapper.Native.GPU;
 using NvAPIWrapper.Native.Interfaces.Display;
 
 namespace NvAPIWrapper.Display
@@ -65,7 +67,19 @@ namespace NvAPIWrapper.Display
         /// </summary>
         public IHDMISupportInfo HDMISupportInfo
         {
-            get => DisplayApi.GetHDMISupportInfo(Handle);
+            get
+            {
+                var outputId = OutputId.Invalid;
+                try
+                {
+                    outputId = DisplayApi.GetAssociatedDisplayOutputId(Handle);
+                }
+                catch (NVIDIAApiException)
+                {
+                    // ignore
+                }
+                return DisplayApi.GetHDMISupportInfo(Handle, outputId);
+            }
         }
 
         /// <summary>
