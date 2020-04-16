@@ -3,6 +3,7 @@ using NvAPIWrapper.Display;
 using NvAPIWrapper.Native;
 using NvAPIWrapper.Native.GPU;
 using NvAPIWrapper.Native.GPU.Structures;
+using NvAPIWrapper.Native.Interfaces.Display;
 
 namespace NvAPIWrapper.GPU
 {
@@ -30,6 +31,14 @@ namespace NvAPIWrapper.GPU
         public DVCInformation DigitalVibranceControl
         {
             get => new DVCInformation(OutputId);
+        }
+
+        /// <summary>
+        ///     Gets the output HDMI support information
+        /// </summary>
+        public IHDMISupportInfo HDMISupportInfo
+        {
+            get => DisplayApi.GetHDMISupportInfo(OutputId);
         }
 
         /// <summary>

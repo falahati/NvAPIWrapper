@@ -7,6 +7,7 @@ using NvAPIWrapper.Native.Display;
 using NvAPIWrapper.Native.Display.Structures;
 using NvAPIWrapper.Native.GPU;
 using NvAPIWrapper.Native.GPU.Structures;
+using NvAPIWrapper.Native.Interfaces.Display;
 using NvAPIWrapper.Native.Interfaces.GPU;
 
 namespace NvAPIWrapper.Display
@@ -102,6 +103,14 @@ namespace NvAPIWrapper.Display
 
                 return DisplayApi.GetMonitorColorCapabilities(DisplayId);
             }
+        }
+
+        /// <summary>
+        ///     Gets the device HDMI support information
+        /// </summary>
+        public IHDMISupportInfo HDMISupportInfo
+        {
+            get => DisplayApi.GetHDMISupportInfo(DisplayId);
         }
 
         /// <summary>

@@ -165,6 +165,14 @@ namespace NvAPIWrapper.Native.Delegates
             ValueTypeReference dvcInfo
         );
 
+        [FunctionId(FunctionId.NvAPI_GetHDMISupportInfo)]
+        public delegate Status NvAPI_GetHDMISupportInfo(
+            [In] DisplayHandle displayHandle,
+            [In] uint displayIdOrOutputId,
+            [In] [Accepts(typeof(HDMISupportInfoV2), typeof(HDMISupportInfoV1))]
+            ValueTypeReference supportInfo
+        );
+
         [FunctionId(FunctionId.NvAPI_GetHUEInfo)]
         public delegate Status NvAPI_GetHUEInfo(
             [In] DisplayHandle displayHandle,

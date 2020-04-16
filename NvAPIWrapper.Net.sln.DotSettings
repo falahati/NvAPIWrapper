@@ -91,6 +91,7 @@
 	<s:String x:Key="/Default/CodeStyle/Naming/CSharpNaming/Abbreviations/=VSDB/@EntryIndexedValue">VSDB</s:String>
 	<s:String x:Key="/Default/CodeStyle/Naming/CSharpNaming/Abbreviations/=WKS/@EntryIndexedValue">WKS</s:String>
 	<s:String x:Key="/Default/CodeStyle/Naming/CSharpNaming/Abbreviations/=XYUVRQ/@EntryIndexedValue">XYUVRQ</s:String>
+	<s:String x:Key="/Default/CodeStyle/Naming/CSharpNaming/Abbreviations/=YCC/@EntryIndexedValue">YCC</s:String>
 	<s:String x:Key="/Default/CodeStyle/Naming/CSharpNaming/Abbreviations/=YPRPB/@EntryIndexedValue">YPRPB</s:String>
 	<s:String x:Key="/Default/CodeStyle/Naming/CSharpNaming/Abbreviations/=HDMI/@EntryIndexedValue">HDMI</s:String>
 	<s:String x:Key="/Default/CodeStyle/Naming/CSharpNaming/Abbreviations/=LFH/@EntryIndexedValue">LFH</s:String>

@@ -4,6 +4,7 @@ using NvAPIWrapper.GPU;
 using NvAPIWrapper.Native;
 using NvAPIWrapper.Native.Display;
 using NvAPIWrapper.Native.Display.Structures;
+using NvAPIWrapper.Native.Interfaces.Display;
 
 namespace NvAPIWrapper.Display
 {
@@ -58,6 +59,14 @@ namespace NvAPIWrapper.Display
         ///     Gets display handle
         /// </summary>
         public DisplayHandle Handle { get; }
+
+        /// <summary>
+        ///     Gets the display HDMI support information
+        /// </summary>
+        public IHDMISupportInfo HDMISupportInfo
+        {
+            get => DisplayApi.GetHDMISupportInfo(Handle);
+        }
 
         /// <summary>
         ///     Gets the corresponding HUE information

@@ -19,7 +19,7 @@ namespace NvAPIWrapper.Native.GPU
         /// <summary>
         ///     Represents Output 1
         /// </summary>
-        Output1 = 1u << 0,
+        Output1 = 1U,
 
         /// <summary>
         ///     Represents Output 2
