@@ -6,9 +6,14 @@
     public enum MonitorCapabilitiesConnectorType : uint
     {
         /// <summary>
+        ///     Unknown or invalid connector
+        /// </summary>
+        Unknown = 0,
+
+        /// <summary>
         ///     VGA connector
         /// </summary>
-        VGA = 0,
+        VGA,
 
         /// <summary>
         ///     Composite connector (TV)
