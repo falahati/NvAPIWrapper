@@ -5,6 +5,8 @@ using NvAPIWrapper.GPU;
 using NvAPIWrapper.Native;
 using NvAPIWrapper.Native.Display;
 using NvAPIWrapper.Native.Display.Structures;
+using NvAPIWrapper.Native.Exceptions;
+using NvAPIWrapper.Native.General;
 using NvAPIWrapper.Native.GPU;
 using NvAPIWrapper.Native.GPU.Structures;
 using NvAPIWrapper.Native.Interfaces.Display;
@@ -106,11 +108,225 @@ namespace NvAPIWrapper.Display
         }
 
         /// <summary>
+        ///     Gets the HDMI audio info-frame current information
+        /// </summary>
+        public InfoFrameAudio? HDMIAudioFrameCurrentInformation
+        {
+            get
+            {
+                try
+                {
+                    var infoFrame = new InfoFrameData(InfoFrameCommand.Get, InfoFrameDataType.AudioInformation);
+                    DisplayApi.InfoFrameControl(DisplayId, ref infoFrame);
+
+                    return infoFrame.AudioInformation;
+                }
+                catch (NVIDIAApiException e)
+                {
+                    if (e.Status == Status.NotSupported)
+                    {
+                        return null;
+                    }
+
+                    throw;
+                }
+            }
+        }
+
+
+        /// <summary>
+        ///     Gets the HDMI audio info-frame default information
+        /// </summary>
+        public InfoFrameAudio? HDMIAudioFrameDefaultInformation
+        {
+            get
+            {
+                try
+                {
+                    var infoFrame = new InfoFrameData(InfoFrameCommand.GetDefault, InfoFrameDataType.AudioInformation);
+                    DisplayApi.InfoFrameControl(DisplayId, ref infoFrame);
+
+                    return infoFrame.AudioInformation;
+                }
+                catch (NVIDIAApiException e)
+                {
+                    if (e.Status == Status.NotSupported)
+                    {
+                        return null;
+                    }
+
+                    throw;
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Gets the HDMI audio info-frame override information
+        /// </summary>
+        public InfoFrameAudio? HDMIAudioFrameOverrideInformation
+        {
+            get
+            {
+                try
+                {
+                    var infoFrame = new InfoFrameData(InfoFrameCommand.GetOverride, InfoFrameDataType.AudioInformation);
+                    DisplayApi.InfoFrameControl(DisplayId, ref infoFrame);
+
+                    return infoFrame.AudioInformation;
+                }
+                catch (NVIDIAApiException e)
+                {
+                    if (e.Status == Status.NotSupported)
+                    {
+                        return null;
+                    }
+
+                    throw;
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Gets the HDMI audio info-frame property information
+        /// </summary>
+        public InfoFrameProperty? HDMIAudioFramePropertyInformation
+        {
+            get
+            {
+                try
+                {
+                    var infoFrame = new InfoFrameData(InfoFrameCommand.GetProperty, InfoFrameDataType.AudioInformation);
+                    DisplayApi.InfoFrameControl(DisplayId, ref infoFrame);
+
+                    return infoFrame.PropertyInformation;
+                }
+                catch (NVIDIAApiException e)
+                {
+                    if (e.Status == Status.NotSupported)
+                    {
+                        return null;
+                    }
+
+                    throw;
+                }
+            }
+        }
+
+        /// <summary>
         ///     Gets the device HDMI support information
         /// </summary>
         public IHDMISupportInfo HDMISupportInfo
         {
             get => DisplayApi.GetHDMISupportInfo(DisplayId);
+        }
+
+
+        /// <summary>
+        ///     Gets the HDMI auxiliary video info-frame current information
+        /// </summary>
+        public InfoFrameVideo? HDMIVideoFrameCurrentInformation
+        {
+            get
+            {
+                try
+                {
+                    var infoFrame =
+                        new InfoFrameData(InfoFrameCommand.Get, InfoFrameDataType.AuxiliaryVideoInformation);
+                    DisplayApi.InfoFrameControl(DisplayId, ref infoFrame);
+
+                    return infoFrame.AuxiliaryVideoInformation;
+                }
+                catch (NVIDIAApiException e)
+                {
+                    if (e.Status == Status.NotSupported)
+                    {
+                        return null;
+                    }
+
+                    throw;
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Gets the HDMI auxiliary video info-frame default information
+        /// </summary>
+        public InfoFrameVideo? HDMIVideoFrameDefaultInformation
+        {
+            get
+            {
+                try
+                {
+                    var infoFrame = new InfoFrameData(InfoFrameCommand.GetDefault,
+                        InfoFrameDataType.AuxiliaryVideoInformation);
+                    DisplayApi.InfoFrameControl(DisplayId, ref infoFrame);
+
+                    return infoFrame.AuxiliaryVideoInformation;
+                }
+                catch (NVIDIAApiException e)
+                {
+                    if (e.Status == Status.NotSupported)
+                    {
+                        return null;
+                    }
+
+                    throw;
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Gets the HDMI auxiliary video info-frame override information
+        /// </summary>
+        public InfoFrameVideo? HDMIVideoFrameOverrideInformation
+        {
+            get
+            {
+                try
+                {
+                    var infoFrame = new InfoFrameData(InfoFrameCommand.GetOverride,
+                        InfoFrameDataType.AuxiliaryVideoInformation);
+                    DisplayApi.InfoFrameControl(DisplayId, ref infoFrame);
+
+                    return infoFrame.AuxiliaryVideoInformation;
+                }
+                catch (NVIDIAApiException e)
+                {
+                    if (e.Status == Status.NotSupported)
+                    {
+                        return null;
+                    }
+
+                    throw;
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Gets the HDMI auxiliary video info-frame property information
+        /// </summary>
+        public InfoFrameProperty? HDMIVideoFramePropertyInformation
+        {
+            get
+            {
+                try
+                {
+                    var infoFrame = new InfoFrameData(InfoFrameCommand.GetProperty,
+                        InfoFrameDataType.AuxiliaryVideoInformation);
+                    DisplayApi.InfoFrameControl(DisplayId, ref infoFrame);
+
+                    return infoFrame.PropertyInformation;
+                }
+                catch (NVIDIAApiException e)
+                {
+                    if (e.Status == Status.NotSupported)
+                    {
+                        return null;
+                    }
+
+                    throw;
+                }
+            }
         }
 
         /// <summary>
@@ -381,6 +597,30 @@ namespace NvAPIWrapper.Display
         }
 
         /// <summary>
+        ///     Resets the HDMI audio info-frame information to default
+        /// </summary>
+        public void ResetHDMIAudioFrameInformation()
+        {
+            var infoFrame = new InfoFrameData(
+                InfoFrameCommand.Reset,
+                InfoFrameDataType.AudioInformation
+            );
+            DisplayApi.InfoFrameControl(DisplayId, ref infoFrame);
+        }
+
+        /// <summary>
+        ///     Resets the HDMI auxiliary video info-frame information to default
+        /// </summary>
+        public void ResetHDMIVideoFrameInformation()
+        {
+            var infoFrame = new InfoFrameData(
+                InfoFrameCommand.Reset,
+                InfoFrameDataType.AuxiliaryVideoInformation
+            );
+            DisplayApi.InfoFrameControl(DisplayId, ref infoFrame);
+        }
+
+        /// <summary>
         ///     Reverts the custom resolution currently on trial.
         /// </summary>
         public void RevertCustomResolution()
@@ -402,6 +642,62 @@ namespace NvAPIWrapper.Display
         public void SaveCustomResolution(bool isThisOutputIdOnly = true, bool isThisMonitorOnly = true)
         {
             SaveCustomResolution(new[] {DisplayId}, isThisOutputIdOnly, isThisMonitorOnly);
+        }
+
+        /// <summary>
+        ///     Sets the HDMI video info-frame current or override information
+        /// </summary>
+        /// <param name="audio">The new information.</param>
+        /// <param name="isOverride">A boolean value indicating if the changes should persist mode-set and OS restart.</param>
+        public void SetHDMIAudioFrameInformation(InfoFrameAudio audio, bool isOverride = false)
+        {
+            var infoFrame = new InfoFrameData(
+                isOverride ? InfoFrameCommand.SetOverride : InfoFrameCommand.Set,
+                audio
+            );
+            DisplayApi.InfoFrameControl(DisplayId, ref infoFrame);
+        }
+
+        /// <summary>
+        ///     Sets the HDMI audio info-frame property information
+        /// </summary>
+        /// <param name="property">The new property information.</param>
+        public void SetHDMIAudioFramePropertyInformation(InfoFrameProperty property)
+        {
+            var infoFrame = new InfoFrameData(
+                InfoFrameCommand.SetProperty,
+                InfoFrameDataType.AudioInformation,
+                property
+            );
+            DisplayApi.InfoFrameControl(DisplayId, ref infoFrame);
+        }
+
+        /// <summary>
+        ///     Sets the HDMI auxiliary video info-frame current or override information
+        /// </summary>
+        /// <param name="video">The new information.</param>
+        /// <param name="isOverride">A boolean value indicating if the changes should persist mode-set and OS restart.</param>
+        public void SetHDMIVideoFrameInformation(InfoFrameVideo video, bool isOverride = false)
+        {
+            var infoFrame = new InfoFrameData(
+                isOverride ? InfoFrameCommand.SetOverride : InfoFrameCommand.Set,
+                video
+            );
+            DisplayApi.InfoFrameControl(DisplayId, ref infoFrame);
+        }
+
+        /// <summary>
+        ///     Sets the HDMI auxiliary video info-frame property information
+        /// </summary>
+        /// <param name="property">The new property information.</param>
+        public void SetHDMIVideoFramePropertyInformation(InfoFrameProperty property)
+        {
+            var infoFrame = new InfoFrameData(
+                InfoFrameCommand.SetProperty,
+                InfoFrameDataType.AuxiliaryVideoInformation,
+                property
+            );
+            DisplayApi.InfoFrameControl(DisplayId, ref infoFrame);
         }
 
         /// <summary>

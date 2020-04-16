@@ -72,6 +72,12 @@ namespace NvAPIWrapper.Native.Delegates
             [In] [Accepts(typeof(Timing))] ValueTypeReference timing
         );
 
+        [FunctionId(FunctionId.NvAPI_Disp_InfoFrameControl)]
+        public delegate Status NvAPI_Disp_InfoFrameControl(
+            [In] uint displayId,
+            [In] [Accepts(typeof(InfoFrameData))] ValueTypeReference infoFrameData
+        );
+
         [FunctionId(FunctionId.NvAPI_DISP_RevertCustomDisplayTrial)]
         public delegate Status NvAPI_DISP_RevertCustomDisplayTrial(
             [In] [Accepts(typeof(uint))] ValueTypeArray displayIds,

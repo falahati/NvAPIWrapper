@@ -991,6 +991,28 @@ namespace NvAPIWrapper.Native
         }
 
         /// <summary>
+        ///     This API controls the InfoFrame values.
+        /// </summary>
+        /// <param name="displayId">The targeted display id.</param>
+        /// <param name="infoFrameData">The structure to be filled with information requested or applied on the display.</param>
+        public static void InfoFrameControl(uint displayId, ref InfoFrameData infoFrameData)
+        {
+            var infoFrameControl = DelegateFactory.GetDelegate<Delegates.Display.NvAPI_Disp_InfoFrameControl>();
+
+            using (var infoFrameDataReference = ValueTypeReference.FromValueType(infoFrameData))
+            {
+                var status = infoFrameControl(displayId, infoFrameDataReference);
+
+                if (status != Status.Ok)
+                {
+                    throw new NVIDIAApiException(status);
+                }
+
+                infoFrameData = infoFrameDataReference.ToValueType<InfoFrameData>().GetValueOrDefault();
+            }
+        }
+
+        /// <summary>
         ///     This API is used to restore the display configuration, that was changed by calling <see cref="TryCustomDisplay" />.
         ///     This function must be called only after a custom display configuration is tested on the hardware, using
         ///     <see cref="TryCustomDisplay" />, otherwise no action is taken.
