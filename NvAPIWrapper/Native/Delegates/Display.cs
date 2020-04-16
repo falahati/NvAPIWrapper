@@ -18,7 +18,23 @@ namespace NvAPIWrapper.Native.Delegates
         [FunctionId(FunctionId.NvAPI_CreateDisplayFromUnAttachedDisplay)]
         public delegate Status NvAPI_CreateDisplayFromUnAttachedDisplay(
             [In] UnAttachedDisplayHandle display,
-            [Out] out DisplayHandle newDisplay);
+            [Out] out DisplayHandle newDisplay
+        );
+
+        [FunctionId(FunctionId.NvAPI_Disp_ColorControl)]
+        public delegate Status NvAPI_Disp_ColorControl(
+            [In] uint displayId,
+            [In]
+            [Out]
+            [Accepts(
+                typeof(ColorDataV5),
+                typeof(ColorDataV4),
+                typeof(ColorDataV3),
+                typeof(ColorDataV2),
+                typeof(ColorDataV1)
+            )]
+            ValueTypeReference colorData
+        );
 
         [FunctionId(FunctionId.NvAPI_DISP_DeleteCustomDisplay)]
         public delegate Status NvAPI_DISP_DeleteCustomDisplay(
@@ -50,6 +66,16 @@ namespace NvAPIWrapper.Native.Delegates
         [FunctionId(FunctionId.NvAPI_DISP_GetDisplayIdByDisplayName)]
         public delegate Status NvAPI_DISP_GetDisplayIdByDisplayName([In] string displayName, [Out] out uint displayId);
 
+        [FunctionId(FunctionId.NvAPI_DISP_GetGDIPrimaryDisplayId)]
+        public delegate Status NvAPI_DISP_GetGDIPrimaryDisplayId([Out] out uint displayId);
+
+        [FunctionId(FunctionId.NvAPI_Disp_GetHdrCapabilities)]
+        public delegate Status NvAPI_Disp_GetHdrCapabilities(
+            [In] uint displayId,
+            [In] [Out] [Accepts(typeof(HDRCapabilitiesV1))]
+            ValueTypeReference hdrCapabilities
+        );
+
         [FunctionId(FunctionId.NvAPI_DISP_GetMonitorCapabilities)]
         public delegate Status NvAPI_DISP_GetMonitorCapabilities(
             [In] uint displayId,
@@ -70,6 +96,13 @@ namespace NvAPIWrapper.Native.Delegates
             [In] uint displayId,
             [In] [Accepts(typeof(TimingInput))] ValueTypeReference timingInput,
             [In] [Accepts(typeof(Timing))] ValueTypeReference timing
+        );
+
+        [FunctionId(FunctionId.NvAPI_Disp_HdrColorControl)]
+        public delegate Status NvAPI_Disp_HdrColorControl(
+            [In] uint displayId,
+            [In] [Out] [Accepts(typeof(HDRColorDataV2), typeof(HDRColorDataV1))]
+            ValueTypeReference hdrColorData
         );
 
         [FunctionId(FunctionId.NvAPI_Disp_InfoFrameControl)]
