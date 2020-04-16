@@ -231,7 +231,7 @@ namespace NvAPIWrapper.Native
                 {
                     var status = gpuGetEDID(gpuHandle, outputId, edidReference);
 
-                    if (status != Status.IncompatibleStructureVersion)
+                    if (status == Status.IncompatibleStructureVersion)
                     {
                         continue;
                     }
