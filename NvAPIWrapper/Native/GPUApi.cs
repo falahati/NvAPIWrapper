@@ -1075,6 +1075,80 @@ namespace NvAPIWrapper.Native
         }
 
         /// <summary>
+        ///     Reads data from I2C bus
+        /// </summary>
+        /// <param name="gpuHandle">The physical GPU to access I2C bus.</param>
+        /// <param name="i2cInfo">The information required for the operation. Will be filled with data after retrieval.</param>
+        // ReSharper disable once InconsistentNaming
+        public static void I2CRead<TI2CInfo>(PhysicalGPUHandle gpuHandle, ref TI2CInfo i2cInfo)
+            where TI2CInfo : struct, II2CInfo
+        {
+            var c = i2cInfo as II2CInfo;
+            I2CRead(gpuHandle, ref c);
+            i2cInfo = (TI2CInfo) c;
+        }
+
+        /// <summary>
+        ///     Reads data from I2C bus
+        /// </summary>
+        /// <param name="gpuHandle">The physical GPU to access I2C bus.</param>
+        /// <param name="i2cInfo">The information required for the operation. Will be filled with data after retrieval.</param>
+        // ReSharper disable once InconsistentNaming
+        public static void I2CRead(PhysicalGPUHandle gpuHandle, ref II2CInfo i2cInfo)
+        {
+            var type = i2cInfo.GetType();
+            // ReSharper disable once InconsistentNaming
+            var i2cRead = DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_I2CRead>();
+
+            if (!i2cRead.Accepts().Contains(type))
+            {
+                throw new ArgumentOutOfRangeException(nameof(type));
+            }
+
+            // ReSharper disable once InconsistentNaming
+            using (var i2cInfoReference = ValueTypeReference.FromValueType(i2cInfo, type))
+            {
+                var status = i2cRead(gpuHandle, i2cInfoReference);
+
+                if (status != Status.Ok)
+                {
+                    throw new NVIDIAApiException(status);
+                }
+
+                i2cInfo = i2cInfoReference.ToValueType<II2CInfo>(type);
+            }
+        }
+
+        /// <summary>
+        ///     Writes data to I2C bus
+        /// </summary>
+        /// <param name="gpuHandle">The physical GPU to access I2C bus.</param>
+        /// <param name="i2cInfo">The information required for the operation.</param>
+        // ReSharper disable once InconsistentNaming
+        public static void I2CWrite(PhysicalGPUHandle gpuHandle, II2CInfo i2cInfo)
+        {
+            var type = i2cInfo.GetType();
+            // ReSharper disable once InconsistentNaming
+            var i2cWrite = DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_I2CWrite>();
+
+            if (!i2cWrite.Accepts().Contains(type))
+            {
+                throw new ArgumentOutOfRangeException(nameof(type));
+            }
+
+            // ReSharper disable once InconsistentNaming
+            using (var i2cInfoReference = ValueTypeReference.FromValueType(i2cInfo, type))
+            {
+                var status = i2cWrite(gpuHandle, i2cInfoReference);
+
+                if (status != Status.Ok)
+                {
+                    throw new NVIDIAApiException(status);
+                }
+            }
+        }
+
+        /// <summary>
         ///     This function resets ECC memory error counters.
         /// </summary>
         /// <param name="gpuHandle">A handle identifying the physical GPU for which ECC error information is to be cleared.</param>

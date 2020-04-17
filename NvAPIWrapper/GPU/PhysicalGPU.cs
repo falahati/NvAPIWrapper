@@ -98,7 +98,7 @@ namespace NvAPIWrapper.GPU
                 {
                     if (ex.Status == Status.NotSupported)
                     {
-                        return default(BoardInfo);
+                        return default;
                     }
 
                     throw;
@@ -437,6 +437,19 @@ namespace NvAPIWrapper.GPU
         }
 
         /// <summary>
+        ///     Reads data from the I2C bus
+        /// </summary>
+        /// <param name="i2cInfo">Information required to read from the I2C bus.</param>
+        /// <returns>The returned payload.</returns>
+        // ReSharper disable once InconsistentNaming
+        public byte[] ReadI2C(II2CInfo i2cInfo)
+        {
+            GPUApi.I2CRead(Handle, ref i2cInfo);
+
+            return i2cInfo.Data;
+        }
+
+        /// <summary>
         ///     Validates a set of GPU outputs to check if they can be active simultaneously
         /// </summary>
         /// <param name="outputs">GPU outputs to check</param>
@@ -469,6 +482,16 @@ namespace NvAPIWrapper.GPU
             WriteEDIDData(display.DisplayId, edidData);
         }
 
+        /// <summary>
+        ///     Writes data to the I2C bus
+        /// </summary>
+        /// <param name="i2cInfo">Information required to write to the I2C bus including data payload.</param>
+        // ReSharper disable once InconsistentNaming
+        public void WriteI2C(II2CInfo i2cInfo)
+        {
+            GPUApi.I2CWrite(Handle, i2cInfo);
+        }
+
         private void WriteEDIDData(uint displayOutputId, byte[] edidData)
         {
             try
@@ -478,6 +501,7 @@ namespace NvAPIWrapper.GPU
                     var instance = typeof(EDIDV3).Instantiate<EDIDV3>();
                     GPUApi.SetEDID(Handle, displayOutputId, instance);
                 }
+
                 for (var offset = 0; offset < edidData.Length; offset += EDIDV3.MaxDataSize)
                 {
                     var array = new byte[Math.Min(EDIDV3.MaxDataSize, edidData.Length - offset)];
@@ -507,6 +531,7 @@ namespace NvAPIWrapper.GPU
                     var instance = typeof(EDIDV2).Instantiate<EDIDV2>();
                     GPUApi.SetEDID(Handle, displayOutputId, instance);
                 }
+
                 for (var offset = 0; offset < edidData.Length; offset += EDIDV2.MaxDataSize)
                 {
                     var array = new byte[Math.Min(EDIDV2.MaxDataSize, edidData.Length - offset)];

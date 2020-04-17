@@ -81,6 +81,30 @@ namespace NvAPIWrapper.Native.Delegates
                 gpuHandles,
             [Out] out uint gpuCount);
 
+        [FunctionId(FunctionId.NvAPI_GPU_ClientFanCoolersGetControl)]
+        public delegate Status NvAPI_GPU_ClientFanCoolersGetControl(
+            [In] PhysicalGPUHandle physicalGpu,
+            [Accepts(typeof(PrivateFanCoolersControlV1))] [In]
+            ValueTypeReference control);
+
+        [FunctionId(FunctionId.NvAPI_GPU_ClientFanCoolersGetInfo)]
+        public delegate Status NvAPI_GPU_ClientFanCoolersGetInfo(
+            [In] PhysicalGPUHandle physicalGpu,
+            [Accepts(typeof(PrivateFanCoolersInfoV1))] [In]
+            ValueTypeReference info);
+
+        [FunctionId(FunctionId.NvAPI_GPU_ClientFanCoolersGetStatus)]
+        public delegate Status NvAPI_GPU_ClientFanCoolersGetStatus(
+            [In] PhysicalGPUHandle physicalGpu,
+            [Accepts(typeof(PrivateFanCoolersStatusV1))] [In]
+            ValueTypeReference status);
+
+        [FunctionId(FunctionId.NvAPI_GPU_ClientFanCoolersSetControl)]
+        public delegate Status NvAPI_GPU_ClientFanCoolersSetControl(
+            [In] PhysicalGPUHandle physicalGpu,
+            [Accepts(typeof(PrivateFanCoolersControlV1))] [In]
+            ValueTypeReference control);
+
         [FunctionId(FunctionId.NvAPI_GPU_ClientIllumDevicesGetControl)]
         public delegate Status NvAPI_GPU_ClientIlluminationDevicesGetControl(
             [In] PhysicalGPUHandle gpu,
@@ -94,7 +118,6 @@ namespace NvAPIWrapper.Native.Delegates
             [Accepts(typeof(IlluminationDeviceInfoParametersV1))] [In]
             ValueTypeReference illuminationDevicesInfo
         );
-
 
         [FunctionId(FunctionId.NvAPI_GPU_ClientIllumDevicesSetControl)]
         public delegate Status NvAPI_GPU_ClientIlluminationDevicesSetControl(
@@ -564,6 +587,14 @@ namespace NvAPIWrapper.Native.Delegates
             [In] [Accepts(typeof(PrivatePerformanceStatusV1))]
             ValueTypeReference performanceStatus);
 
+        [FunctionId(FunctionId.NvAPI_GPU_QueryActiveApps)]
+        public delegate Status NvAPI_GPU_QueryActiveApps(
+            [In] PhysicalGPUHandle gpu,
+            [In] [Accepts(typeof(PrivateActiveApplicationV2))]
+            ValueTypeArray applications,
+            [In] [Out] ref uint numberOfApplications
+        );
+
 
         [FunctionId(FunctionId.NvAPI_GPU_QueryIlluminationSupport)]
         public delegate Status NvAPI_GPU_QueryIlluminationSupport(
@@ -663,6 +694,18 @@ namespace NvAPIWrapper.Native.Delegates
             [In] PhysicalGPUHandle physicalGpu,
             [In] OutputId outputMask);
 
+        [FunctionId(FunctionId.NvAPI_I2CRead)]
+        public delegate Status NvAPI_I2CRead(
+            [In] PhysicalGPUHandle physicalGpu,
+            [In] [Accepts(typeof(I2CInfoV3), typeof(I2CInfoV2))] ValueTypeReference i2cInfo
+        );
+
+        [FunctionId(FunctionId.NvAPI_I2CWrite)]
+        public delegate Status NvAPI_I2CWrite(
+            [In] PhysicalGPUHandle physicalGpu,
+            [In] [Accepts(typeof(I2CInfoV3), typeof(I2CInfoV2))] ValueTypeReference i2cInfo
+        );
+
         [FunctionId(FunctionId.NvAPI_SYS_GetDisplayIdFromGpuAndOutputId)]
         public delegate Status NvAPI_SYS_GetDisplayIdFromGpuAndOutputId(
             [In] PhysicalGPUHandle gpu,
@@ -679,38 +722,5 @@ namespace NvAPIWrapper.Native.Delegates
         public delegate Status NvAPI_SYS_GetPhysicalGpuFromDisplayId(
             [In] uint displayId,
             [Out] out PhysicalGPUHandle gpu);
-
-        [FunctionId(FunctionId.NvAPI_GPU_QueryActiveApps)]
-        public delegate Status NvAPI_GPU_QueryActiveApps(
-            [In] PhysicalGPUHandle gpu,
-            [In] [Accepts(typeof(PrivateActiveApplicationV2))] ValueTypeArray applicaitons,
-            [In] [Out] ref uint numberOfApplications
-        );
-
-
-
-        [FunctionId(FunctionId.NvAPI_GPU_ClientFanCoolersGetInfo)]
-        public delegate Status NvAPI_GPU_ClientFanCoolersGetInfo(
-            [In] PhysicalGPUHandle physicalGpu,
-            [Accepts(typeof(PrivateFanCoolersInfoV1))] [In]
-            ValueTypeReference info);
-
-        [FunctionId(FunctionId.NvAPI_GPU_ClientFanCoolersGetStatus)]
-        public delegate Status NvAPI_GPU_ClientFanCoolersGetStatus(
-            [In] PhysicalGPUHandle physicalGpu,
-            [Accepts(typeof(PrivateFanCoolersStatusV1))] [In]
-            ValueTypeReference status);
-
-        [FunctionId(FunctionId.NvAPI_GPU_ClientFanCoolersGetControl)]
-        public delegate Status NvAPI_GPU_ClientFanCoolersGetControl(
-            [In] PhysicalGPUHandle physicalGpu,
-            [Accepts(typeof(PrivateFanCoolersControlV1))] [In]
-            ValueTypeReference control);
-
-        [FunctionId(FunctionId.NvAPI_GPU_ClientFanCoolersSetControl)]
-        public delegate Status NvAPI_GPU_ClientFanCoolersSetControl(
-            [In] PhysicalGPUHandle physicalGpu,
-            [Accepts(typeof(PrivateFanCoolersControlV1))] [In]
-            ValueTypeReference control);
     }
 }

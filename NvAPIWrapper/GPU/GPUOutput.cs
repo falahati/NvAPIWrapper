@@ -1,9 +1,10 @@
 ﻿using System;
 using NvAPIWrapper.Display;
 using NvAPIWrapper.Native;
+using NvAPIWrapper.Native.Exceptions;
+using NvAPIWrapper.Native.General;
 using NvAPIWrapper.Native.GPU;
 using NvAPIWrapper.Native.GPU.Structures;
-using NvAPIWrapper.Native.Interfaces.Display;
 
 namespace NvAPIWrapper.GPU
 {
@@ -144,6 +145,120 @@ namespace NvAPIWrapper.GPU
         public void OverrideRefreshRate(float refreshRate, bool isDeferred = false)
         {
             DisplayApi.SetRefreshRateOverride(OutputId, refreshRate, isDeferred);
+        }
+
+        /// <summary>
+        ///     Reads data from the I2C bus
+        /// </summary>
+        /// <param name="portId">The port id on which device is connected</param>
+        /// <param name="useDDCPort">A boolean value indicating that the DDC port should be used instead of the communication port</param>
+        /// <param name="deviceAddress">The device I2C slave address</param>
+        /// <param name="registerAddress">The target I2C register address</param>
+        /// <param name="readDataLength">The length of the buffer to allocate for the read operation.</param>
+        /// <param name="speed">The target speed of the transaction in kHz</param>
+        public byte[] ReadI2C(
+            byte? portId,
+            bool useDDCPort,
+            byte deviceAddress,
+            byte[] registerAddress,
+            uint readDataLength,
+            I2CSpeed speed = I2CSpeed.Default
+        )
+        {
+            try
+            {
+                // ReSharper disable once InconsistentNaming
+                var i2cInfoV3 = new I2CInfoV3(
+                    OutputId,
+                    portId,
+                    useDDCPort,
+                    deviceAddress,
+                    registerAddress,
+                    readDataLength,
+                    speed
+                );
+
+                return PhysicalGPU.ReadI2C(i2cInfoV3);
+            }
+            catch (NVIDIAApiException e)
+            {
+                if (e.Status != Status.IncompatibleStructureVersion || portId != null)
+                {
+                    throw;
+                }
+
+                // ignore
+            }
+
+            // ReSharper disable once InconsistentNaming
+            var i2cInfoV2 = new I2CInfoV2(
+                OutputId,
+                useDDCPort,
+                deviceAddress,
+                registerAddress,
+                readDataLength,
+                speed
+            );
+
+            return PhysicalGPU.ReadI2C(i2cInfoV2);
+        }
+
+        /// <summary>
+        ///     Writes data to the I2C bus
+        /// </summary>
+        /// <param name="portId">The port id on which device is connected</param>
+        /// <param name="useDDCPort">A boolean value indicating that the DDC port should be used instead of the communication port</param>
+        /// <param name="deviceAddress">The device I2C slave address</param>
+        /// <param name="registerAddress">The target I2C register address</param>
+        /// <param name="data">The payload data</param>
+        /// <param name="speed">The target speed of the transaction in kHz</param>
+        public void WriteI2C(
+            byte? portId,
+            bool useDDCPort,
+            byte deviceAddress,
+            byte[] registerAddress,
+            byte[] data,
+            I2CSpeed speed = I2CSpeed.Default
+        )
+        {
+            try
+            {
+                // ReSharper disable once InconsistentNaming
+                var i2cInfoV3 = new I2CInfoV3(
+                    OutputId,
+                    portId,
+                    useDDCPort,
+                    deviceAddress,
+                    registerAddress,
+                    data,
+                    speed
+                );
+
+                PhysicalGPU.WriteI2C(i2cInfoV3);
+
+                return;
+            }
+            catch (NVIDIAApiException e)
+            {
+                if (e.Status != Status.IncompatibleStructureVersion || portId != null)
+                {
+                    throw;
+                }
+
+                // ignore
+            }
+
+            // ReSharper disable once InconsistentNaming
+            var i2cInfoV2 = new I2CInfoV2(
+                OutputId,
+                useDDCPort,
+                deviceAddress,
+                registerAddress,
+                data,
+                speed
+            );
+
+            PhysicalGPU.WriteI2C(i2cInfoV2);
         }
     }
 }
