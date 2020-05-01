@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
+using NvAPIWrapper.Native.Helpers;
 using NvAPIWrapper.Native.Interfaces;
 
 namespace NvAPIWrapper.Native.Display.Structures
@@ -15,11 +16,69 @@ namespace NvAPIWrapper.Native.Display.Structures
         internal readonly uint _FrequencyInMillihertz;
         internal readonly ushort _VerticalAspect;
         internal readonly ushort _HorizontalAspect;
-        internal readonly ushort _PixelRepetition;
-        internal readonly uint _Status;
+        internal readonly ushort _HorizontalPixelRepetition;
+        internal readonly uint _Standard;
 
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 40)]
         internal string _Name;
+
+        /// <summary>
+        ///     Creates a new instance of <see cref="TimingExtra" /> structure.
+        /// </summary>
+        /// <param name="frequencyInHertz">The timing frequency in hertz</param>
+        /// <param name="name">The timing source name</param>
+        /// <param name="horizontalAspect">The display horizontal aspect</param>
+        /// <param name="verticalAspect">The display vertical aspect</param>
+        /// <param name="horizontalPixelRepetition">The number of identical horizontal pixels that are repeated; 1 = no repetition</param>
+        /// <param name="hardwareFlags">The NVIDIA hardware-based enhancement, such as double-scan.</param>
+        public TimingExtra(
+            double frequencyInHertz,
+            string name,
+            ushort horizontalAspect = 0,
+            ushort verticalAspect = 0,
+            ushort horizontalPixelRepetition = 1,
+            uint hardwareFlags = 0
+        ) : this(
+            (uint) (frequencyInHertz * 1000d),
+            (ushort) frequencyInHertz,
+            name,
+            horizontalAspect,
+            verticalAspect,
+            horizontalPixelRepetition,
+            hardwareFlags
+        )
+        {
+        }
+
+        /// <summary>
+        ///     Creates a new instance of <see cref="TimingExtra" /> structure.
+        /// </summary>
+        /// <param name="frequencyInMillihertz">The timing frequency in millihertz</param>
+        /// <param name="refreshRate">The refresh rate</param>
+        /// <param name="name">The timing source name</param>
+        /// <param name="horizontalAspect">The display horizontal aspect</param>
+        /// <param name="verticalAspect">The display vertical aspect</param>
+        /// <param name="horizontalPixelRepetition">The number of identical horizontal pixels that are repeated; 1 = no repetition</param>
+        /// <param name="hardwareFlags">The NVIDIA hardware-based enhancement, such as double-scan.</param>
+        public TimingExtra(
+            uint frequencyInMillihertz,
+            ushort refreshRate,
+            string name,
+            ushort horizontalAspect = 0,
+            ushort verticalAspect = 0,
+            ushort horizontalPixelRepetition = 1,
+            uint hardwareFlags = 0
+        )
+        {
+            this = typeof(TimingExtra).Instantiate<TimingExtra>();
+            _FrequencyInMillihertz = frequencyInMillihertz;
+            _RefreshRate = refreshRate;
+            _HorizontalAspect = horizontalAspect;
+            _VerticalAspect = verticalAspect;
+            _HorizontalPixelRepetition = horizontalPixelRepetition;
+            _HardwareFlags = hardwareFlags;
+            _Name = name?.Length > 40 ? name.Substring(0, 40) : name ?? "";
+        }
 
         /// <inheritdoc />
         public bool Equals(TimingExtra other)
@@ -29,8 +88,8 @@ namespace NvAPIWrapper.Native.Display.Structures
                    _FrequencyInMillihertz == other._FrequencyInMillihertz &&
                    _VerticalAspect == other._VerticalAspect &&
                    _HorizontalAspect == other._HorizontalAspect &&
-                   _PixelRepetition == other._PixelRepetition &&
-                   _Status == other._Status;
+                   _HorizontalPixelRepetition == other._HorizontalPixelRepetition &&
+                   _Standard == other._Standard;
         }
 
         /// <inheritdoc />
@@ -54,15 +113,15 @@ namespace NvAPIWrapper.Native.Display.Structures
                 hashCode = (hashCode * 397) ^ (int) _FrequencyInMillihertz;
                 hashCode = (hashCode * 397) ^ _VerticalAspect.GetHashCode();
                 hashCode = (hashCode * 397) ^ _HorizontalAspect.GetHashCode();
-                hashCode = (hashCode * 397) ^ _PixelRepetition.GetHashCode();
-                hashCode = (hashCode * 397) ^ (int) _Status;
+                hashCode = (hashCode * 397) ^ _HorizontalPixelRepetition.GetHashCode();
+                hashCode = (hashCode * 397) ^ (int) _Standard;
 
                 return hashCode;
             }
         }
 
         /// <summary>
-        ///     Reserved for NVIDIA hardware-based enhancement, such as double-scan.
+        ///     Gets the NVIDIA hardware-based enhancement, such as double-scan.
         /// </summary>
         public uint HardwareFlags
         {
@@ -70,7 +129,7 @@ namespace NvAPIWrapper.Native.Display.Structures
         }
 
         /// <summary>
-        ///     Logical refresh rate to present
+        ///     Gets the logical refresh rate to present
         /// </summary>
         public int RefreshRate
         {
@@ -78,7 +137,7 @@ namespace NvAPIWrapper.Native.Display.Structures
         }
 
         /// <summary>
-        ///     Physical vertical refresh rate in 0.001Hz
+        ///     Gets the physical vertical refresh rate in 0.001Hz
         /// </summary>
         public int FrequencyInMillihertz
         {
@@ -86,7 +145,7 @@ namespace NvAPIWrapper.Native.Display.Structures
         }
 
         /// <summary>
-        ///     Display vertical aspect
+        ///     Gets the display vertical aspect
         /// </summary>
         public int VerticalAspect
         {
@@ -94,7 +153,7 @@ namespace NvAPIWrapper.Native.Display.Structures
         }
 
         /// <summary>
-        ///     Display horizontal aspect
+        ///     Gets the display horizontal aspect
         /// </summary>
         public int HorizontalAspect
         {
@@ -102,23 +161,23 @@ namespace NvAPIWrapper.Native.Display.Structures
         }
 
         /// <summary>
-        ///     Bit-wise pixel repetition factor: 0x1:no pixel repetition; 0x2:each pixel repeats twice horizontally,..
+        ///     Gets the bit-wise pixel repetition factor: 0x1:no pixel repetition; 0x2:each pixel repeats twice horizontally,..
         /// </summary>
         public int PixelRepetition
         {
-            get => _PixelRepetition;
+            get => _HorizontalPixelRepetition;
         }
 
         /// <summary>
-        ///     Timing standard
+        ///     Gets the timing standard
         /// </summary>
-        public uint Status
+        public uint Standard
         {
-            get => _Status;
+            get => _Standard;
         }
 
         /// <summary>
-        ///     Timing name
+        ///     Gets the timing name
         /// </summary>
         public string Name
         {
@@ -129,6 +188,28 @@ namespace NvAPIWrapper.Native.Display.Structures
         public override string ToString()
         {
             return Name;
+        }
+
+        /// <summary>
+        ///     Checks two instance of <see cref="TimingExtra" /> for equality.
+        /// </summary>
+        /// <param name="left">The first instance.</param>
+        /// <param name="right">The second instance.</param>
+        /// <returns>Returns a boolean value indicating if the two instances are equal; otherwise false</returns>
+        public static bool operator ==(TimingExtra left, TimingExtra right)
+        {
+            return left.Equals(right);
+        }
+
+        /// <summary>
+        ///     Checks two instance of <see cref="TimingExtra" /> for equality.
+        /// </summary>
+        /// <param name="left">The first instance.</param>
+        /// <param name="right">The second instance.</param>
+        /// <returns>Returns a boolean value indicating if the two instances are equal; otherwise false</returns>
+        public static bool operator !=(TimingExtra left, TimingExtra right)
+        {
+            return !(left == right);
         }
     }
 }

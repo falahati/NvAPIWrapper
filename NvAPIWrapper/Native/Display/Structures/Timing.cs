@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
+using NvAPIWrapper.Native.Helpers;
 
 namespace NvAPIWrapper.Native.Display.Structures
 {
@@ -24,6 +25,113 @@ namespace NvAPIWrapper.Native.Display.Structures
         internal readonly TimingScanMode _ScanMode;
         internal readonly uint _PixelClockIn10KHertz;
         internal readonly TimingExtra _Extra;
+
+        /// <summary>
+        ///     Creates an instance of <see cref="Timing" /> structure.
+        /// </summary>
+        /// <param name="horizontalVisible">The horizontal visible pixels</param>
+        /// <param name="verticalVisible">The vertical visible pixels</param>
+        /// <param name="horizontalBorder">The horizontal border pixels</param>
+        /// <param name="verticalBorder">The vertical border pixels</param>
+        /// <param name="horizontalFrontPorch">The horizontal front porch pixels</param>
+        /// <param name="verticalFrontPorch">The vertical front porch pixels</param>
+        /// <param name="horizontalSyncWidth">The horizontal sync width pixels</param>
+        /// <param name="verticalSyncWidth">The vertical sync width pixels</param>
+        /// <param name="horizontalTotal">The horizontal total pixels</param>
+        /// <param name="verticalTotal">The vertical total pixels</param>
+        /// <param name="horizontalPolarity">The horizontal sync polarity</param>
+        /// <param name="verticalPolarity">The vertical sync polarity</param>
+        /// <param name="scanMode">The scan mode</param>
+        /// <param name="extra">The extra timing information</param>
+        public Timing(
+            ushort horizontalVisible,
+            ushort verticalVisible,
+            ushort horizontalBorder,
+            ushort verticalBorder,
+            ushort horizontalFrontPorch,
+            ushort verticalFrontPorch,
+            ushort horizontalSyncWidth,
+            ushort verticalSyncWidth,
+            ushort horizontalTotal,
+            ushort verticalTotal,
+            TimingHorizontalSyncPolarity horizontalPolarity,
+            TimingVerticalSyncPolarity verticalPolarity,
+            TimingScanMode scanMode,
+            TimingExtra extra
+        )
+        {
+            this = typeof(Timing).Instantiate<Timing>();
+
+            _HorizontalVisible = horizontalVisible;
+            _HorizontalBorder = horizontalBorder;
+            _HorizontalFrontPorch = horizontalFrontPorch;
+            _HorizontalSyncWidth = horizontalSyncWidth;
+            _HorizontalTotal = horizontalTotal;
+            _HorizontalSyncPolarity = horizontalPolarity;
+
+            _VerticalVisible = verticalVisible;
+            _VerticalBorder = verticalBorder;
+            _VerticalFrontPorch = verticalFrontPorch;
+            _VerticalSyncWidth = verticalSyncWidth;
+            _VerticalTotal = verticalTotal;
+            _VerticalSyncPolarity = verticalPolarity;
+
+            _ScanMode = scanMode;
+            _PixelClockIn10KHertz =
+                (uint) (horizontalTotal * verticalTotal * (extra.FrequencyInMillihertz / 1000d) / 10000);
+
+            _Extra = extra;
+        }
+
+        /// <summary>
+        ///     Creates an instance of <see cref="Timing" /> structure.
+        /// </summary>
+        /// <param name="horizontalVisible">The horizontal visible pixels</param>
+        /// <param name="verticalVisible">The vertical visible pixels</param>
+        /// <param name="horizontalBorder">The horizontal border pixels</param>
+        /// <param name="verticalBorder">The vertical border pixels</param>
+        /// <param name="horizontalFrontPorch">The horizontal front porch pixels</param>
+        /// <param name="verticalFrontPorch">The vertical front porch pixels</param>
+        /// <param name="horizontalSyncWidth">The horizontal sync width pixels</param>
+        /// <param name="verticalSyncWidth">The vertical sync width pixels</param>
+        /// <param name="horizontalTotal">The horizontal total pixels</param>
+        /// <param name="verticalTotal">The vertical total pixels</param>
+        /// <param name="horizontalPolarity">The horizontal sync polarity</param>
+        /// <param name="verticalPolarity">The vertical sync polarity</param>
+        /// <param name="scanMode">The scan mode</param>
+        /// <param name="refreshRateFrequencyInHz">The frequency in hertz</param>
+        /// <param name="horizontalPixelRepetition">The number of identical horizontal pixels that are repeated; 1 = no repetition</param>
+        public Timing(
+            ushort horizontalVisible,
+            ushort verticalVisible,
+            ushort horizontalBorder,
+            ushort verticalBorder,
+            ushort horizontalFrontPorch,
+            ushort verticalFrontPorch,
+            ushort horizontalSyncWidth,
+            ushort verticalSyncWidth,
+            ushort horizontalTotal,
+            ushort verticalTotal,
+            TimingHorizontalSyncPolarity horizontalPolarity,
+            TimingVerticalSyncPolarity verticalPolarity,
+            TimingScanMode scanMode,
+            double refreshRateFrequencyInHz,
+            ushort horizontalPixelRepetition = 1
+        ) : this(
+            horizontalVisible, verticalVisible, horizontalBorder,
+            verticalBorder, horizontalFrontPorch, verticalFrontPorch,
+            horizontalSyncWidth, verticalSyncWidth, horizontalTotal,
+            verticalTotal, horizontalPolarity, verticalPolarity, scanMode,
+            new TimingExtra(
+                refreshRateFrequencyInHz,
+                $"CUST:{horizontalVisible}x{verticalVisible}x{refreshRateFrequencyInHz:F3}Hz",
+                0,
+                0,
+                horizontalPixelRepetition
+            )
+        )
+        {
+        }
 
         /// <inheritdoc />
         public bool Equals(Timing other)
@@ -53,7 +161,7 @@ namespace NvAPIWrapper.Native.Display.Structures
                 return false;
             }
 
-            return obj is Timing && Equals((Timing) obj);
+            return obj is Timing timing && Equals(timing);
         }
 
         /// <inheritdoc />
@@ -82,7 +190,29 @@ namespace NvAPIWrapper.Native.Display.Structures
         }
 
         /// <summary>
-        ///     Horizontal visible
+        ///     Checks two instance of <see cref="Timing" /> for equality.
+        /// </summary>
+        /// <param name="left">The first instance.</param>
+        /// <param name="right">The second instance.</param>
+        /// <returns>Returns a boolean value indicating if the two instances are equal; otherwise false</returns>
+        public static bool operator ==(Timing left, Timing right)
+        {
+            return left.Equals(right);
+        }
+
+        /// <summary>
+        ///     Checks two instance of <see cref="Timing" /> for in equality.
+        /// </summary>
+        /// <param name="left">The first instance.</param>
+        /// <param name="right">The second instance.</param>
+        /// <returns>Returns a boolean value indicating if the two instances are not equal; otherwise false</returns>
+        public static bool operator !=(Timing left, Timing right)
+        {
+            return !(left == right);
+        }
+
+        /// <summary>
+        ///     Get the horizontal visible pixels
         /// </summary>
         public int HorizontalVisible
         {
@@ -90,7 +220,7 @@ namespace NvAPIWrapper.Native.Display.Structures
         }
 
         /// <summary>
-        ///     Horizontal border
+        ///     Get the horizontal border pixels
         /// </summary>
         public int HorizontalBorder
         {
@@ -98,7 +228,7 @@ namespace NvAPIWrapper.Native.Display.Structures
         }
 
         /// <summary>
-        ///     Horizontal front porch
+        ///     Get the horizontal front porch pixels
         /// </summary>
         public int HorizontalFrontPorch
         {
@@ -106,7 +236,7 @@ namespace NvAPIWrapper.Native.Display.Structures
         }
 
         /// <summary>
-        ///     Horizontal sync width
+        ///     Get the horizontal sync width pixels
         /// </summary>
         public int HorizontalSyncWidth
         {
@@ -114,7 +244,7 @@ namespace NvAPIWrapper.Native.Display.Structures
         }
 
         /// <summary>
-        ///     Horizontal total
+        ///     Get the horizontal total pixels
         /// </summary>
         public int HorizontalTotal
         {
@@ -122,7 +252,7 @@ namespace NvAPIWrapper.Native.Display.Structures
         }
 
         /// <summary>
-        ///     Horizontal sync polarity
+        ///     Get the horizontal sync polarity
         /// </summary>
         public TimingHorizontalSyncPolarity HorizontalSyncPolarity
         {
@@ -130,7 +260,7 @@ namespace NvAPIWrapper.Native.Display.Structures
         }
 
         /// <summary>
-        ///     Vertical visible
+        ///     Get the vertical visible pixels
         /// </summary>
         public int VerticalVisible
         {
@@ -138,7 +268,7 @@ namespace NvAPIWrapper.Native.Display.Structures
         }
 
         /// <summary>
-        ///     Vertical border
+        ///     Get the vertical border pixels
         /// </summary>
         public int VerticalBorder
         {
@@ -146,7 +276,7 @@ namespace NvAPIWrapper.Native.Display.Structures
         }
 
         /// <summary>
-        ///     Vertical front porch
+        ///     Get the vertical front porch pixels
         /// </summary>
         public int VerticalFrontPorch
         {
@@ -154,7 +284,7 @@ namespace NvAPIWrapper.Native.Display.Structures
         }
 
         /// <summary>
-        ///     Vertical sync width
+        ///     Get the vertical sync width pixels
         /// </summary>
         public int VerticalSyncWidth
         {
@@ -162,7 +292,7 @@ namespace NvAPIWrapper.Native.Display.Structures
         }
 
         /// <summary>
-        ///     Vertical total
+        ///     Get the vertical total pixels
         /// </summary>
         public int VerticalTotal
         {
@@ -170,7 +300,7 @@ namespace NvAPIWrapper.Native.Display.Structures
         }
 
         /// <summary>
-        ///     Vertical sync polarity
+        ///     Get the vertical sync polarity
         /// </summary>
         public TimingVerticalSyncPolarity VerticalSyncPolarity
         {
@@ -178,7 +308,7 @@ namespace NvAPIWrapper.Native.Display.Structures
         }
 
         /// <summary>
-        ///     Scan mode
+        ///     Get the scan mode
         /// </summary>
         public TimingScanMode ScanMode
         {
@@ -186,7 +316,7 @@ namespace NvAPIWrapper.Native.Display.Structures
         }
 
         /// <summary>
-        ///     Pixel clock in 10 kHz
+        ///     Get the pixel clock in 10 kHz
         /// </summary>
         public int PixelClockIn10KHertz
         {
@@ -194,11 +324,59 @@ namespace NvAPIWrapper.Native.Display.Structures
         }
 
         /// <summary>
-        ///     Other timing related extras
+        ///     Get the other timing related extras
         /// </summary>
         public TimingExtra Extra
         {
             get => _Extra;
+        }
+
+        /// <summary>
+        ///     Gets the horizontal active pixels
+        /// </summary>
+        public int HorizontalActive
+        {
+            get => HorizontalVisible + HorizontalBorder;
+        }
+
+        /// <summary>
+        ///     Gets the vertical active pixels
+        /// </summary>
+        public int VerticalActive
+        {
+            get => VerticalVisible + VerticalBorder;
+        }
+
+        /// <summary>
+        ///     Gets the horizontal back porch pixels
+        /// </summary>
+        public int HorizontalBackPorch
+        {
+            get => HorizontalBlanking - (HorizontalFrontPorch + HorizontalSyncWidth);
+        }
+
+        /// <summary>
+        ///     Gets the horizontal blanking pixels
+        /// </summary>
+        public int HorizontalBlanking
+        {
+            get => HorizontalTotal - (HorizontalActive + HorizontalBorder);
+        }
+
+        /// <summary>
+        ///     Gets vertical back porch pixels
+        /// </summary>
+        public int VerticalBackPorch
+        {
+            get => VerticalBlanking - (VerticalFrontPorch + VerticalSyncWidth);
+        }
+
+        /// <summary>
+        ///     Gets the vertical blanking pixels
+        /// </summary>
+        public int VerticalBlanking
+        {
+            get => VerticalTotal - (VerticalActive + VerticalBorder);
         }
     }
 }
