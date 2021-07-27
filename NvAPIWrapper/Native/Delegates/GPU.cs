@@ -35,6 +35,13 @@ namespace NvAPIWrapper.Native.Delegates
                 gpuHandles,
             [Out] out uint gpuCount);
 
+        [FunctionId(FunctionId.NvAPI_GPU_GetAllTempsEx)]
+        public delegate Status NvAPI_GPU_GetAllTempsEx(
+            [In] PhysicalGPUHandle physicalGpu,
+            [Accepts(typeof(PrivateThermalExV2))] [In]
+            ValueTypeReference thermal
+        );
+
         [FunctionId(FunctionId.NvAPI_GetDriverModel)]
         public delegate Status NvAPI_GetDriverModel(
             [In] PhysicalGPUHandle physicalGpu,

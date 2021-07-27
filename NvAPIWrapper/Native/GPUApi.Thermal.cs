@@ -445,5 +445,25 @@ namespace NvAPIWrapper.Native
                 }
             }
         }
+
+        public static PrivateThermalExV2 GetAllTemperatures(PhysicalGPUHandle gpuHandle, uint mask)
+        {
+            var instance = typeof(PrivateThermalExV2).Instantiate<PrivateThermalExV2>();
+            instance.Mask = mask;
+            using (var thermalReference = ValueTypeReference.FromValueType(instance))
+            {
+                var status = DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_GetAllTempsEx>()(
+                    gpuHandle,
+                    thermalReference
+                );
+
+                if (status != Status.Ok)
+                {
+                    throw new NVIDIAApiException(status);
+                }
+
+                return thermalReference.ToValueType<PrivateThermalExV2>(typeof(PrivateThermalExV2));
+            }
+        }
     }
 }

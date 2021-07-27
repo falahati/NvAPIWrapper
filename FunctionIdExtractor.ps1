@@ -1,5 +1,5 @@
-$filename = "R410-developer\amd64\nvapi64.lib"
-$dumpbinAddress = "$Env:VS140COMNTOOLS..\..\VC\bin\dumpbin.exe"
+$filename = "R470-developer\amd64\nvapi64.lib"
+$dumpbinAddress = "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Tools\MSVC\14.29.30037\bin\Hostx64\x86\dumpbin.exe"
 $dumpbinParameter = "/DISASM $filename"
 Start-Process $dumpbinAddress $dumpbinParameter -Wait -WindowStyle Hidden -RedirectStandardOutput "$filename.asm"
 $content = Get-Content "$filename.asm"

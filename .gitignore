@@ -243,5 +243,6 @@ ModelManifest.xml
 
 # FAKE - F# Make
 .fake/
-R375-developer/*
-R410-developer/*
+
+# Custom
+R470-developer/*

@@ -6,6 +6,7 @@ using NvAPIWrapper;
 using NvAPIWrapper.Display;
 using NvAPIWrapper.GPU;
 using NvAPIWrapper.Mosaic;
+using NvAPIWrapper.Native;
 
 namespace NvAPISample
 {
@@ -17,6 +18,7 @@ namespace NvAPISample
             NVIDIA.Initialize();
             var navigation = new Dictionary<object, Action>
             {
+                {"Temp Test", TempTest},
                 {"Connected Displays", PrintConnectedDisplays},
                 {"Disconnected Displays", PrintDisconnectedDisplays},
                 {"Display Configurations", PrintDisplayPathInformation},
@@ -120,6 +122,59 @@ namespace NvAPISample
                 ConsoleWriter.Default.WriteObject(gpu.PerformanceStatesInfo, 3);
             }, "Select a GPU to show performance states configuration");
         }
+
+        private static string GetBits(int value)
+        {
+            return string.Join(
+                "-",
+                Enumerable.Range(0, 32)
+                    .Select(bitIndex => 1 << bitIndex)
+                    .Select(bitMask => (value & bitMask) == bitMask)
+                    .Select(b => b ? "1" : "0")
+                    .Reverse()
+                    .ToArray()
+            ) + " = " + value;
+        }
+
+        private static void TempTest()
+        {
+            ConsoleWriter.Default.PrintCaption("PhysicalGPU.GetPhysicalGPUs()");
+            ConsoleNavigation.Default.PrintNavigation(PhysicalGPU.GetPhysicalGPUs(), (i, gpu) =>
+            {
+                ConsoleWriter.Default.PrintCaption("Temp Test");
+                for (int j = 10; j > 0; j--)
+                {
+                    try
+                    {
+                        var temp = GPUApi.GetAllTemperatures(gpu.Handle, (uint)(1 << j));
+                        ConsoleWriter.Default.WriteObject(
+                            new
+                            {
+                                Mask = Program.GetBits((int)temp.Mask),
+                                Unknown = Program.GetBits(temp.Unknown1.Last()),
+                                Temperatures = temp.Temperatures.Select((t) => Program.GetBits(t))
+                            }
+                        );
+
+
+                        temp = GPUApi.GetAllTemperatures(gpu.Handle, (uint)(1 << j) - 1);
+                        ConsoleWriter.Default.WriteObject(
+                            new
+                            {
+                                Mask = Program.GetBits((int)temp.Mask),
+                                Unknown = Program.GetBits(temp.Unknown1.Last()),
+                                Temperatures = temp.Temperatures.Select((t) => Program.GetBits(t))
+                            }
+                        );
+                    }
+                    catch (Exception e)
+                    {
+                       
+                    }
+                }
+            }, "Select a GPU to show thermal sensor values");
+        }
+
 
         private static void PrintGPUSensors()
         {
