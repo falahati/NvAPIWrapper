@@ -446,13 +446,18 @@ namespace NvAPIWrapper.Native
             }
         }
 
-        public static PrivateThermalExV2 GetAllTemperatures(PhysicalGPUHandle gpuHandle, uint mask)
+        /// <summary>
+        ///     [PRIVATE]
+        ///     Gets the current temperature reading of requested sensors.
+        /// </summary>
+        /// <param name="gpuHandle">The handle of the GPU to perform the operation on.</param>
+        /// <param name="mask">A 32 bit unsigned integer flag containing sensors that are of interest</param>
+        public static PrivateThermalSensorsV2 QueryThermalSensors(PhysicalGPUHandle gpuHandle, uint mask)
         {
-            var instance = typeof(PrivateThermalExV2).Instantiate<PrivateThermalExV2>();
-            instance.Mask = mask;
+            var instance = new PrivateThermalSensorsV2(mask);
             using (var thermalReference = ValueTypeReference.FromValueType(instance))
             {
-                var status = DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_GetAllTempsEx>()(
+                var status = DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_QueryThermalSensors>()(
                     gpuHandle,
                     thermalReference
                 );
@@ -462,7 +467,7 @@ namespace NvAPIWrapper.Native
                     throw new NVIDIAApiException(status);
                 }
 
-                return thermalReference.ToValueType<PrivateThermalExV2>(typeof(PrivateThermalExV2));
+                return thermalReference.ToValueType<PrivateThermalSensorsV2>(typeof(PrivateThermalSensorsV2));
             }
         }
     }

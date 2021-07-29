@@ -700,7 +700,7 @@ namespace NvAPIWrapper.Native.Helpers
         Unknown_36E39E6B = 0x36e39e6b, // `Unknown(*mut { version = 0x0002000c, count, ... })` might be handles?
         Unknown_B7BCF50D = 0xb7bcf50d, // `Unknown(hGpu, *mut { version = 0x00010008, value })` seen `value = 0x703`
         Unknown_F1D2777B = 0xf1d2777b, // `Unknown(hDisplayHandle, *mut hGpu)` maybe?
-        NvAPI_GPU_GetAllTempsEx = 0x65FE3AAD,
+        NvAPI_GPU_QueryThermalSensors = 0x65FE3AAD,
 
         #endregion
 

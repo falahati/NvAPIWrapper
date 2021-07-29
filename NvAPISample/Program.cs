@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using ConsoleUtilities;
 using NvAPIWrapper;
 using NvAPIWrapper.Display;
@@ -36,7 +37,7 @@ namespace NvAPISample
             ConsoleNavigation.Default.PrintNavigation(
                 navigation.Keys.ToArray(),
                 (i, o) => navigation[o](),
-                "Select an execution line to browse NvAPIWrapper functionalities."
+                "Select an execution line to browse NvAPIWrapper functionalists."
             );
         }
 
@@ -123,54 +124,50 @@ namespace NvAPISample
             }, "Select a GPU to show performance states configuration");
         }
 
-        private static string GetBits(int value)
-        {
-            return string.Join(
-                "-",
-                Enumerable.Range(0, 32)
-                    .Select(bitIndex => 1 << bitIndex)
-                    .Select(bitMask => (value & bitMask) == bitMask)
-                    .Select(b => b ? "1" : "0")
-                    .Reverse()
-                    .ToArray()
-            ) + " = " + value;
-        }
-
         private static void TempTest()
         {
             ConsoleWriter.Default.PrintCaption("PhysicalGPU.GetPhysicalGPUs()");
             ConsoleNavigation.Default.PrintNavigation(PhysicalGPU.GetPhysicalGPUs(), (i, gpu) =>
             {
                 ConsoleWriter.Default.PrintCaption("Temp Test");
-                for (int j = 10; j > 0; j--)
+
+                // find bits
+                var maxBit = 0;
+                for (; maxBit < 32; maxBit++)
                 {
                     try
                     {
-                        var temp = GPUApi.GetAllTemperatures(gpu.Handle, (uint)(1 << j));
-                        ConsoleWriter.Default.WriteObject(
-                            new
-                            {
-                                Mask = Program.GetBits((int)temp.Mask),
-                                Unknown = Program.GetBits(temp.Unknown1.Last()),
-                                Temperatures = temp.Temperatures.Select((t) => Program.GetBits(t))
-                            }
-                        );
-
-
-                        temp = GPUApi.GetAllTemperatures(gpu.Handle, (uint)(1 << j) - 1);
-                        ConsoleWriter.Default.WriteObject(
-                            new
-                            {
-                                Mask = Program.GetBits((int)temp.Mask),
-                                Unknown = Program.GetBits(temp.Unknown1.Last()),
-                                Temperatures = temp.Temperatures.Select((t) => Program.GetBits(t))
-                            }
-                        );
+                        GPUApi.QueryThermalSensors(gpu.Handle, 1u << maxBit);
                     }
-                    catch (Exception e)
+                    catch
                     {
-                       
+                        break;
                     }
+                }
+
+                if (maxBit == 0)
+                {
+                    return;
+                }
+
+                while (true)
+                {
+                    try
+                    {
+                        var temp = GPUApi.QueryThermalSensors(gpu.Handle, (1u << maxBit) - 1);
+                        ConsoleWriter.Default.WriteObject(
+                            new
+                            {
+                                GetThermalSettings = gpu.ThermalInformation.ThermalSensors.ToArray(),
+                                QueryThermalSensors = temp.Temperatures.Take(maxBit).Select((t) => t.ToString("F2")),
+                            }
+                        );
+                    }
+                    catch
+                    {
+                        // ignore
+                    }
+                    Thread.Sleep(500);
                 }
             }, "Select a GPU to show thermal sensor values");
         }
