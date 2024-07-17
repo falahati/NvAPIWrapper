@@ -683,6 +683,12 @@ namespace NvAPIWrapper.Native.Delegates
             [In]
             ValueTypeReference performanceStatesInfo);
 
+        [FunctionId(FunctionId.NvAPI_GPU_SetForcePstate)]
+        public delegate Status NvAPI_GPU_SetForcePstate(
+            [In] PhysicalGPUHandle physicalGpu,
+            [In] int pstate,
+            [In] int fallback);
+
         [FunctionId(FunctionId.NvAPI_GPU_SetThermalPoliciesStatus)]
         public delegate Status NvAPI_GPU_SetThermalPoliciesStatus(
             [In] PhysicalGPUHandle physicalGpu,

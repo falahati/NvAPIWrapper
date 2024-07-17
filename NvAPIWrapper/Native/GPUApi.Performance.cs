@@ -523,5 +523,36 @@ namespace NvAPIWrapper.Native
                 }
             }
         }
+
+        /// <summary>
+        ///     [PRIVATE]
+        ///     This function exists to force the P-State of a GPU when SetPerformanceStates20 cannot.
+        ///     Works with Tesla P40 and T4, likely other TCC cards.
+        ///     In the fallback state, the driver automatically switches between high and low performance states
+        ///     as needed by the running software.
+        /// </summary>
+        /// <param name="physicalGPUHandle">GPU handle to get information about.</param>
+        /// <param name="pstate">The pstate you want to force 0 - 15. 0 = highest performance. 16 = use fallback state.</param>
+        /// <param name="fallback">1 = fallback to high perf, 2 = fallback to low perf.</param>
+        /// <exception cref="NVIDIAApiException">Status.InvalidArgument: gpuHandle is NULL</exception>
+        /// <exception cref="NVIDIAApiException">Status.ExpectedPhysicalGPUHandle: gpuHandle was not a physical GPU handle</exception>
+        public static void SetForcePstate(
+            PhysicalGPUHandle physicalGPUHandle,
+            int pstate,
+            int fallback)
+        {
+            var status = DelegateFactory.GetDelegate<Delegates.GPU.NvAPI_GPU_SetForcePstate>()(
+                physicalGPUHandle,
+                pstate,
+                fallback
+            );
+
+            if (status != Status.Ok)
+            {
+                throw new NVIDIAApiException(status);
+            }
+        }
+
+
     }
 }

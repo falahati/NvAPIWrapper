@@ -622,6 +622,7 @@ namespace NvAPIWrapper.Native.Helpers
         NvAPI_GPU_SetPstates20 = 0x0F4DAE6B,
         NvAPI_GPU_SetPstatesInfo = 0x0CDF27911,
         NvAPI_GPU_SetThermalPoliciesStatus = 0x034C0B13D,
+        NvAPI_GPU_SetForcePstate = 0x025BFB10,
         NvAPI_Hybrid_IsAppMigrationStateChangeable = 0x584CB0B6,
         NvAPI_Hybrid_QueryBlockedMigratableApps = 0x0F4C2F8CC,
         NvAPI_Hybrid_QueryUnblockedNonMigratableApps = 0x5F35BCB5,
